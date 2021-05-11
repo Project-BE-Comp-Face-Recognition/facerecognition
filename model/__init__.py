@@ -45,3 +45,42 @@ def registerUser():
     db.users.insert(user_data)
     sendmail(subject="Registration for Flask Admin Boilerplate", sender="Flask Admin Boilerplate", recipient=user_data["email"], body="You successfully registered on Flask Admin Boilerplate")
     print("Done")
+
+
+
+
+def fetchAttendance():
+    
+    res = db.attendance.find()
+    
+    return res
+    
+def fetchstudent():
+    
+    res = db.users.find()
+    
+    return res
+   
+
+def fetchSubjectAttendance():
+    
+    res = db.attendance.find({},{"sub1":1,"_id":0})
+    li=[] 
+    for i in res:
+        a=int(i["sub1"])
+        li.append(a)
+    return li
+
+def fetchlabelAttendance():
+    
+    res = db.attendance.find({},{"branch":1,"_id":0})
+    li=[] 
+    for i in res:
+        a=i["branch"]
+        li.append(a)
+    return li
+    
+
+
+
+
