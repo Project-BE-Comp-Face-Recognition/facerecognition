@@ -42,6 +42,16 @@ def checkemail():
     else:
         return "Email taken"
 
+def checkFaceGroupName():
+    groupname = request.form["groupname"]
+    check = db.facegroup.find_one({"groupname": groupname})
+    if check is None:
+        return "Available"
+    else:
+        return "Username taken"
+
+
+
 def registerUser():
     fields = [k for k in request.form]                                      
     values = [request.form[k] for k in request.form]
@@ -110,14 +120,6 @@ def addGroupName():
     db.facegroup.insert(user_data)
     return values[0]
     
-def checkFaceGroupName():
-    groupname = request.form["groupname"]
-    check = db.facegroup.find_one({"groupname": groupname})
-    if check is None:
-        return "Available"
-    else:
-        return "Username taken"
-
 
 
 
