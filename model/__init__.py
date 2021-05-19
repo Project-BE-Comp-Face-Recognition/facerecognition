@@ -3,6 +3,7 @@ from flask import request, session
 from helpers.database import *
 from helpers.hashpass import *
 from helpers.mailer import *
+from helpers.recognition import *
 from bson import json_util, ObjectId
 import json
 
@@ -90,5 +91,39 @@ def fetchlabelAttendance():
     
 
 
+
+'''
+Face Recognition Start
+'''
+def createPersonGroup(PERSON_GROUP_ID):
+    print('Person group:', PERSON_GROUP_ID)
+    try:
+        face_client.person_group.create(person_group_id=PERSON_GROUP_ID, name=PERSON_GROUP_ID)
+    except :
+        print("error")
+
+def addGroupName():
+    fields = [k for k in request.form]                                      
+    values = [request.form[k] for k in request.form]
+    data = dict(zip(fields, values))
+    user_data = json.loads(json_util.dumps(data))
+    db.facegroup.insert(user_data)
+    return values[0]
+    
+def checkFaceGroupName():
+    groupname = request.form["groupname"]
+    check = db.facegroup.find_one({"groupname": groupname})
+    if check is None:
+        return "Available"
+    else:
+        return "Username taken"
+
+
+
+
+
+'''
+Face Recogniton End
+'''
 
 

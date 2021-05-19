@@ -32,8 +32,6 @@ def register():
     elif request.method == "POST":
         registerUser()
 
-
-        
         return redirect(url_for("parents_register"))
 
 #Parents_register
@@ -178,8 +176,24 @@ def utilitiesother():
 #         file.save(os.path.join('upload', f_name))
 #     return json.dumps({'filename':f_name})
 
-#Hello this is shivling
+'''
+FACE RECOGNITION START
+'''
+# Check group name
+@app.route('/checkgroupname',methods=['POST'])
+def checkgroupname():
+    return checkFaceGroupName()
 
 
-#hello from akshay
-# hello from my own branch
+#Creating Perosn Group 
+@app.route('/create',methods=["GET","POST"])
+def createGroup():
+    if request.method=='GET':
+        return render_template("register-face-group.html")
+    else:
+        personGroupId=addGroupName()
+        createPersonGroup(personGroupId)
+
+'''
+FACE RECOGNITION END
+'''
