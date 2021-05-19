@@ -16,8 +16,8 @@
         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
           <thead>
             <tr>
-              <th>sr. no.</th>
-              <th>roll no.</th>
+              <th>SR. NO</th>
+              <th>Roll No</th>
               <th>Name</th>
               <th>Class</th>
               <th>Branch</th>
@@ -44,7 +44,7 @@
               <td>{{ atd['sub1'] }}</td>
               <td>{{ atd['sub2']}} </td>
               <td>{{atd['sub3']}}</td>
-              <td>{{((atd['sub1']+atd['sub2']+atd['sub3'])*100/90)}}</td>
+              <td>{{((atd['sub1']+atd['sub2']+atd['sub3'])*100/90)|round}}</td>
 
             </tr>
             {% endfor %}
@@ -99,6 +99,8 @@
 
 <!-- Page level custom scripts -->
 <script src="static/js/demo/datatables-demo.js"></script>
+<script src="static/js/demo/table.js"></script>
+
 
 </body>
 

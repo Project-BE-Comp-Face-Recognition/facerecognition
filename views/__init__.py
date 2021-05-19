@@ -2,6 +2,7 @@ from flask import render_template, request, redirect, url_for, session
 from flask import jsonify
 from app import app
 from model import *
+
 import os
 from werkzeug.utils import secure_filename
 @app.route('/', methods=["GET"])
@@ -15,6 +16,13 @@ def home():
     else:
         return render_template('login.html')
 
+@app.route('/total_attendance', methods=["GET"])
+def total():
+    
+        p_list = fetchtotalAttendance()
+
+        return render_template('index.html',p_list=p_list)
+    
 # Register new user
 @app.route('/register', methods=["GET", "POST"])
 def register():
@@ -26,13 +34,23 @@ def register():
 
 
         
-        return redirect(url_for("login"))
+        return redirect(url_for("parents_register"))
 
+#Parents_register
+@app.route('/parents_register',methods=["GET","POST"])
+def parents_register():
+    return render_template("parents_register.html")
 
 #Check if email already exists in the registratiion page
 @app.route('/checkusername', methods=["POST"])
 def check():
     return checkusername()
+
+#Check if email already exists in the registratiion page
+@app.route('/checkemail', methods=["POST"])
+def checkem():
+    return checkemail()
+
 
 # Everything Login (Routes to renderpage, check if username exist and also verifypassword through Jquery AJAX request)
 @app.route('/login', methods=["GET"])
@@ -65,20 +83,6 @@ def logout():  # logout function
 def forgotpassword():
     return render_template('forgot-password.html')
 
-#404 Page
-@app.route('/404', methods=["GET"])
-def errorpage():
-    return render_template("404.html")
-
-#Blank Page
-@app.route('/blank', methods=["GET"])
-def blank():
-    return render_template('blank.html')
-
-#Buttons Page
-@app.route('/buttons', methods=["GET"])
-def buttons():
-    return render_template("buttons.html")
 
 #Cards Page
 @app.route('/cards', methods=["GET"])
@@ -102,6 +106,33 @@ def tables():
     # atd_list = mongo.facerecognition.attendace.find()
     return render_template('tables.html', atd_list = atd_list)
 
+#Total_register
+@app.route('/user_info', methods=["GET"])
+def user_info():
+    ds_list = fetchstudent()
+    # atd_list = mongo.facerecognition.attendace.find()
+    return render_template('user_info.html', ds_list = ds_list)
+
+#Reset_Password
+@app.route('/reset_password', methods=["GET"])
+def reset():
+    return render_template("reset_password.html")
+
+#404 Page
+@app.route('/404', methods=["GET"])
+def errorpage():
+    return render_template("404.html")
+
+#Blank Page
+@app.route('/blank', methods=["GET"])
+def blank():
+    return render_template('blank.html')
+
+#Buttons Page
+@app.route('/buttons', methods=["GET"])
+def buttons():
+    return render_template("buttons.html")
+
 #Utilities-animation
 @app.route('/utilities-animation', methods=["GET"])
 def utilitiesanimation():
@@ -123,32 +154,28 @@ def utilitiesother():
     return render_template("utilities-other.html")
     
 
-#Reset_Password
-@app.route('/reset_password', methods=["GET"])
-def reset():
-    return render_template("reset_password.html")
 
 
-@app.route('/upload', methods=['GET','POST'])
-def upload():
-    # f = request.files['photo']
 
-        # Save the file to ./uploads
-    # print("upload")
-    # basepath = os.path.dirname(__file__)
-    # file_path = os.path.join(
-    # basepath, 'upload', secure_filename(f.filename))
-    # f.save(file_path)
-    # print("Image uploaded")
-    # return render_template("register.html")
-    if request.method == 'POST':
-        return jsonify(request.form['username'], request.form['file'])
-    if request.method == 'POST':
-        file = request.files['file']
-        extension = os.path.splitext(file.filename)[1]
-        f_name = str(uuid.uuid4()) + extension
-        file.save(os.path.join('upload', f_name))
-    return json.dumps({'filename':f_name})
+# @app.route('/upload', methods=['GET','POST'])
+# def upload():
+#     # f = request.files['photo']
 
+#         # Save the file to ./uploads
+#     # print("upload")
+#     # basepath = os.path.dirname(__file__)
+#     # file_path = os.path.join(
+#     # basepath, 'upload', secure_filename(f.filename))
+#     # f.save(file_path)
+#     # print("Image uploaded")
+#     # return render_template("register.html")
+#     if request.method == 'POST':
+#         return jsonify(request.form['username'], request.form['file'])
+#     if request.method == 'POST':
+#         file = request.files['file']
+#         extension = os.path.splitext(file.filename)[1]
+#         f_name = str(uuid.uuid4()) + extension
+#         file.save(os.path.join('upload', f_name))
+#     return json.dumps({'filename':f_name})
 
 

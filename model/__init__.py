@@ -33,6 +33,13 @@ def checkusername():
         return "Available"
     else:
         return "Username taken"
+def checkemail():
+    email = request.form["email"]
+    check = db.users.find_one({"email": email})
+    if check is None:
+        return "Available"
+    else:
+        return "Email taken"
 
 def registerUser():
     fields = [k for k in request.form]                                      
@@ -53,7 +60,9 @@ def fetchAttendance():
     res = db.attendance.find()
     
     return res
+
     
+   
 def fetchstudent():
     
     res = db.users.find()
