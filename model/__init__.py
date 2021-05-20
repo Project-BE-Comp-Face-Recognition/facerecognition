@@ -72,6 +72,12 @@ def fetchAttendance():
     
     return res
 
+def fetchTimetable():
+    
+    res = db.timetable.find()
+    
+    return res
+
     
    
 def fetchstudent():
@@ -118,8 +124,12 @@ def addGroupName():
     data = dict(zip(fields, values))
     user_data = json.loads(json_util.dumps(data))
     db.facegroup.insert(user_data)
+<<<<<<< HEAD
     classname=values[0]
     return classname
+=======
+    
+>>>>>>> ea0cf7493d1a3d4e00320126794968306b38fdc4
 
     
 
