@@ -10,9 +10,11 @@ $(document).ready(function(){
               data: {groupname: groupname},
               success: function(response){
                     if (response == "Available"){
-                  $('#fname_response').html(response).css({'color':'blue', 'text-align':'right'});
-                  $('#button').removeAttr('disabled');
+                        
+                        $('#facebutton').prop('disabled', false);
+                        $('#fname_response').html(response).css({'color':'blue', 'text-align':'right'});
                     }else{
+                        $('#facebutton').prop('disabled', true);
                         $('#fname_response').html(response).css({'color':'red', 'text-align':'right'});
                     }
                }

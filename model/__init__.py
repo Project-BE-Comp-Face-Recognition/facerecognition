@@ -49,7 +49,7 @@ def checkFaceGroupName():
     if check is None:
         return "Available"
     else:
-        return "Username taken"
+        return "Class with Same Name Already Present"
 
 
 
@@ -110,7 +110,7 @@ def createPersonGroup(PERSON_GROUP_ID):
     try:
         face_client.person_group.create(person_group_id=PERSON_GROUP_ID, name=PERSON_GROUP_ID)
     except :
-        print("error")
+        print("error while creating class")
 
 def addGroupName():
     fields = [k for k in request.form]                                      
@@ -118,7 +118,8 @@ def addGroupName():
     data = dict(zip(fields, values))
     user_data = json.loads(json_util.dumps(data))
     db.facegroup.insert(user_data)
-    print("done2")
+    classname=values[0]
+    return classname
 
     
 

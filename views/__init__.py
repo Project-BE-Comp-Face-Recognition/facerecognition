@@ -150,8 +150,6 @@ def utilitiescolor():
 @app.route('/utilities-other', methods=["GET"])
 def utilitiesother():
     return render_template("utilities-other.html")
-    
-
 
 
 
@@ -188,8 +186,9 @@ FACE RECOGNITION START
 def createGroup():
     if request.method == "POST" :
         print("done")
-        addGroupName()
-        return redirect(url_for("parents_register"))
+        faceclass=addGroupName()
+        
+        return redirect(url_for("home"))
     return render_template("facegroup.html")
 
 

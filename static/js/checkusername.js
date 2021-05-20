@@ -10,9 +10,11 @@
                   data: {username: username},
                   success: function(response){
                         if (response == "Available"){
-                      $('#uname_response').html(response).css({'color':'blue', 'text-align':'right'});
-                      $('#button').removeAttr('disabled');
+                           $('#button').prop('disabled', false);
+                           $('#uname_response').html(response).css({'color':'blue', 'text-align':'right'});
+   
                         }else{
+                           $('#button').prop('disabled', true);
                             $('#uname_response').html(response).css({'color':'red', 'text-align':'right'});
                         }
                    }

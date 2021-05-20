@@ -10,9 +10,10 @@ $(document).ready(function(){
               data: {email: email},
               success: function(response){
                     if (response == "Available"){
-                  $('#name_response').html(response).css({'color':'blue', 'text-align':'right'});
-                  $('#button').removeAttr('disabled');
+                        $('#button').prop('disabled', false);
+                        $('#name_response').html(response).css({'color':'blue', 'text-align':'right'});
                     }else{
+                        $('#button').prop('disabled', true);
                         $('#name_response').html(response).css({'color':'red', 'text-align':'right'});
                     }
                }
