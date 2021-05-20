@@ -190,7 +190,7 @@ def utilitiesother():
 FACE RECOGNITION START
 '''
 #Creating Perosn Group 
-@app.route('/create',methods=["GET","POST"])
+@app.route('/create-person-group',methods=["GET","POST"])
 def createGroup():
     if request.method == "POST" :
         print("done")
@@ -206,7 +206,7 @@ def createGroup():
 def checkgroupname():
     return checkFaceGroupName()
 
-       
+
 
 '''
 FACE RECOGNITION END
