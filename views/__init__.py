@@ -104,6 +104,14 @@ def tables():
     # atd_list = mongo.facerecognition.attendace.find()
     return render_template('tables.html', atd_list = atd_list)
 
+#Tables Page
+@app.route('/timetable', methods=["GET"])
+def timetable():
+    kd_list = fetchTimetable()
+    # atd_list = mongo.facerecognition.attendace.find()
+    return render_template('timetable.html', kd_list = kd_list)
+
+
 #Total_register
 @app.route('/user_info', methods=["GET"])
 def user_info():
@@ -198,7 +206,8 @@ def createGroup():
 @app.route('/checkgroupname',methods=['POST'])
 def checkgroupname():
     return checkFaceGroupName()
-        
+
+       
 
 '''
 FACE RECOGNITION END
