@@ -34,6 +34,7 @@ def checkusername():
         return "Available"
     else:
         return "Username taken"
+
 def checkemail():
     email = request.form["email"]
     check = db.users.find_one({"email": email})
@@ -61,7 +62,6 @@ def registerUser():
     user_data["confirmpassword"] = getHashed(user_data["confirmpassword"])
     db.users.insert(user_data)
     sendmail(subject="Registration for Flask Admin Boilerplate", sender="Flask Admin Boilerplate", recipient=user_data["email"], body="You successfully registered on Flask Admin Boilerplate")
-    print("Done")
 
 
 
@@ -118,7 +118,8 @@ def addGroupName():
     data = dict(zip(fields, values))
     user_data = json.loads(json_util.dumps(data))
     db.facegroup.insert(user_data)
-    return values[0]
+    print("done2")
+
     
 
 
