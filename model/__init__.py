@@ -124,7 +124,8 @@ def addGroupName():
     data = dict(zip(fields, values))
     user_data = json.loads(json_util.dumps(data))
     db.facegroup.insert(user_data)
-    
+    classname=values[0]
+    return classname
 
     
 
