@@ -194,7 +194,7 @@ def checkgroupname():
 
 
 #Creating Perosn Group 
-@app.route('/create',methods=["GET","POST"])
+@app.route('/create',methods=["GET","POST"]) 
 def createGroup():
     if request.method=='GET':
         return render_template("register-face-group.html")
