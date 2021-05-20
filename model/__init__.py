@@ -75,7 +75,7 @@ def fetchAttendance():
 def fetchTimetable():
     
     res = db.timetable.find()
-    
+    print(res)
     return res
 
     
