@@ -195,7 +195,7 @@ def createGroup():
     if request.method == "POST" :
         print("done")
         faceclass=addGroupName()
-        
+        createPersonGroup(faceclass)
         return redirect(url_for("home"))
     return render_template("facegroup.html")
 
