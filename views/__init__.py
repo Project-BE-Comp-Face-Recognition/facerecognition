@@ -188,10 +188,7 @@ FACE RECOGNITION START
 def createGroup():
     if request.method == "POST" :
         print("done")
-
         addGroupName()
-
-
         return redirect(url_for("parents_register"))
     return render_template("facegroup.html")
 
@@ -202,21 +199,6 @@ def createGroup():
 def checkgroupname():
     return checkFaceGroupName()
         
-
-
-<<<<<<< HEAD
-#Creating Perosn Group 
-@app.route('/create',methods=["GET","POST"]) 
-def createGroup():
-    if request.method=='GET':
-        return render_template("register-face-group.html")
-    else:
-        personGroupId=addGroupName()
-        # createPersonGroup(personGroupId)
-=======
-
-
->>>>>>> a6b43777bd74f0f136fe0484e2af4d4549175c74
 
 '''
 FACE RECOGNITION END
