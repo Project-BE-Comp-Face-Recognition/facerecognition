@@ -182,20 +182,16 @@ def utilitiesother():
 #         file.save(os.path.join('upload', f_name))
 #     return json.dumps({'filename':f_name})
 
-#hello from akshay
-# hello from my own branch
-#darshan
-
 '''
 FACE RECOGNITION START
 '''
 #Creating Perosn Group 
-@app.route('/create',methods=["GET","POST"])
+@app.route('/create-person-group',methods=["GET","POST"])
 def createGroup():
     if request.method == "POST" :
         print("done")
         faceclass=addGroupName()
-        
+        createPersonGroup(faceclass)
         return redirect(url_for("home"))
     return render_template("facegroup.html")
 
@@ -206,7 +202,7 @@ def createGroup():
 def checkgroupname():
     return checkFaceGroupName()
 
-       
+
 
 '''
 FACE RECOGNITION END
