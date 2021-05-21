@@ -3,57 +3,130 @@
 <!-- Begin Page Content -->
 <div class="container-fluid">
 
-  <!-- Page Heading -->
-  <h1 class="h3 mb-2 text-gray-800">Weekly Time Table</h1>
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">Weekly Time Table</h1>
 
-  <!-- DataTales Example -->
-  <div class="card shadow mb-4">
-    <div class="card-header py-3">
-      <h6 class="m-0 font-weight-bold text-primary">Time Table</h6>
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Time Table</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>sr.no</th>
+                            <th>Day</th>
+                            <th>9:15 - 10:15</th>
+                            <th>10:15 - 11-15</th>
+                            <th>11:15 - 11:30</th>
+                            <th>11:30 - 12:30</th>
+                            <th>12:30 - 1:30</th>
+                            <th>1:30 - 2:15</th>
+                            <th>2:15 - 3:15</th>
+                            <th>3:15 - 4:15</th>
+                            <th>4:15 - 5:00</th>
+
+                        </tr>
+                    </thead>
+
+
+
+                    <tbody>
+
+
+                        {% for kd in kd_list %}
+                        <tr>
+                            <td>{{ '1' }}</td>
+                            <td>{{ 'Monday' }}</td>
+                            <td>{{ kd['monday']['9-15 to 10-15'] }}</td>
+                            <td>{{ kd['monday'] ['10-15 to 11-15']}}</td>
+                            <td>{{ kd['monday']['11-15 to 11-30'] }}</td>
+                            <td>{{ kd['monday']['11-30 to 12-30'] }}</td>
+                            <td>{{ kd['monday'] ['12-30 to 1-30']}}</td>
+                            <td>{{ kd['monday']['1-30 to 2-15'] }}</td>
+                            <td>{{ kd['monday']['2-15 to 3-15'] }}</td>
+                            <td>{{ kd['monday']['3-15 to 4-15'] }}</td>
+                            <td>{{ kd['monday']['4-15 to 5'] }}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ '2' }}</td>
+                            <td>{{ 'Tuesday' }}</td>
+                            <td>{{ kd['tuesday']['9-15 to 10-15'] }}</td>
+                            <td>{{ kd['tuesday'] ['10-15 to 11-15']}}</td>
+                            <td>{{ kd['tuesday']['11-15 to 11-30'] }}</td>
+                            <td>{{ kd['tuesday']['11-30 to 12-30'] }}</td>
+                            <td>{{ kd['tuesday'] ['12-30 to 1-30']}}</td>
+                            <td>{{ kd['tuesday']['1-30 to 2-15'] }}</td>
+                            <td>{{ kd['tuesday']['2-15 to 3-15'] }}</td>
+                            <td>{{ kd['tuesday']['3-15 to 4-15'] }}</td>
+                            <td>{{ kd['tuesday']['4-15 to 5'] }}</td>
+
+                        </tr>
+                        <tr>
+                            <td>{{ '3' }}</td>
+                            <td>{{ 'Wednesday	' }}</td>
+                            <td>{{ kd['wednesday']['9-15 to 10-15'] }}</td>
+                            <td>{{ kd['wednesday'] ['10-15 to 11-15']}}</td>
+                            <td>{{ kd['wednesday']['11-15 to 11-30'] }}</td>
+                            <td>{{ kd['wednesday']['11-30 to 12-30'] }}</td>
+                            <td>{{ kd['wednesday'] ['12-30 to 1-30']}}</td>
+                            <td>{{ kd['wednesday']['1-30 to 2-15'] }}</td>
+                            <td>{{ kd['wednesday']['2-15 to 3-15'] }}</td>
+                            <td>{{ kd['wednesday']['3-15 to 4-15'] }}</td>
+                            <td>{{ kd['wednesday']['4-15 to 5'] }}</td>
+
+                        </tr>
+                        <tr>
+                            <td>{{ '4' }}</td>
+                            <td>{{ 'Thrusday' }}</td>
+                            <td>{{ kd['thrusday']['9-15 to 10-15'] }}</td>
+                            <td>{{ kd['thrusday'] ['10-15 to 11-15']}}</td>
+                            <td>{{ kd['thrusday']['11-15 to 11-30'] }}</td>
+                            <td>{{ kd['thrusday']['11-30 to 12-30'] }}</td>
+                            <td>{{ kd['thrusday'] ['12-30 to 1-30']}}</td>
+                            <td>{{ kd['thrusday']['1-30 to 2-15'] }}</td>
+                            <td>{{ kd['thrusday']['2-15 to 3-15'] }}</td>
+                            <td>{{ kd['thrusday']['3-15 to 4-15'] }}</td>
+                            <td>{{ kd['thrusday']['4-15 to 5'] }}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ '5' }}</td>
+                            <td>{{ 'Friday' }}</td>
+                            <td>{{ kd['friday']['9-15 to 10-15'] }}</td>
+                            <td>{{ kd['friday'] ['10-15 to 11-15']}}</td>
+                            <td>{{ kd['friday']['11-15 to 11-30'] }}</td>
+                            <td>{{ kd['friday']['11-30 to 12-30'] }}</td>
+                            <td>{{ kd['friday'] ['12-30 to 1-30']}}</td>
+                            <td>{{ kd['friday']['1-30 to 2-15'] }}</td>
+                            <td>{{ kd['friday']['2-15 to 3-15'] }}</td>
+                            <td>{{ kd['friday']['3-15 to 4-15'] }}</td>
+                            <td>{{ kd['friday']['4-15 to 5'] }}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ '6' }}</td>
+                            <td>{{ 'Saturday' }}</td>
+                            <td>{{ kd['saturday']['9-15 to 10-15'] }}</td>
+                            <td>{{ kd['saturday'] ['10-15 to 11-15']}}</td>
+                            <td>{{ kd['saturday']['11-15 to 11-30'] }}</td>
+                            <td>{{ kd['saturday']['11-30 to 12-30'] }}</td>
+                            <td>{{ kd['saturday'] ['12-30 to 1-30']}}</td>
+                            <td>{{ kd['saturday']['1-30 to 2-15'] }}</td>
+                            <td>{{ kd['saturday']['2-15 to 3-15'] }}</td>
+                            <td>{{ kd['saturday']['3-15 to 4-15'] }}</td>
+                            <td>{{ kd['saturday']['4-15 to 5'] }}</td>
+
+                        </tr>
+
+                        {% endfor %}
+
+
+
+                </table>
+            </div>
+        </div>
     </div>
-    <div class="card-body">
-      <div class="table-responsive">
-        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-          <thead>
-            <tr>
-              <th>SR. NO</th>
-              <th>Roll No</th>
-              <th>Name</th>
-              <th>Class</th>
-              <th>Branch</th>
-              <th>DMW</th>
-              <th>ICS</th>
-              <th>DAA</th>
-              <th>Overall Attendace</th>
-
-            </tr>
-          </thead>
-
-          
-
-          <tbody>
-
-
-            <!-- {% for kd in kd_list %}
-            <tr>
-              <td>{{ kd['sr_no'] }}</td>
-              <td>{{ kd['roll_no'] }}</td>
-              <td>{{ kd['name'] }}</td>
-              <td>{{ kd['class'] }}</td>
-              <td>{{ kd['branch'] }}</td>
-              <td>{{ kd['sub1'] }}</td>
-              <td>{{ kd['sub2']}} </td>
-              <td>{{ kd['sub3']}}</td>
-
-            </tr>
-            {% endfor %} -->
-
-        
-
-        </table>
-      </div>
-    </div>
-  </div>
 
 </div>
 <!-- /.container-fluid -->
@@ -63,11 +136,11 @@
 
 <!-- Footer -->
 <footer class="sticky-footer bg-white">
-  <div class="container my-auto">
-    <div class="copyright text-center my-auto">
-      <span>Copyright &copy; Your Website 2019</span>
+    <div class="container my-auto">
+        <div class="copyright text-center my-auto">
+            <span>Copyright &copy; Your Website 2019</span>
+        </div>
     </div>
-  </div>
 </footer>
 <!-- End of Footer -->
 
@@ -79,7 +152,7 @@
 
 <!-- Scroll to Top Button-->
 <a class="scroll-to-top rounded" href="#page-top">
-  <i class="fas fa-angle-up"></i>
+    <i class="fas fa-angle-up"></i>
 </a>
 
 <!-- Bootstrap core JavaScript-->
