@@ -6,7 +6,7 @@ Chart.defaults.global.defaultFontColor = '#858796';
 
 function number_format(number, decimals, dec_point, thousands_sep) {
   // *     example: number_format(1234.56, 2, ',', ' ');
-  
+
   // *     return: '1 234,56'
   number = (number + '').replace(',', '').replace(' ', '');
   var n = !isFinite(+number) ? 0 : +number,
@@ -14,7 +14,7 @@ function number_format(number, decimals, dec_point, thousands_sep) {
     sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
     dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
     s = '',
-    toFixedFix = function(n, prec) {
+    toFixedFix = function (n, prec) {
       var k = Math.pow(10, prec);
       return '' + Math.round(n * k) / k;
     };
@@ -27,9 +27,9 @@ function number_format(number, decimals, dec_point, thousands_sep) {
     s[1] = s[1] || '';
     s[1] += new Array(prec - s[1].length + 1).join('0');
   }
-  
+
   return s.join(dec);
-  
+
 }
 
 // Area Chart Example
@@ -37,7 +37,7 @@ var ctx = document.getElementById("myAreaChart");
 var myLineChart = new Chart(ctx, {
   type: 'line',
   data: {
-    labels: ["IT","Computer"],
+    labels: ["IT", "Computer"],
     datasets: [{
       label: "DMW",
       lineTension: 0.3,
@@ -51,9 +51,9 @@ var myLineChart = new Chart(ctx, {
       pointHoverBorderColor: "rgba(78, 115, 223, 1)",
       pointHitRadius: 10,
       pointBorderWidth: 2,
-      data:JSON.parse('{{ch_list}}')
+      data: JSON.parse('{{ch_list}}')
 
-            }],
+    }],
   },
   options: {
     maintainAspectRatio: false,
@@ -83,8 +83,8 @@ var myLineChart = new Chart(ctx, {
           maxTicksLimit: 5,
           padding: 10,
           // Include a dollar sign in the ticks
-          callback: function(value, index, values) {
-            return  + number_format(value);
+          callback: function (value, index, values) {
+            return + number_format(value);
           }
         },
         gridLines: {
@@ -114,11 +114,11 @@ var myLineChart = new Chart(ctx, {
       mode: 'index',
       caretPadding: 10,
       callbacks: {
-        
-        label: function(tooltipItem, chart) {
+
+        label: function (tooltipItem, chart) {
           print(ch_list)
           var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
-          return datasetLabel  + number_format(tooltipItem.yLabel);
+          return datasetLabel + number_format(tooltipItem.yLabel);
         }
       }
     }
