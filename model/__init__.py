@@ -64,10 +64,8 @@ def registerUser():
     user_data = json.loads(json_util.dumps(data))
     user_data["password"] = getHashed(user_data["password"])
     user_data["confirmpassword"] = getHashed(user_data["confirmpassword"])
-<<<<<<< HEAD
     studentData={k:v for k,v in data.items() if (k=="username" or k=="name" or k=="email" or k=="mobile" or k=="rollnumber")}
     try :
-    
         db.users.insert(user_data)
         db.studentdataset.insert(studentData)
         print("Succesully added Registration Data to DB")
@@ -82,43 +80,14 @@ def fetchAttendance():
     res = db.attendance.find()
     return res
 
-def fetchTimetable():
-    res = db.timetable.find()
-    print(res)
-    return res
-=======
-    db.users.insert(user_data)
-    sendmail(subject="Registration for Flask Admin Boilerplate", sender="Flask Admin Boilerplate",
-             recipient=user_data["email"], body="You successfully registered on Flask Admin Boilerplate")
-
-
-def fetchAttendance():
-
-    res = db.attendance.find()
-    return res
-
->>>>>>> ff37cf89a4951fcc5e3fb6cdbc8f976ee0fd8365
-
 def fetchstudent():
-<<<<<<< HEAD
     res = db.users.find()
-=======
-
-    res = db.users.find()
-
->>>>>>> ff37cf89a4951fcc5e3fb6cdbc8f976ee0fd8365
     return res
 
 
 def fetchSubjectAttendance():
-<<<<<<< HEAD
-    res = db.attendance.find({},{"sub1":1,"_id":0})
-    li=[] 
-=======
-
     res = db.attendance.find({}, {"sub1": 1, "_id": 0})
     li = []
->>>>>>> ff37cf89a4951fcc5e3fb6cdbc8f976ee0fd8365
     for i in res:
         a = int(i["sub1"])
         li.append(a)
@@ -126,14 +95,8 @@ def fetchSubjectAttendance():
 
 
 def fetchlabelAttendance():
-<<<<<<< HEAD
-    res = db.attendance.find({},{"branch":1,"_id":0})
-    li=[] 
-=======
-
     res = db.attendance.find({}, {"branch": 1, "_id": 0})
     li = []
->>>>>>> ff37cf89a4951fcc5e3fb6cdbc8f976ee0fd8365
     for i in res:
         a = i["branch"]
         li.append(a)
@@ -163,7 +126,6 @@ def addGroupName():
     classname = values[0]
     return classname
 
-<<<<<<< HEAD
 def personGroupPerson(classroom,prn):
     userID = face_client.person_group_person.create(classroom,prn)
     print("PersonId--->",userID.person_id)
@@ -172,22 +134,18 @@ def personGroupPerson(classroom,prn):
 
 def addPersonIdToDb(personId,prn):
     try :
-
         db.studentdataset.update_one({"username":prn},{"$set":{"personId":personId}},upsert=False)
         print("Succesfully Added Person Id to DB")
     except:
         print("Error while Adding Unique Id to DB")
         return False
     return True
-=======
 
 def fetchTimetable():
->>>>>>> ff37cf89a4951fcc5e3fb6cdbc8f976ee0fd8365
-
-    res = db.timetable.find({}, {"be-comp": 1, "_id": 0})
+    res = db.timetable.find({}, {"class": 1, "_id": 0})
     li = []
     for i in res:
-        a = i["be-comp"]
+        a = i["class"]
         li.append(a)
     
     return li
@@ -196,7 +154,6 @@ def fetchTimetable():
 '''
 Face Recogniton End
 '''
-<<<<<<< HEAD
 def studentregistration():
 
     h=str(home)+'\static'
@@ -237,5 +194,3 @@ def showClassroom():
     for val in result:
         classroom.append(val["groupname"])
     return classroom
-=======
->>>>>>> ff37cf89a4951fcc5e3fb6cdbc8f976ee0fd8365
