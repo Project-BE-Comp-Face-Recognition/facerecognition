@@ -71,7 +71,6 @@ def registerUser():
 def fetchAttendance():
 
     res = db.attendance.find()
-
     return res
 
 
