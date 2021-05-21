@@ -1,18 +1,18 @@
-$(document).ready(function(){
-    $('#confirmpassword').keyup( function(e){
-        var password = $('#password').val();
-        var confirmpassword = $('#confirmpassword').val();
+$(document).ready(function () {
+  $('#confirmpassword').keyup(function (e) {
+    var password = $('#password').val();
+    var confirmpassword = $('#confirmpassword').val();
 
 
-        if(password != confirmpassword){
-  
-           $('#pass_response').html("The two passwords that you entered do not match.").css({'color':'red', 'text-align':'right'});
-           $('#button').prop('disabled', true);
-        }else{
-           $("#pass_response").html("");
-           $('#button').removeAttr('disabled');
-        }
-    })
+    if (password != confirmpassword) {
+
+      $('#pass_response').html("The two passwords that you entered do not match.").css({ 'color': 'red', 'text-align': 'right' });
+      $('#button').prop('disabled', true);
+    } else {
+      $("#pass_response").html("");
+      $('#button').removeAttr('disabled');
+    }
+  })
 })
 var myInput = document.getElementById("password");
 var letter = document.getElementById("letter");
@@ -21,30 +21,30 @@ var number = document.getElementById("number");
 var length = document.getElementById("length");
 
 // When the user clicks on the password field, show the message box
-myInput.onfocus = function() {
+myInput.onfocus = function () {
   document.getElementById("message").style.display = "block";
 }
 
 // When the user clicks outside of the password field, hide the message box
-myInput.onblur = function() {
+myInput.onblur = function () {
   document.getElementById("message").style.display = "none";
 }
 
 // When the user starts to type something inside the password field
-myInput.onkeyup = function() {
+myInput.onkeyup = function () {
   // Validate lowercase letters
   var lowerCaseLetters = /[a-z]/g;
-  if(myInput.value.match(lowerCaseLetters)) {  
+  if (myInput.value.match(lowerCaseLetters)) {
     letter.classList.remove("invalid");
     letter.classList.add("valid");
   } else {
     letter.classList.remove("valid");
     letter.classList.add("invalid");
   }
-  
+
   // Validate capital letters
   var upperCaseLetters = /[A-Z]/g;
-  if(myInput.value.match(upperCaseLetters)) {  
+  if (myInput.value.match(upperCaseLetters)) {
     capital.classList.remove("invalid");
     capital.classList.add("valid");
   } else {
@@ -54,16 +54,16 @@ myInput.onkeyup = function() {
 
   // Validate numbers
   var numbers = /[0-9]/g;
-  if(myInput.value.match(numbers)) {  
+  if (myInput.value.match(numbers)) {
     number.classList.remove("invalid");
     number.classList.add("valid");
   } else {
     number.classList.remove("valid");
     number.classList.add("invalid");
   }
-  
+
   // Validate length
-  if(myInput.value.length >= 8) {
+  if (myInput.value.length >= 8) {
     length.classList.remove("invalid");
     length.classList.add("valid");
   } else {
