@@ -207,3 +207,12 @@ def checkgroupname():
 '''
 FACE RECOGNITION END
 '''
+
+@app.route('/reg',methods=['GET','POST'])
+def reg():
+    if request.method=="GET":
+        classroom=showClassroom()
+        return render_template("student-registration.html",classroom=classroom)
+    if request.method=="POST":
+        studentregistration()
+        return  redirect(url_for("blank"))
