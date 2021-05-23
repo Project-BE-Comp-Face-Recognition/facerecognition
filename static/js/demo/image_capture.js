@@ -194,38 +194,6 @@ function download() {
 }
 
 
-//         function upload() {
-//             console.log("Uploading...")
-//             alert("jai")
-//             var image = document.getElementById('photo').src;
-//             var form = document.getElementById('myform');
-//             var formData = new FormData(form);
-//             formData.append("file", picture);
-//             var xmlhttp = new XMLHttpRequest();
-//             xmlhttp.open("POST", "/upload");
-
-//             // check when state changes, 
-//             xmlhttp.onreadystatechange = function() {
-
-//             if(xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-//                 alert(xmlhttp.responseText);
-//                 }
-//             }
-
-
-
-//             xmlhttp.send(formData);
-//         var fs = require('fs'); 
-//         var imagedata // get imagedata from POST request 
-//         fs.writeFile("/images/file.png", imagedata, 'binary', function(err) { 
-//         console.log("The file was saved!"); 
-
-// });  
-//             console.log(formData.get('upload'));
-//             console.log(formData.get('username'));
-//             console.log("jai")
-//         }
-
 
 window.addEventListener('load', startup, false);
 ;
