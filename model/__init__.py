@@ -79,6 +79,7 @@ def fetchAttendance():
     res = db.attendance.find()    
     return res
 
+
 #display timetable
 def fetchTimetable():
     
@@ -106,7 +107,6 @@ def fetchSubjectAttendance():
 
 #Subject 
 def fetchlabelAttendance():
-
     res = db.attendance.find({}, {"branch": 1, "_id": 0})
     li = []
     for i in res:
@@ -133,9 +133,6 @@ def addGroupName():
     classname=values[0]
     return classname
 
-'''
-Face Recogniton End
-'''
 def personGroupPerson(classroom,prn):
     userID = face_client.person_group_person.create(classroom,prn)
     print("PersonId--->",userID.person_id)
@@ -204,7 +201,6 @@ def showClassroom():
     for val in result:
         classroom.append(val["groupname"])
     return classroom
-
   
   #delete button
 def delet(email_del):
