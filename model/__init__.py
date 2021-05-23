@@ -64,7 +64,7 @@ def registerUser():
     user_data = json.loads(json_util.dumps(data))
     user_data["password"] = getHashed(user_data["password"])
     user_data["confirmpassword"] = getHashed(user_data["confirmpassword"])
-    studentData={k:v for k,v in data.items() if (k=="username" or k=="name" or k=="email" or k=="mobile" or k=="rollnumber")}
+    studentData={k:v for k,v in data.items() if (k=="username" or k=="name" or k=="email" or k=="mobile" or k=="rollnumber" or k=="classroom")}
     try :
         db.users.insert(user_data)
         db.studentdataset.insert(studentData)
