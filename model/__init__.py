@@ -73,18 +73,11 @@ def registerUser():
         return False
     return True
 
-<<<<<<< HEAD
-# Fetch attendance table 
-def fetchAttendance():
-
-    res = db.attendance.find()
-=======
-
->>>>>>> d96927fc9bcfb07b100e68c277048ac41744e32f
 
 def fetchAttendance():
     res = db.attendance.find()    
     return res
+    
 #fetch total attendance
 def fetchTotalAttendance():
     res = db.attendance.find({}, {"name": 1, "_id": 0})
@@ -97,32 +90,12 @@ def fetchTotalAttendance():
     return res
 
 
-<<<<<<< HEAD
 # Fetch Student Information
-=======
-#display timetable
-def fetchTimetable():
-    
-    res = db.timetable.find({},{"class":1,"_id":0})
-    li=[] 
-    for i in res:
-        a=i["class"]["be-comp"]
-        li.append(a) 
-    return li
-    
-     
-#admin register   
->>>>>>> d96927fc9bcfb07b100e68c277048ac41744e32f
 def fetchstudent():
     res = db.users.find()
     return res
-<<<<<<< HEAD
-
-# Fetch Subject for chart creation
-=======
    
 #attendance table
->>>>>>> d96927fc9bcfb07b100e68c277048ac41744e32f
 def fetchSubjectAttendance():
     res = db.attendance.find({}, {"sub1": 1, "_id": 0})
     li = []
@@ -131,11 +104,7 @@ def fetchSubjectAttendance():
         li.append(a)
     return li
 
-<<<<<<< HEAD
 # Fetch Label for chart creation
-=======
-#Subject 
->>>>>>> d96927fc9bcfb07b100e68c277048ac41744e32f
 def fetchlabelAttendance():
     res = db.attendance.find({}, {"branch": 1, "_id": 0})
     li = []
@@ -163,11 +132,6 @@ def addGroupName():
     classname=values[0]
     return classname
 
-<<<<<<< HEAD
-#Fetch timetable 
-def fetchTimetable():
-
-=======
 def personGroupPerson(classroom,prn):
     userID = face_client.person_group_person.create(classroom,prn)
     print("PersonId--->",userID.person_id)
@@ -184,7 +148,6 @@ def addPersonIdToDb(personId,prn):
     return True
 
 def fetchTimetable():
->>>>>>> d96927fc9bcfb07b100e68c277048ac41744e32f
     res = db.timetable.find({}, {"class": 1, "_id": 0})
     li = []
     for i in res:

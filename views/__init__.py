@@ -13,13 +13,9 @@ def home():
     if "username" in session:
         ch_list = fetchSubjectAttendance()
         ab_list = fetchlabelAttendance()
-<<<<<<< HEAD
         ss_list = fetchTotalAttendance()
 
         return render_template('index.html', ch_list=ch_list, ab_list=ab_list ,ss_list=ss_list)
-=======
-        return render_template('index.html', ch_list=ch_list, ab_list=ab_list)
->>>>>>> d96927fc9bcfb07b100e68c277048ac41744e32f
     else:
         return render_template('login.html')
 
@@ -111,19 +107,8 @@ def tables():
 @app.route('/user_info', methods=["GET","POST"])
 def user_info():
     ds_list = fetchstudent()
-<<<<<<< HEAD
-    return render_template('user_info.html', ds_list=ds_list)
-        
-    # atd_list = mongo.facerecognition.attendace.find()
-
-# Reset_Password
-@app.route('/reset_password', methods=["GET"])
-def reset():
-    return render_template("reset_password.html")
-=======
     # atd_list = mongo.facerecognition.attendace.find()
     return render_template('user_info.html', ds_list=ds_list)   
->>>>>>> d96927fc9bcfb07b100e68c277048ac41744e32f
 
 # 404 Page
 @app.route('/404', methods=["GET"])
@@ -160,13 +145,6 @@ def utilitiescolor():
 def utilitiesother():
     return render_template("utilities-other.html")
 
-<<<<<<< HEAD
-
-'''
-FACE RECOGNITION START
-'''
-=======
->>>>>>> d96927fc9bcfb07b100e68c277048ac41744e32f
 # Creating Perosn Group
 @app.route('/create-person-group', methods=["GET", "POST"])
 def createGroup():
@@ -183,26 +161,6 @@ def createGroup():
 def checkgroupname():
     return checkFaceGroupName()
 
-<<<<<<< HEAD
-
-# Timetable Page
-@app.route('/timetable', methods=["GET"])
-def timetable():
-    kd_list = fetchTimetable()
-    # atd_list = mongo.facerecognition.attendace.find()
-    return render_template('timetable.html', kd_list=kd_list)
-
-#Generate report
-@app.route('/generatereport', methods=["GET"])
-def generateReport():
-    return render_template('generatereport.html')
-
-
-
-'''
-FACE RECOGNITION END
-'''
-=======
 # timetTables Page
 @app.route('/timetable', methods=["GET","POST"])
 def timetable():
@@ -276,4 +234,7 @@ def reg():
     if request.method=="POST":
         studentregistration()
         return  redirect(url_for("blank"))
->>>>>>> d96927fc9bcfb07b100e68c277048ac41744e32f
+#Generate report
+@app.route('/generatereport', methods=["GET"])
+def generateReport():
+    return render_template('generatereport.html')
