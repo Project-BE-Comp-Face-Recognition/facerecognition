@@ -74,24 +74,23 @@ def registerUser():
     return True
 
 
-
 def fetchAttendance():
     res = db.attendance.find()    
     return res
-
-
-#display timetable
-def fetchTimetable():
     
-    res = db.timetable.find({},{"class":1,"_id":0})
-    li=[] 
+#fetch total attendance
+def fetchTotalAttendance():
+    res = db.attendance.find({}, {"name": 1, "_id": 0})
+    count=0
     for i in res:
-        a=i["class"]["be-comp"]
-        li.append(a) 
-    return li
-    
-     
-#admin register   
+        count=count+1
+    return count
+
+
+    return res
+
+
+# Fetch Student Information
 def fetchstudent():
     res = db.users.find()
     return res
@@ -105,7 +104,7 @@ def fetchSubjectAttendance():
         li.append(a)
     return li
 
-#Subject 
+# Fetch Label for chart creation
 def fetchlabelAttendance():
     res = db.attendance.find({}, {"branch": 1, "_id": 0})
     li = []
@@ -156,6 +155,7 @@ def fetchTimetable():
         li.append(a)
     
     return li
+
 
 
 '''

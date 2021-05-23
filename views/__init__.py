@@ -3,6 +3,7 @@ from flask import jsonify
 from app import app
 from model import *
 import os
+
 from werkzeug.utils import secure_filename
 
 
@@ -12,17 +13,13 @@ def home():
     if "username" in session:
         ch_list = fetchSubjectAttendance()
         ab_list = fetchlabelAttendance()
-        return render_template('index.html', ch_list=ch_list, ab_list=ab_list)
+        ss_list = fetchTotalAttendance()
+
+        return render_template('index.html', ch_list=ch_list, ab_list=ab_list ,ss_list=ss_list)
     else:
         return render_template('login.html')
 
 
-@app.route('/total_attendance', methods=["GET"])
-def total():
-
-    p_list = fetchtotalAttendance()
-
-    return render_template('index.html', p_list=p_list)
 
 # Register new user
 @app.route('/register', methods=["GET", "POST"])
@@ -36,22 +33,16 @@ def register():
         return redirect(url_for("parents_register"))
 
 # Parents_register
-
-
 @app.route('/parents_register', methods=["GET", "POST"])
 def parents_register():
     return render_template("parents_register.html")
 
-# Check if email already exists in the registratiion page
-
-
+# Check if username already exists in the registratiion page
 @app.route('/checkusername', methods=["POST"])
 def check():
     return checkusername()
 
 # Check if email already exists in the registratiion page
-
-
 @app.route('/checkemail', methods=["POST"])
 def checkem():
     return checkemail()
@@ -67,19 +58,17 @@ def login():
         else:
             return redirect(url_for("home"))
 
-
+# check loginusername
 @app.route('/checkloginusername', methods=["POST"])
 def checkUserlogin():
     return checkloginusername()
 
-
+# check loginpassword
 @app.route('/checkloginpassword', methods=["POST"])
 def checkUserpassword():
     return checkloginpassword()
 
 # The admin logout
-
-
 @app.route('/logout', methods=["GET"])  # URL for logout
 def logout():  # logout function
     session.pop('username', None)  # remove user session
@@ -106,7 +95,7 @@ def charts():
     return render_template('charts.html', ch_list=ch_list, ab_list=ab_list)
 
 
-# Tables Page
+# Attendance Record Page
 @app.route('/tables', methods=["GET"])
 def tables():
     atd_list = fetchAttendance()
@@ -114,8 +103,8 @@ def tables():
     return render_template('tables.html', atd_list=atd_list)
 
 
-# Total_register
-@app.route('/user_info', methods=["GET"])
+# Student_Information Page
+@app.route('/user_info', methods=["GET","POST"])
 def user_info():
     ds_list = fetchstudent()
     # atd_list = mongo.facerecognition.attendace.find()
@@ -245,3 +234,7 @@ def reg():
     if request.method=="POST":
         studentregistration()
         return  redirect(url_for("blank"))
+#Generate report
+@app.route('/generatereport', methods=["GET"])
+def generateReport():
+    return render_template('generatereport.html')
