@@ -42,16 +42,10 @@
                             <td>{{ atd['class'] }}</td>
                             <td>{{ atd['roll_number']}} </td>
                             <td>
-                                <li class="list-inline-item">
-                                    <button class="btn btn-success btn-sm rounded-0" type="button" data-toggle="tooltip"
-                                        data-placement="top" title="Edit"><i class="fa fa-edit"></i></button>
-                                </li>
+                                <a href="/edit/{{atd.email}}" class="btn btn-secondary btn-sm">edit</a>
                             </td>
                             <td>
-                                <li class="list-inline-item">
-                                    <button class="btn btn-danger btn-sm rounded-0" type="button" data-toggle="tooltip"
-                                        data-placement="top" title="Delete"><i class="fa fa-trash"></i></button>
-                                </li>
+                                <a href="/delete/{{atd.email}}" class="btn btn-danger btn-delete btn-sm">delete</a>
                             </td>
 
                         </tr>

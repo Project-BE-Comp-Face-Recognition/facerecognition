@@ -1,0 +1,59 @@
+{% include 'admin-layout.html' %}
+{% block body %}
+
+<div class="row">
+    <div class="col-md-4 offset-md-4">
+        <div class="card card-body">
+            
+            <h5 class="text-center">
+                {{ users.username }}
+            </h5>
+
+            <form action="/update" method="POST">
+                <form id="myform" class="users" method="POST">
+                
+                    <div class="form-group">
+                        <input type="text" name="name" value= "{{ users.name}}" class="form-control" placeholder="Name">
+                    </div>
+
+                    <div class="form-group">
+                        <input type="text" name="username" value="{{users.username}}" class="form-control" placeholder="Username" disabled>
+                        <div id="uname_response"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <input type="email" name="email" value="{{users.email}}" class="form-control" placeholder="Email" disabled>
+                        <div id="name_response"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="text" name="class" value="{{users.class}}" class="form-control" placeholder="Class">
+                    </div>
+
+                    <div class="form-group">
+                        <input type="text" name="roll number" value="{{users.roll_number}}" class="form-control" placeholder="Roll Number">
+                    </div>
+
+
+                    <div class="form-group">
+                    <button type="submit" class="btn btn-primary btn-block">
+                        Update
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+<!-- Bootstrap core JavaScript-->
+<script src="static/vendor/jquery/jquery.min.js"></script>
+<script src="static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+<!-- Core plugin JavaScript-->
+<script src="static/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+<!-- Custom scripts for all pages-->
+<script src="static/js/sb-admin-2.min.js"></script>
+
+</html>
