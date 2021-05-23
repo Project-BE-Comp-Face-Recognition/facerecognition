@@ -4,6 +4,7 @@ from helpers.database import *
 from helpers.hashpass import *
 from helpers.mailer import *
 from helpers.recognition import *
+from helpers.path import *
 from bson import json_util, ObjectId
 import json
 
@@ -62,12 +63,20 @@ def registerUser():
     user_data["confirmpassword"] = getHashed(user_data["confirmpassword"])
     db.users.insert(user_data)
     sendmail(subject="Registration for Flask Admin Boilerplate", sender="Flask Admin Boilerplate", recipient=user_data["email"], body="You successfully registered on Flask Admin Boilerplate")
+    studentData={k:v for k,v in data.items() if (k=="username" or k=="name" or k=="email" or k=="mobile" or k=="rollnumber")}
+    try :
+        db.users.insert(user_data)
+        db.studentdataset.insert(studentData)
+        print("Succesully added Registration Data to DB")
+    except:
+        print("Failed to Add Registration Data In DB")
+        return False
+    return True
 
-#Attendance
+
+
 def fetchAttendance():
-    
-    res = db.attendance.find()
-    
+    res = db.attendance.find()    
     return res
 
 #display timetable
@@ -83,16 +92,13 @@ def fetchTimetable():
      
 #admin register   
 def fetchstudent():
-    
     res = db.users.find()
-    
     return res
    
 #attendance table
 def fetchSubjectAttendance():
-    
-    res = db.attendance.find({},{"sub1":1,"_id":0})
-    li=[] 
+    res = db.attendance.find({}, {"sub1": 1, "_id": 0})
+    li = []
     for i in res:
         a=int(i["sub1"])
         li.append(a)
@@ -100,9 +106,9 @@ def fetchSubjectAttendance():
 
 #Subject 
 def fetchlabelAttendance():
-    
-    res = db.attendance.find({},{"branch":1,"_id":0})
-    li=[] 
+
+    res = db.attendance.find({}, {"branch": 1, "_id": 0})
+    li = []
     for i in res:
         a=i["branch"]
         li.append(a)
@@ -130,7 +136,77 @@ def addGroupName():
 '''
 Face Recogniton End
 '''
-#delete button
+def personGroupPerson(classroom,prn):
+    userID = face_client.person_group_person.create(classroom,prn)
+    print("PersonId--->",userID.person_id)
+    
+    return userID.person_id
+
+def addPersonIdToDb(personId,prn):
+    try :
+        db.studentdataset.update_one({"username":prn},{"$set":{"personId":personId}},upsert=False)
+        print("Succesfully Added Person Id to DB")
+    except:
+        print("Error while Adding Unique Id to DB")
+        return False
+    return True
+
+def fetchTimetable():
+    res = db.timetable.find({}, {"class": 1, "_id": 0})
+    li = []
+    for i in res:
+        a = i["class"]
+        li.append(a)
+    
+    return li
+
+
+'''
+Face Recogniton End
+'''
+def studentregistration():
+
+    h=str(home)+'\static'
+    target = os.path.join(h, "train/")
+    if not os.path.isdir(target):
+        os.mkdir(target)
+    classname = str(request.form['classroom'])
+    session['classfolder'] = classname
+    classpath = os.path.join(target, str(request.form["classroom"])+"/")
+    session['classpath'] = classpath
+    if not os.path.isdir(classpath):
+        os.mkdir(classpath)
+
+    prn = str(request.form["username"])
+    session['studetnfolder'] = prn
+    studentfolderpath = os.path.join(classpath, prn+"/")
+    if not os.path.isdir(studentfolderpath):
+        os.mkdir(studentfolderpath)
+
+    for file in request.files.getlist("files[]"):
+        filename = file.filename
+        destination = "/".join([studentfolderpath, filename])
+        file.save(destination)
+    
+    registrationStatus=registerUser()
+    if registrationStatus== True:
+        uniquePersonId=personGroupPerson(classname,prn)
+        status=addPersonIdToDb(uniquePersonId,prn)
+        if status == True:
+            print("Generated Unique ID and Upadted in DB")
+            return "Successful"
+    return "Failed"
+
+
+def showClassroom():
+    classroom=[]
+    result=db.facegroup.find({},{"groupname":1,"_id":0})
+    for val in result:
+        classroom.append(val["groupname"])
+    return classroom
+
+  
+  #delete button
 def delet(email_del):
     db.users.remove({"email" : email_del})
   
@@ -177,4 +253,6 @@ def updatepass(uname):
                       "password" : password,
                       "confirmpassword" : confirmpassword}})
     
+
+
 

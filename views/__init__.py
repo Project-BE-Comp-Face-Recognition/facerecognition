@@ -2,7 +2,6 @@ from flask import render_template, request, redirect, url_for, session
 from flask import jsonify
 from app import app
 from model import *
-
 import os
 from werkzeug.utils import secure_filename
 
@@ -13,7 +12,6 @@ def home():
     if "username" in session:
         ch_list = fetchSubjectAttendance()
         ab_list = fetchlabelAttendance()
-
         return render_template('index.html', ch_list=ch_list, ab_list=ab_list)
     else:
         return render_template('login.html')
@@ -27,8 +25,6 @@ def total():
     return render_template('index.html', p_list=p_list)
 
 # Register new user
-
-
 @app.route('/register', methods=["GET", "POST"])
 def register():
     if request.method == "GET":
@@ -90,8 +86,6 @@ def logout():  # logout function
     return redirect(url_for("home"))  # redirect to home page with message
 
 # Forgot Password
-
-
 @app.route('/forgot-password', methods=["GET"])
 def forgotpassword():
     return render_template('forgot-password.html')
@@ -103,8 +97,6 @@ def cards():
     return render_template('cards.html')
 
 # Charts Page
-
-
 @app.route('/charts', methods=["GET"])
 def charts():
     ch_list = fetchSubjectAttendance()
@@ -135,74 +127,36 @@ def errorpage():
     return render_template("404.html")
 
 # Blank Page
-
-
 @app.route('/blank', methods=["GET"])
 def blank():
     return render_template('blank.html')
 
 # Buttons Page
-
-
 @app.route('/buttons', methods=["GET"])
 def buttons():
     return render_template("buttons.html")
 
 # Utilities-animation
-
-
 @app.route('/utilities-animation', methods=["GET"])
 def utilitiesanimation():
     return render_template("utilities-animation.html")
 
 # Utilities-border
-
-
 @app.route('/utilities-border', methods=["GET"])
 def utilitiesborder():
     return render_template("utilities-border.html")
 
 # Utilities-color
-
-
 @app.route('/utilities-color', methods=["GET"])
 def utilitiescolor():
     return render_template("utilities-color.html")
 
 # utilities-other
-
-
 @app.route('/utilities-other', methods=["GET"])
 def utilitiesother():
     return render_template("utilities-other.html")
 
-
-# @app.route('/upload', methods=['GET','POST'])
-# def upload():
-#     # f = request.files['photo']
-
-#         # Save the file to ./uploads
-#     # print("upload")
-#     # basepath = os.path.dirname(__file__)
-#     # file_path = os.path.join(
-#     # basepath, 'upload', secure_filename(f.filename))
-#     # f.save(file_path)
-#     # print("Image uploaded")
-#     # return render_template("register.html")
-#     if request.method == 'POST':
-#         return jsonify(request.form['username'], request.form['file'])
-#     if request.method == 'POST':
-#         file = request.files['file']
-#         extension = os.path.splitext(file.filename)[1]
-#         f_name = str(uuid.uuid4()) + extension
-#         file.save(os.path.join('upload', f_name))
-#     return json.dumps({'filename':f_name})
-'''
-FACE RECOGNITION START
-'''
 # Creating Perosn Group
-
-
 @app.route('/create-person-group', methods=["GET", "POST"])
 def createGroup():
     if request.method == "POST":
@@ -217,10 +171,6 @@ def createGroup():
 @app.route('/checkgroupname', methods=['POST'])
 def checkgroupname():
     return checkFaceGroupName()
-
-'''
-FACE RECOGNITION END
-'''
 
 # timetTables Page
 @app.route('/timetable', methods=["GET","POST"])
@@ -286,3 +236,12 @@ def reset_password():
 def reset_pass():        
     return render_template('reset_password.html')
 
+
+@app.route('/reg',methods=['GET','POST'])
+def reg():
+    if request.method=="GET":
+        classroom=showClassroom()
+        return render_template("student-registration.html",classroom=classroom)
+    if request.method=="POST":
+        studentregistration()
+        return  redirect(url_for("blank"))
