@@ -1,0 +1,88 @@
+{% include 'admin-layout.html' %}
+
+<!-- Begin Page Content -->
+<div class="container-fluid">
+
+  <!-- Page Heading -->
+
+
+      <title>Faculty: View Report</title>
+      <meta name="viewport" content="width=device-width, initial-scale=0.6">
+      <link href="static/css/generatereport.css" rel="stylesheet">
+
+      <div class="wrap">
+      <h2>View Report</h2>
+      <form method="post">
+          <h2>Today's Result<h2>
+          <input type="date" name="fname" required="required">
+          <input type="time" style="width: 300px;float: right;" name="ftime" value="09:00" required="required">
+          <br><br><br>
+          <input type="text" name="folder_name" placeholder="Enter class here" required="required">
+          <br>
+          <input type="submit" class="btn-login" formaction="/view" value="View Excel" formtarget="_blank">
+          <input type="submit" class="btn-login" formaction="/send_mail" name="email" value="Send Mail" formtarget="_blank">
+          </form>	
+          <br><br>
+          <h2>Update Attendance<h2>
+          <form action="/update" method="post" enctype="multipart/form-data">
+              <input type="file" name="updated_excel" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" required="required">
+              <br><br>
+              <input type="text" name="excel_folder" placeholder="Enter class here" required="required">
+              <input type="submit" class="btn-login" value="Update excel">
+          </form>
+          <p style="font-weight: normal;font-size: 10px;">{{msg}}</p>
+  
+          <form action="/calculate" method="post" target="_blank">
+              <h2>Check overall result</h2>
+              <input type="text" name="final_class" placeholder="Enter class here" required="required">
+              <input type="submit" class="btn-login" value="Calculate">
+          </form>
+          <p style="font-weight: normal;font-size: 10px">{{msg1}}</p>
+          <form action="/changetask" method="post">
+              <input type="submit" class="btn-login" name="chtask" value="Back">
+          </form>
+          <!-- <form action="/logout" method="post">
+              <input style="width: 200px;float: right;" type="submit" class="btnfinal" name="logout" value="Logout">
+          </form> -->
+  </div>
+  
+</div>
+<!-- /.container-fluid -->
+
+</div>
+<!-- End of Main Content -->
+
+<!-- Footer -->
+<footer class="sticky-footer bg-white">
+  <div class="container my-auto">
+    <div class="copyright text-center my-auto">
+      <span>Copyright &copy; Your Website 2019</span>
+    </div>
+  </div>
+</footer>
+<!-- End of Footer -->
+
+</div>
+<!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+
+<!-- Scroll to Top Button-->
+<a class="scroll-to-top rounded" href="#page-top">
+  <i class="fas fa-angle-up"></i>
+</a>
+
+<!-- Bootstrap core JavaScript-->
+<script src="static/vendor/jquery/jquery.min.js"></script>
+<script src="static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+<!-- Core plugin JavaScript-->
+<script src="static/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+<!-- Custom scripts for all pages-->
+<script src="static/js/sb-admin-2.min.js"></script>
+
+</body>
+
+</html>

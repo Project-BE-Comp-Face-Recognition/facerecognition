@@ -67,21 +67,32 @@ def registerUser():
     sendmail(subject="Registration for Flask Admin Boilerplate", sender="Flask Admin Boilerplate",
              recipient=user_data["email"], body="You successfully registered on Flask Admin Boilerplate")
 
-
+# Fetch attendance table 
 def fetchAttendance():
 
     res = db.attendance.find()
 
     return res
+#fetch total attendance
+def fetchTotalAttendance():
+    res = db.attendance.find({}, {"name": 1, "_id": 0})
+    count=0
+    for i in res:
+        count=count+1
+    return count
 
 
+    return res
+
+
+# Fetch Student Information
 def fetchstudent():
 
     res = db.users.find()
 
     return res
 
-
+# Fetch Subject for chart creation
 def fetchSubjectAttendance():
 
     res = db.attendance.find({}, {"sub1": 1, "_id": 0})
@@ -91,7 +102,7 @@ def fetchSubjectAttendance():
         li.append(a)
     return li
 
-
+# Fetch Label for chart creation
 def fetchlabelAttendance():
 
     res = db.attendance.find({}, {"branch": 1, "_id": 0})
@@ -125,16 +136,17 @@ def addGroupName():
     classname = values[0]
     return classname
 
-
+#Fetch timetable 
 def fetchTimetable():
 
-    res = db.timetable.find({}, {"be-comp": 1, "_id": 0})
+    res = db.timetable.find({}, {"class": 1, "_id": 0})
     li = []
     for i in res:
-        a = i["be-comp"]
+        a = i["class"]
         li.append(a)
     
     return li
+
 
 
 '''
