@@ -127,18 +127,9 @@ def tables():
 def user_info():
     ds_list = fetchstudent()
     # atd_list = mongo.facerecognition.attendace.find()
-    return render_template('user_info.html', ds_list=ds_list)
-
-# Reset_Password
-
-
-@app.route('/reset_password', methods=["GET"])
-def reset():
-    return render_template("reset_password.html")
+    return render_template('user_info.html', ds_list=ds_list)   
 
 # 404 Page
-
-
 @app.route('/404', methods=["GET"])
 def errorpage():
     return render_template("404.html")
@@ -227,15 +218,71 @@ def createGroup():
 def checkgroupname():
     return checkFaceGroupName()
 
-
-# Tables Page
-@app.route('/timetable', methods=["GET"])
-def timetable():
-    kd_list = fetchTimetable()
-    # atd_list = mongo.facerecognition.attendace.find()
-    return render_template('timetable.html', kd_list=kd_list)
-
-
 '''
 FACE RECOGNITION END
 '''
+
+# timetTables Page
+@app.route('/timetable', methods=["GET","POST"])
+def timetable():
+    kd_list = fetchTimetable()
+    return render_template('timetable.html',kd_list=kd_list)
+
+
+
+#delete button
+@app.route('/delete/<string:email>', methods = ["GET","POST"])
+def delete(email):
+    delet(email)
+    return redirect(url_for("user_info"))
+    
+#edit button
+@app.route('/edit/<string:email>', methods = ["GET","POST"])
+def edit(email):
+    session['update_data'] = email
+    return redirect(url_for("update"))
+  
+#Update values      
+@app.route('/update',methods = ["GET","POST"])
+def update():
+    email = session.get('update_data')
+    if request.method == "GET":
+        users = fetchuser(email)
+        return render_template('update.html',users = users)
+    elif request.method == 'POST':
+        updateuser(email)
+        return redirect(url_for("user_info"))
+
+#edit profile
+@app.route('/editprofile/<string:uname>', methods = ["GET","POST"])
+def editprofile(uname):
+    session['update'] = uname
+    return redirect(url_for("updateprofile"))
+  
+#Update profile     
+@app.route('/updateprofile',methods = ["GET","POST"])
+def updateprofile():
+    uname = session.get('update')
+    if request.method == "GET":
+        users = findprofile(uname)
+        return render_template('profile.html',users = users)
+    elif request.method == 'POST':
+        saveprofile(uname)
+        return redirect(url_for("updateprofile"))
+
+# update Password
+@app.route('/reset_password', methods=["GET","POST"])
+def reset_password():
+    username = session.get('username')
+    if request.method == "GET":
+        return render_template('reset_password.html')
+    elif request.method == 'POST':  
+        updatepass(username)
+        return redirect(url_for("user_info"))
+
+
+#reset password
+@app.route('/reset_pass', methods=["GET","POST"])
+def reset_pass():        
+    return render_template('reset_password.html')
+
