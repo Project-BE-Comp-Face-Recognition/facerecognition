@@ -15,27 +15,28 @@ body{
     margin-bottom: 30px;
 }
 .wrap{
-    width: 650px;
+    width: 580px;
     overflow: hidden;
     margin: auto;
-    margin-top: 120px;
+    margin-top: 10px;
     padding: 20px;
     background: #fff;
     border:1px solid silver;
     border-radius: 5px;
 }
 .wrap input[type="text"]{
-    width:600px;
-    height: 50px;
+    width:400px;
+    height: 40px;
     margin-bottom: 10px;
     border-radius: 8px;
     border: 1px solid silver;
     padding: 5px;
+    font-size: 20px;
 }
 .wrap .btn-login{
     margin-top: 5px;
     padding: 5px;
-    width: 412px;
+    width: 300px;
     height:40px;
     background-color:#4e73df;
     color: #fff;
@@ -45,29 +46,34 @@ body{
 }
 input[type=date]{ 
     margin-top:5px;
+    font-size: 20px;
+
     padding: 5px;
     width: 260px; 
-    height: 50px;
+    height: 40px;
     border: 1px solid silver; 
     border-radius: 8px;
     float: left;
 }
 input[type=time]{
     margin-top:5px;
+    font-size: 20px;
+
     padding: 5px;
-    width: 250px; 
-    height: 50px;
+    width: 260px; 
+    height: 40px;
     border: 1px solid silver; 
     border-radius: 8px;
     float: right;
 }
 input[type=file] { 
     margin-top:5px;
+    font-size: 20px;
     padding: 5px;
-    width: 500px; 
-    height: 60px;
+    width: 300px; 
     border: 1px solid silver; 
     border-radius: 8px;
+    
 }
 .btnfinal{
     padding: 5px;
