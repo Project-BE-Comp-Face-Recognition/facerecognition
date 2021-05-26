@@ -92,8 +92,10 @@ def charts():
     ch_list = fetchSubjectAttendance()
     ab_list = fetchlabelAttendance()
     pie=fetchlabelNameAttendance()
+
+
     # atd_list = mongo.facerecognition.attendace.find()
-    return render_template('charts.html', ch_list=ch_list, ab_list=ab_list,pie=pie)
+    return render_template('charts.html', ch_list=ch_list,ab_list=ab_list,pie=pie)
 
 
 # Attendance Record Page
