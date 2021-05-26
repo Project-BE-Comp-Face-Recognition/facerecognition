@@ -231,8 +231,9 @@ def reg():
     if request.method=="POST":
         studentregistration()
         return  redirect(url_for("blank"))
-
-      #Generate report
+    
+        
+#Generate report
 @app.route('/generatereport', methods=["GET"])
 def generateReport():
     return render_template('generatereport.html')
