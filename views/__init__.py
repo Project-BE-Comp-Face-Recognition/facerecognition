@@ -3,7 +3,7 @@ from flask import jsonify
 from app import app
 from model import *
 import os
-
+import random, string
 from werkzeug.utils import secure_filename
 
 
@@ -211,22 +211,16 @@ def updateprofile():
         return redirect(url_for("updateprofile"))
 
 # update Password
-@app.route('/reset_password', methods=["GET","POST"])
-def reset_password():
+@app.route('/update_password', methods=["GET","POST"])
+def update_password():
     username = session.get('username')
     if request.method == "GET":
         return render_template('reset_password.html')
     elif request.method == 'POST':  
         updatepass(username)
-        return redirect(url_for("user_info"))
+        return redirect(url_for("user_info"))                         
 
-
-#reset password
-@app.route('/reset_pass', methods=["GET","POST"])
-def reset_pass():        
-    return render_template('reset_password.html')
-
-
+#student registration
 @app.route('/reg',methods=['GET','POST'])
 def reg():
     if request.method=="GET":
@@ -235,9 +229,37 @@ def reg():
     if request.method=="POST":
         studentregistration()
         return  redirect(url_for("blank"))
-        
-#Generate report
+
+      #Generate report
 @app.route('/generatereport', methods=["GET"])
 def generateReport():
     return render_template('generatereport.html')
 
+#reset password
+@app.route('/reset_pass', methods=["GET","POST"])
+def reset_pass():     
+    if request.method == "POST":
+        
+        check = checkmail()
+        hashCode = ''.join(random.choices(string.ascii_letters + string.digits, k=42))
+        
+        if check != None :
+            subject = "Confirm Password Change"
+            sender = app.config["MAIL_USERNAME"]
+            recipients = check
+            body = "Hello,\nWe've received a request to reset your password. If you want to reset your password, click the link below and enter your new password\n http://127.0.0.1:5000/"+hashCode
+            recipt = sendmail(subject,sender,recipients,body)
+            print(recipt)
+            return render_template('login.html')
+        
+    return render_template('forgot-password.html') 
+
+# reset Password
+@app.route('/<string:hashCode>', methods=["GET","POST"])
+def reset_password(hashCode):
+    if request.method == "GET":
+        return render_template('reset_password.html')
+    elif request.method == 'POST':  
+        resetpass()
+        return render_template("login.html")                                
+    
