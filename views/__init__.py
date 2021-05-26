@@ -14,8 +14,9 @@ def home():
         ch_list = fetchSubjectAttendance()
         ab_list = fetchlabelAttendance()
         ss_list = fetchTotalAttendance()
+        pie     = fetchlabelNameAttendance()
 
-        return render_template('index.html', ch_list=ch_list, ab_list=ab_list ,ss_list=ss_list)
+        return render_template('index.html', ch_list=ch_list, ab_list=ab_list ,ss_list=ss_list,pie=pie)
     else:
         return render_template('login.html')
 
@@ -90,9 +91,9 @@ def cards():
 def charts():
     ch_list = fetchSubjectAttendance()
     ab_list = fetchlabelAttendance()
-
+    pie=fetchlabelNameAttendance()
     # atd_list = mongo.facerecognition.attendace.find()
-    return render_template('charts.html', ch_list=ch_list, ab_list=ab_list)
+    return render_template('charts.html', ch_list=ch_list, ab_list=ab_list,pie=pie)
 
 
 # Attendance Record Page
@@ -228,8 +229,8 @@ def reg():
     if request.method=="POST":
         studentregistration()
         return  redirect(url_for("blank"))
-    
-#Generate report
+
+      #Generate report
 @app.route('/generatereport', methods=["GET"])
 def generateReport():
     return render_template('generatereport.html')

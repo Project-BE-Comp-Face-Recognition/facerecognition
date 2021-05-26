@@ -269,4 +269,10 @@ def resetpass():
                       "password" : password,
                       "confirmpassword" : confirmpassword}})
 
-
+def fetchlabelNameAttendance():
+    res = db.attendance.find({}, {"name": 1, "_id": 0})
+    li = []
+    for i in res:
+        a=i["name"]
+        li.append(a)
+    return li

@@ -11,19 +11,24 @@
       <link href="static/css/generatereport.css" rel="stylesheet">
 
       <div class="wrap">
-      <h2>View Report</h2>
+
+      <h2 class="h3 mb-2 text-gray-800">View Report</h2>
       <form method="post">
-          <h2>Today's Result<h2>
-          <input type="date" name="fname" required="required">
-          <input type="time" style="width: 300px;float: right;" name="ftime" value="09:00" required="required">
-          <br><br><br>
+
+          <h2 class="h3 mb-2 text-gray-800">Today's Result<h2>
+
+          <input type="date"  name="fname" required="required">
+
+          <input type="time"  name="ftime" value="09:00" required="required">
+          <br><br>
+
           <input type="text" name="folder_name" placeholder="Enter class here" required="required">
           <br>
           <input type="submit" class="btn-login" formaction="/view" value="View Excel" formtarget="_blank">
           <input type="submit" class="btn-login" formaction="/send_mail" name="email" value="Send Mail" formtarget="_blank">
           </form>	
-          <br><br>
-          <h2>Update Attendance<h2>
+          <br>
+          <h2 class="h3 mb-2 text-gray-800" >Update Attendance<h2>
           <form action="/update" method="post" enctype="multipart/form-data">
               <input type="file" name="updated_excel" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" required="required">
               <br><br>
@@ -33,7 +38,7 @@
           <p style="font-weight: normal;font-size: 10px;">{{msg}}</p>
   
           <form action="/calculate" method="post" target="_blank">
-              <h2>Check overall result</h2>
+              <h2 class="h3 mb-2 text-gray-800">Check overall result</h2>
               <input type="text" name="final_class" placeholder="Enter class here" required="required">
               <input type="submit" class="btn-login" value="Calculate">
           </form>
