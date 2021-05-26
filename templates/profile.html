@@ -2,13 +2,21 @@
 {% block body %}
 
 <div class="row">
-    <div class="col-md-4 offset-md-4">
+    <div class="col-md-5  offset-md-4">
+
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex flex-column align-items-center text-center">
+                    <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Admin" class="rounded-circle"
+                        width="150">
+                    <div class="mt-3">
+                        <h4>{{users.username}}</h4>
+                    </div>
+                </div>
+            </div>
+        </div>    
+
         <div class="card card-body">
-
-            <h5 class="text-center">
-                {{ users.username }}
-            </h5>
-
             <form action="/updateprofile" method="POST">
                 <form id="myform" class="users" method="POST">
 
@@ -49,10 +57,34 @@
 
 
                     <div class="form-group">
-                        <button type="submit" class="btn btn-primary btn-block">
+                        <button data-toggle="modal" data-target="#ok"class="btn btn-primary btn-block">
                             Save
                         </button>
                     </div>
+                    <!-- Modal -->
+                    <div id="ok" class="modal fade" role="dialog">
+                        <div class="modal-dialog">
+                    
+                            <!-- Modal content-->
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title">Save</h4>
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    
+                                </div>
+                                <div class="modal-body">
+                                    <p> Do you want to update information ?
+                                    </p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary" >Save</button>
+                                </div>
+                            </div>
+                    
+                        </div>
+                    </div>
+                    <!-- //////////////////////////////////////////////////////////////////////////// -->
+
                 </form>
         </div>
     </div>
