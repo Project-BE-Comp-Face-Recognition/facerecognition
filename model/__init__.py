@@ -258,3 +258,4 @@ def fetchlabelNameAttendance():
         a=i["name"]
         li.append(a)
     return li
+
