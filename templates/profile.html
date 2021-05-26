@@ -1,6 +1,6 @@
 {% include 'admin-layout.html' %}
-{% block body %}
 
+{% block body %}
 <div class="row">
     <div class="col-md-5  offset-md-4">
 
@@ -15,6 +15,13 @@
                 </div>
             </div>
         </div>    
+    
+    <div class="col-md-4 offset-md-4">
+        <div class="card card-body">
+            
+            <h5 class="text-center">
+                {{ users.username }}
+            </h5>
 
         <div class="card card-body">
             <form action="/updateprofile" method="POST">
@@ -100,5 +107,6 @@
 
 <!-- Custom scripts for all pages-->
 <script src="static/js/sb-admin-2.min.js"></script>
+
 
 </html>
