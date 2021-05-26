@@ -53,7 +53,6 @@
             <canvas id="myPieChart"></canvas>
           </div>
           <hr>
-          Styling for the donut chart can be found in the <code>/js/demo/chart-pie-demo.js</code> file.
         </div>
       </div>
     </div>
@@ -231,6 +230,7 @@
 
 
 </script>
+
 <script>
 // Set new default font family and font color to mimic Bootstrap's default styling
 Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
@@ -245,7 +245,7 @@ var myPieChart = new Chart(ctx, {
          "{{ item }}",
          {% endfor %}],
     datasets: [{
-      data: JSON.parse('{{ch_list}}'),
+      data:JSON.parse('{{ch_list}}'),
       backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc'],
       hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf'],
       hoverBorderColor: "rgba(234, 236, 244, 1)",
@@ -272,10 +272,8 @@ var myPieChart = new Chart(ctx, {
 
 </script>
 
-<!-- <script src="static/js/demo/chart-pie-demo.js"></script> -->
-<script src="static/js/demo/chart-bar-demo.js">
-
-</script>
+<!-- <scrip src="static/js/demo/chart-pie-demo.js"></scrip> -->
+<script src="static/js/demo/chart-bar-demo.js"></script>
 </body>
 
 </html>
