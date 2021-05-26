@@ -6,7 +6,7 @@ $(document).ready(function() {
             var reader = new FileReader();
 
             reader.onload = function (e) {
-                $('.profile-pic').attr('src', e.target.result);
+                $('.profile-circle').attr('src', e.target.result);
             }
     
             reader.readAsDataURL(input.files[0]);

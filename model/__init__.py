@@ -277,3 +277,9 @@ def fetchlabelNameAttendance():
         li.append(a)
     return li
 
+def addFeedbackLink():
+    fields = [k for k in request.form]                                      
+    values = [request.form[k] for k in request.form]
+    data = dict(zip(fields, values))
+    user_data = json.loads(json_util.dumps(data))
+    db.feedback.insert(user_data)

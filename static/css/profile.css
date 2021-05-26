@@ -11,21 +11,19 @@ body {
 .file-upload {
     display: none;
 }
-.circle {
+.profile-circle {
     border-radius: 1000px !important;
     overflow: hidden;
     width: 128px;
     height: 128px;
     border: 8px solid rgba(255, 255, 255, 0.7);
-    position: absolute;
-    top: 72px;
 }
 img {
     max-width: 100%;
     height: auto;
 }
 .p-image {
-  position: absolute;
+  text-align: center;
   top: 167px;
   right: 30px;
   color: #666666;
