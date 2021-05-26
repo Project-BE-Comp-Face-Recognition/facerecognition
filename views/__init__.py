@@ -265,4 +265,12 @@ def reset_password(hashCode):
     elif request.method == 'POST':  
         resetpass()
         return render_template("login.html")                                
-    
+
+#feedback form
+@app.route("/feedback",methods=["GET","POST"])
+def feedback():
+    if request.method =="GET":
+        return render_template("feedback.html")
+    elif request.method =="POST":
+        addFeedbackLink()
+        return  redirect(url_for("home"))
