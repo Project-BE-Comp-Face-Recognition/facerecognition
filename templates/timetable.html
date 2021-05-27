@@ -4,7 +4,7 @@
 <div class="container-fluid">
 
     <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">Weekly Time Table</h1>
+    <h1 class="h3 mb-2 text-gigray-800">Weekly Time Table</h1>
 
     <div class="card-body">
         <form class="user" method="POST" action="{{ url_for('timetable') }}">
@@ -20,13 +20,7 @@
                 <button type="submit" class="btn btn-primary btn-user btn-block">Go</button>
             </div>
         </form>
-
     </div>
-
-
-
-
-
 
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
@@ -35,9 +29,6 @@
         </div>
         <div class="card-body" id="table">
             <div class="table-responsive">
-
-
-
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
@@ -52,12 +43,8 @@
                             <th>2:15 - 3:15</th>
                             <th>3:15 - 4:15</th>
                             <th>4:15 - 5:00</th>
-
                         </tr>
                     </thead>
-
-
-
                     <tbody>
                         {% for kd in kd_list %}
                         <tr>
@@ -87,9 +74,7 @@
                             <td>{{ kd['tuesday']['2-15 to 3-15'] }}</td>
                             <td>{{ kd['tuesday']['3-15 to 4-15'] }}</td>
                             <td>{{ kd['tuesday']['4-15 to 5'] }}</td>
-
                         </tr>
-
                     </tbody>
                     <tbody>
                         <tr>
@@ -104,9 +89,7 @@
                             <td>{{ kd['wednesday']['2-15 to 3-15'] }}</td>
                             <td>{{ kd['wednesday']['3-15 to 4-15'] }}</td>
                             <td>{{ kd['wednesday']['4-15 to 5'] }}</td>
-
                         </tr>
-
                     </tbody>
                     <tbody>
                         <tr>
@@ -137,9 +120,7 @@
                             <td>{{ kd['friday']['3-15 to 4-15'] }}</td>
                             <td>{{ kd['friday']['4-15 to 5'] }}</td>
                         </tr>
-
                     </tbody>
-
                     <tbody>
                         <tr>
                             <td>{{ '6' }}</td>
@@ -153,15 +134,9 @@
                             <td>{{ kd['saturday']['2-15 to 3-15'] }}</td>
                             <td>{{ kd['saturday']['3-15 to 4-15'] }}</td>
                             <td>{{ kd['saturday']['4-15 to 5'] }}</td>
-
                         </tr>
-
                     </tbody>
-
                     {% endfor %}
-
-
-
                 </table>
             </div>
         </div>

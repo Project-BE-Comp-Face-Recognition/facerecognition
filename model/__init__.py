@@ -304,7 +304,7 @@ def saveprofile(uname):
                       "age" : age,
                       "number" : number}})     
     
-#reset password
+#update password
 def updatepass(uname):
     password = getHashed(request.form['enter_password'])
     confirmpassword = getHashed(request.form['confirm_password'])
@@ -312,8 +312,26 @@ def updatepass(uname):
                    {"$set": {
                       "password" : password,
                       "confirmpassword" : confirmpassword}})
-    
 
+def checkmail():
+    email = request.form["email"]
+    check = db.users.find_one({"email": email})
+    if check is None:
+        return check
+    else:
+        session["rp_email"] = check['email']
+        return check['email']
+
+      
+#reset password
+def resetpass():
+    password = getHashed(request.form['enter_password'])
+    confirmpassword = getHashed(request.form['confirm_password'])
+    mail = session["rp_email"]
+    db.users.update_one({"email": mail},
+                   {"$set": {
+                      "password" : password,
+                      "confirmpassword" : confirmpassword}})
 
 def fetchlabelNameAttendance():
     res = db.attendance.find({}, {"name": 1, "_id": 0})
@@ -329,3 +347,13 @@ def removeTrainDataset(path: str )-> None :
         shutil.rmtree(path)
     except NotADirectoryError:
         os.remove(path)
+def checkclass():
+    cls = request.form["class"]
+    check = db.studentdataset.find({"classroom": cls})
+    if check is None:
+        return check
+    else:
+        li=[]
+        for i in check:
+            li.append(i["email"])
+        return li
