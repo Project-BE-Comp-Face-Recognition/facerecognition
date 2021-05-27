@@ -34,7 +34,7 @@
           <div class="col-lg-7">
             <div class="p-5">
               <div class="text-center">
-                <h1 class="h4 text-gray-900 mb-4">Create an Account!</h1>
+                <h1 class="h4 text-gray-900 mb-4">Student Registration</h1>
               </div>
               <form class="user" method="POST" enctype="multipart/form-data" id="register">
                 <div class="form-group">
@@ -64,42 +64,67 @@
                 <div class="form-group row">
                   <div class="col-sm-6 mb-3 mb-sm-0">
                     <input type="tel" class="form-control form-control-user" name="mobile" id="mobile"
-                      placeholder="Mobile Number" required>
+                      placeholder="Student Mobile Number" required>
                   </div>
                   <div class="col-sm-6">
                     <input type="text" class="form-control form-control-user" name="rollnumber" id="rollnumber"
                       placeholder="ROll Number (ex.BE059)" pattern="[A-Za-z]+[0-9]+" required>
                   </div>
                 </div>
+
+                <div class="form-group">
+                  <input type="text" class="form-control form-control-user" id="parentname" name="parentname"
+                    placeholder="Parents Name" required>
+                </div>
+
+                <div class="form-group row">
+                  <div class="col-sm-6 mb-3 mb-sm-0">
+                    <input type="email" class="form-control form-control-user" id="parentemail" name="parentemail"
+                      placeholder="Parents Email Address" required>
+                  </div>
+                  <div class="col-sm-6">
+                    <input type="tel" class="form-control form-control-user" id="parentmobile" name="parentmobile"
+                      placeholder="Parents Mobile Number" required>
+                  </div>
+                </div>
+
+
+
+
+
                 <div class="form-group">
                   <input class="form-control-file" type="file" id="formFileMultiple" name="files[]" multiple="multiple"
                     onchange="checkFiles(this.files)" />
                 </div>
                 <div id="pass_response"></div>
                 <button id="button" disabled="disabled" class="btn btn-primary btn-user btn-block">
+                  <span style="padding-right: 10px"><img src="../static/img/5.gif" id="img"
+                      style="display: none" /></span>
                   Register Account
                 </button>
               </form>
               <hr>
+            </div>
           </div>
         </div>
       </div>
+
     </div>
 
-  </div>
+    <!-- Bootstrap core JavaScript-->
+    <script src="../static/vendor/jquery/jquery.min.js"></script>
+    <script src="static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-  <!-- Bootstrap core JavaScript-->
-  <script src="../static/vendor/jquery/jquery.min.js"></script>
-  <script src="static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- Core plugin JavaScript-->
+    <script src="static/vendor/jquery-easing/jquery.easing.min.js"></script>
 
-  <!-- Core plugin JavaScript-->
-  <script src="static/vendor/jquery-easing/jquery.easing.min.js"></script>
-
-  <!-- Custom scripts for all pages-->
-  <script src="static/js/sb-admin-2.min.js"></script>
-  <script src="../static/js/checkusername.js"></script>
-  <script src="../static/js/checkpassword.js"></script>
-  <script src="../static/js/checkfiles.js"></script>
+    <!-- Custom scripts for all pages-->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <script src="static/js/sb-admin-2.min.js"></script>
+    <script src="../static/js/checkusername.js"></script>
+    <!-- <script src="../static/js/checkpassword.js"></script> -->
+    <script src="../static/js/checkfiles.js"></script>
+    <script src="../static/js/train.js"></script>
 
 </body>
 

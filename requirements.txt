@@ -13,3 +13,4 @@ shortuuid==1.0.1
 Werkzeug==1.0.1
 python-dotenvt
 azure-cognitiveservices-vision-face
+pytest-shutil

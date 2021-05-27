@@ -38,7 +38,7 @@ def register():
 def parents_register():
     return render_template("parents_register.html")
 
-# Check if username already exists in the registratiion page
+# Check if username already exists in the registration page
 @app.route('/checkusername', methods=["POST"])
 def check():
     return checkusername()
@@ -163,10 +163,20 @@ def checkgroupname():
     return checkFaceGroupName()
 
 # timetTables Page
-@app.route('/timetable', methods=["GET","POST"])
+
+@app.route('/timetable',methods=["GET","POST"])
 def timetable():
-    kd_list = fetchTimetable()
-    return render_template('timetable.html',kd_list=kd_list)
+    if request.method=='GET':
+        kd_list = fetchTimetable("becs")
+        clas=showClassroom()
+        return render_template('timetable.html',classroom=clas,kd_list=kd_list)
+    if request.method=='POST':
+        classroom=request.form.get('classroom')
+        print(classroom)
+        clas=showClassroom()
+        kd_list = fetchTimetable(classroom)
+        return render_template('timetable.html',classroom=clas,kd_list=kd_list)
+
 
 
 
@@ -232,12 +242,13 @@ def reg():
     if request.method=="GET":
         classroom=showClassroom()
         return render_template("student-registration.html",classroom=classroom)
-    if request.method=="POST":
-        studentregistration()
-        return  redirect(url_for("blank"))
         
 #Generate report
 @app.route('/generatereport', methods=["GET"])
 def generateReport():
     return render_template('generatereport.html')
 
+
+@app.route('/train',methods=['POST'])
+def training():
+    return studentregistration()
