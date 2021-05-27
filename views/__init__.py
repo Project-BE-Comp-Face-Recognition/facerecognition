@@ -272,5 +272,22 @@ def feedback():
     if request.method =="GET":
         return render_template("feedback.html")
     elif request.method =="POST":
-        addFeedbackLink()
-        return  redirect(url_for("home"))
+        check = checkclass()
+        
+        if check != None :
+            subject = "feedback form"
+            sender = app.config["MAIL_USERNAME"]            
+            feedback = request.form["feedback"]
+
+            body = "Hello,\n Here is your feedback link ,please submit your feedback . \n "+ feedback
+
+            for i in check:
+
+                recipients = i
+
+                recipt = sendmail(subject,sender,recipients,body)
+                print(recipt)
+
+        return redirect(url_for('home'))
+
+

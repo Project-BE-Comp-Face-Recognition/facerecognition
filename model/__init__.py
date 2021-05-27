@@ -277,9 +277,14 @@ def fetchlabelNameAttendance():
         li.append(a)
     return li
 
-def addFeedbackLink():
-    fields = [k for k in request.form]                                      
-    values = [request.form[k] for k in request.form]
-    data = dict(zip(fields, values))
-    user_data = json.loads(json_util.dumps(data))
-    db.feedback.insert(user_data)
+
+def checkclass():
+    cls = request.form["class"]
+    check = db.studentdataset.find({"classroom": cls})
+    if check is None:
+        return check
+    else:
+        li=[]
+        for i in check:
+            li.append(i["email"])
+        return li
