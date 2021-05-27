@@ -6,7 +6,7 @@ from helpers.mailer import *
 from helpers.recognition import *
 from helpers.path import *
 from bson import json_util, ObjectId
-import json
+import json,shutil
 
 def checkloginusername():
     username = request.form["username"]
@@ -63,10 +63,50 @@ def registerUser():
     user_data["confirmpassword"] = getHashed(user_data["confirmpassword"])
     db.users.insert(user_data)
     sendmail(subject="Registration for Flask Admin Boilerplate", sender="Flask Admin Boilerplate", recipient=user_data["email"], body="You successfully registered on Flask Admin Boilerplate")
-    studentData={k:v for k,v in data.items() if (k=="username" or k=="name" or k=="email" or k=="mobile" or k=="rollnumber")}
+    # studentData={k:v for k,v in data.items() if (k=="username" or k=="name" or k=="email" or k=="mobile" or k=="rollnumber")}
     try :
         db.users.insert(user_data)
-        db.studentdataset.insert(studentData)
+        # db.studentdataset.insert(studentData)
+        print("Succesully added Registration Data to DB")
+    except:
+        print("Failed to Add Registration Data In DB")
+        return False
+    return True
+
+
+def registerRegisterUser():
+    fields = [k for k in request.form]                                      
+    values = [request.form[k] for k in request.form]
+    data = dict(zip(fields, values))
+    user_data = json.loads(json_util.dumps(data))
+    user_data["password"] = getHashed(user_data["password"])
+    user_data["confirmpassword"] = getHashed(user_data["confirmpassword"])
+    # db.users.insert(user_data)
+    sendmail(subject="Registration for Flask Admin Boilerplate", sender="Flask Admin Boilerplate", recipient=user_data["email"], body="You successfully registered on Flask Admin Boilerplate")
+    # studentData={k:v for k,v in data.items() if (k=="username" or k=="name" or k=="email" or k=="mobile" or k=="rollnumber")}
+    try :
+        db.users.insert(user_data)
+        # db.studentdataset.insert(studentData)
+        print("Succesully added Registration Data to DB")
+    except:
+        print("Failed to Add Registration Data In DB")
+        return False
+    return True
+
+
+def registerStudent():
+    fields = [k for k in request.form]                                      
+    values = [request.form[k] for k in request.form]
+    data = dict(zip(fields, values))
+    user_data = json.loads(json_util.dumps(data))
+    # user_data["password"] = getHashed(user_data["password"])
+    # user_data["confirmpassword"] = getHashed(user_data["confirmpassword"])
+    # db.users.insert(user_data)
+    # sendmail(subject="Registration for Flask Admin Boilerplate", sender="Flask Admin Boilerplate", recipient=user_data["email"], body="You successfully registered on Flask Admin Boilerplate")
+    # studentData={k:v for k,v in data.items() if (k=="username" or k=="name" or k=="email" or k=="mobile" or k=="rollnumber")}
+    try :
+        db.studentdataset.insert(user_data)
+        # db.studentdataset.insert(studentData)
         print("Succesully added Registration Data to DB")
     except:
         print("Failed to Add Registration Data In DB")
@@ -85,9 +125,6 @@ def fetchTotalAttendance():
     for i in res:
         count=count+1
     return count
-
-
-    return res
 
 
 # Fetch Student Information
@@ -116,6 +153,26 @@ def fetchlabelAttendance():
 '''
 Face Recognition Start
 '''
+
+def addFaceToPersonGroup(PERSON_GROUP_ID,uniquePerosnId,user,studenFolderPath):
+    userImageFolder=[filename for filename in os.listdir(studenFolderPath) ]
+    print(userImageFolder)
+    try :
+        for image in userImageFolder:
+            print(studenFolderPath+'/'+image)
+            i = open(studenFolderPath+'/'+image, 'r+b')
+            face_client.person_group_person.add_face_from_stream(PERSON_GROUP_ID, uniquePerosnId, i)
+            print("Person added Succesfully")
+            print('Pausing for 6 seconds to avoid triggering rate limit on free account...')
+        return True
+    except:
+        print("Error While adding Photo to Classroom")
+        return False
+
+
+
+
+
 def createPersonGroup(PERSON_GROUP_ID):
     print('Person group:', PERSON_GROUP_ID)
     try:
@@ -147,13 +204,13 @@ def addPersonIdToDb(personId,prn):
         return False
     return True
 
-def fetchTimetable():
+def fetchTimetable(clasroom):
     res = db.timetable.find({}, {"class": 1, "_id": 0})
     li = []
     for i in res:
-        a = i["class"]
+        a = i["class"][clasroom]
         li.append(a)
-    
+    print(li)
     return li
 
 
@@ -163,7 +220,7 @@ Face Recogniton End
 '''
 def studentregistration():
 
-    h=str(home)+'\static'
+    h=str(home)
     target = os.path.join(h, "train/")
     if not os.path.isdir(target):
         os.mkdir(target)
@@ -185,15 +242,22 @@ def studentregistration():
         destination = "/".join([studentfolderpath, filename])
         file.save(destination)
     
-    registrationStatus=registerUser()
-    if registrationStatus== True:
-        uniquePersonId=personGroupPerson(classname,prn)
+    uniquePersonId=personGroupPerson(classname,prn)
+    print("Genrated Unique ID")
+    addFaceStatus=addFaceToPersonGroup(classname,uniquePersonId,prn,studentfolderpath)
+        
+    
+    if addFaceStatus== True:
+        removeTrainDataset(studentfolderpath)
+        registrationStatus=registerStudent()
         status=addPersonIdToDb(uniquePersonId,prn)
         if status == True:
-            print("Generated Unique ID and Upadted in DB")
-            return "Successful"
-    return "Failed"
-
+            print("Trained Faces & Generated Unique ID and Upadted in DB")
+            return ("success")
+    else:
+        return ("error")
+    
+            
 
 def showClassroom():
     classroom=[]
@@ -202,7 +266,7 @@ def showClassroom():
         classroom.append(val["groupname"])
     return classroom
   
-  #delete button
+#delete button
 def delet(email_del):
     db.users.remove({"email" : email_del})
   
@@ -278,6 +342,11 @@ def fetchlabelNameAttendance():
     return li
 
 
+def removeTrainDataset(path: str )-> None :
+    try:
+        shutil.rmtree(path)
+    except NotADirectoryError:
+        os.remove(path)
 def checkclass():
     cls = request.form["class"]
     check = db.studentdataset.find({"classroom": cls})
