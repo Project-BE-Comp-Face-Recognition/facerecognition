@@ -347,6 +347,7 @@ def removeTrainDataset(path: str )-> None :
         shutil.rmtree(path)
     except NotADirectoryError:
         os.remove(path)
+
 def checkclass():
     cls = request.form["class"]
     check = db.studentdataset.find({"classroom": cls})
@@ -357,3 +358,43 @@ def checkclass():
         for i in check:
             li.append(i["email"])
         return li
+
+def identify():
+
+
+
+    h=str(home)
+    target = os.path.join(h, "identify")
+    if not os.path.isdir(target):
+        os.mkdir(target)
+
+    for file in request.files.getlist("files[]"):
+        filename = file.filename
+        destination = "/".join([target, filename])
+        file.save(destination)
+
+    imageName=[filename for filename in os.listdir(destination) ]
+    print(imageName)
+    face_ids = []
+    identifiedFace=[]
+
+    for image in imageName:
+        i = open(imageFolder+'/'+image, 'r+b')
+        faces = face_client.face.detect_with_stream(i, detection_model='detection_03')
+        face_ids.append(faces[0].face_id)
+
+    results = face_client.face.identify(face_ids, PERSON_GROUP_ID)
+    if not results:
+        print('No person identified in the person group for faces from {}.'.format(imageName))
+    for person in results:
+        if len(person.candidates) > 0:
+            print(person.face_id )
+            identifiedUniqueId=person.candidates[0].person_id
+            if identifiedUniqueId not in identifiedFace :
+                identifiedFace.append(identifiedUniqueId)
+
+            print('Person for face ID {} is identified with a confidence of {}.'.format(person.face_id, person.candidates[0].confidence)) # Get topmost confidence score
+        else:
+            print('No person identified for face ID {} .'.format(person.face_id))
+
+    print("identified unique face ids : {}".format(identifiedFace))

@@ -240,7 +240,7 @@ def reg():
         return render_template("student-registration.html",classroom=classroom)
     if request.method=="POST":
         studentregistration()
-        return  redirect(url_for("blank"))
+        return  redirect(url_for("reg"))
     
         
 #Generate report
@@ -306,3 +306,6 @@ def feedback():
         return redirect(url_for('home'))
 
 
+@app.route('/identify',methods=['GET','POST'])
+def identify():
+    pass
