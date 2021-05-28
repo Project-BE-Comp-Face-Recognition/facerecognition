@@ -45,7 +45,7 @@
 
             <div class="form-group">
               <input type="text" class="form-control form-control-user" id="username" name="username"
-                placeholder="Username" required>
+                placeholder="Teachers_Id" required>
               <div id="uname_response"></div>
             </div>
 
@@ -55,6 +55,11 @@
               <div id="name_response"></div>
 
             </div>
+            <div class="form-group">
+              <input type="text" class="form-control form-control-user" name="number" id="number"
+                placeholder="Contact Number" required>
+            </div>
+
 
             <!-- <div class="form-group row"> -->
             <div id="message">
@@ -71,47 +76,47 @@
                 placeholder="Repeat Password" required>
             </div>
 
-            <div class="form-group row">
-              <p>Enter multiple subjects , separated by a comma please follow instructions carefully.</p>
-
-              <div class="col-sm-6 mb-3 mb-sm-0">
-
-                <input type="text" class="form-control form-control-user" name="subject"id="subject" size="15" list="sublist" placeholder="Enter Subjects"
-                  required>
-                  <datalist id="sublist">
-                    <option value="oop">
-                    <option value="dmw">
-                    <option value="dsa">
-                    <option value="daa">
-                   </datalist>
-                   
-              </div>
-              <div class="col-sm-6">
-                <input type="number" class="form-control form-control-user" name="number" id="number"
-                  placeholder="Contact Number" required>
-              </div>
-
-            </div>
-
-            <!-- </div> -->
-            <p>Enter multiple classes name , separated by a comma.</p>
-            <div id="pass_response"></div>
-            <div class="form-group">
-              <input type="text" class="form-control form-control-user" name="Class" id="Class"size="15" list="classlist" placeholder="Enter class" required>
-              <datalist id="classlist">
-                <option value="becs">
-                <option value="beit">
-                <option value="tecs">
-                <option value="teit">
-               </datalist>
-
-            </div>
             <!-- <div class="form-group">
-              <input type="text" class="form-control form-control-user" id="username" name="roll_number"
-                placeholder="Roll Number" required>
-              <div id="uname_response"></div>
+              <input type="text" class="form-control form-control-user" name="Class" id="Class"
+                placeholder="Enter class" required>
+
             </div> -->
-            <div class="camera-text-center" style="text-align:center;">
+            <div class="form-group">
+              <select class="browser-default custom-select" name="classroom" required>
+                <option value="" disabled selected>Select Class</option>
+                {% for class in classroom %}
+                <option value="{{class}}">{{class}}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+
+
+            <!-- <div class="form-group row"> -->
+
+            <div class="form-group">
+              <div class="d-flex">
+                <div class="mr-auto pb-2">Subject</div>
+                <div class="pb-2">
+                  <a id="dynamic_field_add" href="#"><i class="fa fa-plus fa-fw text-success align-middle"></i></a>
+                </div>
+              </div>
+
+              <div id="dynamic_field_append">
+
+                <div class="d-flex dynamic_field_div">
+                  <div class="mr-auto pb-2"><input type="text" class="form-control form-control-user" style="width: 950px;" name="subject[]" placeholder="Enter Subject">
+                    
+                  </div>
+                  <div class="align-self-center pb-2" ><a href="#" class="dynamic_field_remove">
+                    <i class="fa fa-close fa-fw text-danger" ></i></a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+            <!-- <div class="camera-text-center" style="text-align:center;">
               <video id="video">Video stream not available.</video>
               <div><button id="startbutton" style="height: 50px;width: 300px;margin: 20px;"
                   class="btn btn-primary btn-user btn-user">Take photo</button></div>
@@ -181,7 +186,7 @@
                   class="btn btn-primary btn-user btn-user" type="button" onClick="download()">Upload</button></a>
 
             </div>
-
+ -->
 
             <button id="button" disabled="disabled" class="btn btn-primary btn-user btn-block">
               Proceed
@@ -217,7 +222,9 @@
   <script src="../static/js/checkemail.js"></script>
 
   <script src="../static/js/checkpassword.js"></script>
-  <script src="../static/js/demo/image_capture.js"></script>
+  <!-- <script src="../static/js/demo/image_capture.js"></script> -->
+  <script src="../static/js/register.js"></script>
+
 
 </body>
 

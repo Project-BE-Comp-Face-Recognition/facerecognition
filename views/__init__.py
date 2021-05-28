@@ -26,10 +26,11 @@ def home():
 @app.route('/register', methods=["GET", "POST"])
 def register():
     if request.method == "GET":
+        classroom=showClassroom()
 
-        return render_template("register.html")
+        return render_template("register.html",classroom=classroom)
     elif request.method == "POST":
-        registerUser()
+        registerTeacher()
 
         return redirect(url_for("parents_register"))
 
@@ -306,3 +307,9 @@ def feedback():
         return redirect(url_for('home'))
 
 
+# Teachers_Information Page
+@app.route('/teachersregister', methods=["GET"])
+def teachersregister():
+    teachers = fetchTeacher()
+    # atd_list = mongo.facerecognition.attendace.find()
+    return render_template('teachers.html', teachers=teachers)   

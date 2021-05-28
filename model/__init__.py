@@ -54,19 +54,21 @@ def checkFaceGroupName():
 
 
 
-def registerUser():
-    fields = [k for k in request.form]                                      
-    values = [request.form[k] for k in request.form]
+def registerTeacher():
+    fields = [k for k in request.form if k!='subject[]']                                      
+    values = [request.form[k] for k in request.form if k!='subject[]']
     data = dict(zip(fields, values))
+    subject= request.form.getlist('subject[]')
+    data['subject']=subject
     user_data = json.loads(json_util.dumps(data))
     user_data["password"] = getHashed(user_data["password"])
     user_data["confirmpassword"] = getHashed(user_data["confirmpassword"])
-    db.users.insert(user_data)
+    subject= request.form.getlist('subject[]')
+    # db.users.insert(user_data)
     # sendmail(subject="Registration for Flask Admin Boilerplate", sender="Flask Admin Boilerplate", recipient=user_data["email"], body="You successfully registered on Flask Admin Boilerplate")
     # studentData={k:v for k,v in data.items() if (k=="username" or k=="name" or k=="email" or k=="mobile" or k=="rollnumber")}
     try :
-        db.users.insert(user_data)
-        # db.studentdataset.insert(studentData)
+        db.teachersdataset.insert(user_data)
         print("Succesully added Registration Data to DB")
     except:
         print("Failed to Add Registration Data In DB")
@@ -210,7 +212,6 @@ def fetchTimetable(clasroom):
     for i in res:
         a = i["class"][clasroom]
         li.append(a)
-    print(li)
     return li
 
 
@@ -357,3 +358,8 @@ def checkclass():
         for i in check:
             li.append(i["email"])
         return li
+
+# Fetch teacher Information
+def fetchTeacher():
+    res = db.teachersdataset.find()
+    return res
