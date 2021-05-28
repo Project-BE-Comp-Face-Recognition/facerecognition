@@ -210,6 +210,8 @@ def updateprofile():
         return render_template('profile.html',users = users)
     elif request.method == 'POST':
         saveprofile(uname)
+        file = request.files['file']
+        upload_file(file)
         return redirect(url_for("updateprofile"))
 
 # update Password
@@ -220,8 +222,8 @@ def update_password():
         return render_template('reset_password.html')
     elif request.method == 'POST':  
         updatepass(username)
-        return redirect(url_for("user_info"))                         
-
+        return redirect(url_for("user_info"))    
+    
 #student registration
 @app.route('/reg',methods=['GET','POST'])
 def reg():
@@ -274,3 +276,30 @@ def feedback():
     elif request.method =="POST":
         addFeedbackLink()
         return  redirect(url_for("home"))
+
+#Profile Pic Uploader
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route('/upload_file', methods=['POST'])
+def upload_file(file):
+    if request.method == 'POST':
+        # # check if the post request has the file part
+        # if 'file' not in request.files:
+        #     print('No file part')
+        #     return redirect(request.url)
+        # file = request.files['file']
+        # if user does not select file, browser also
+        # submit an empty part without filename
+        if file.filename == '':
+            print('No selected file')
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            print('save')
+            return render_template('editprofile.html')
+    return render_template('editprofile.html')
