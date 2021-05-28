@@ -54,19 +54,21 @@ def checkFaceGroupName():
 
 
 
-def registerUser():
-    fields = [k for k in request.form]                                      
-    values = [request.form[k] for k in request.form]
+def registerTeacher():
+    fields = [k for k in request.form if k!='subject[]']                                      
+    values = [request.form[k] for k in request.form if k!='subject[]']
     data = dict(zip(fields, values))
+    subject= request.form.getlist('subject[]')
+    data['subject']=subject
     user_data = json.loads(json_util.dumps(data))
     user_data["password"] = getHashed(user_data["password"])
     user_data["confirmpassword"] = getHashed(user_data["confirmpassword"])
-    db.users.insert(user_data)
-    sendmail(subject="Registration for Flask Admin Boilerplate", sender="Flask Admin Boilerplate", recipient=user_data["email"], body="You successfully registered on Flask Admin Boilerplate")
+    subject= request.form.getlist('subject[]')
+    # db.users.insert(user_data)
+    # sendmail(subject="Registration for Flask Admin Boilerplate", sender="Flask Admin Boilerplate", recipient=user_data["email"], body="You successfully registered on Flask Admin Boilerplate")
     # studentData={k:v for k,v in data.items() if (k=="username" or k=="name" or k=="email" or k=="mobile" or k=="rollnumber")}
     try :
-        db.users.insert(user_data)
-        # db.studentdataset.insert(studentData)
+        db.teachersdataset.insert(user_data)
         print("Succesully added Registration Data to DB")
     except:
         print("Failed to Add Registration Data In DB")
@@ -210,7 +212,6 @@ def fetchTimetable(clasroom):
     for i in res:
         a = i["class"][clasroom]
         li.append(a)
-    print(li)
     return li
 
 
@@ -379,7 +380,7 @@ def identify():
     identifiedFace=[]
 
     for image in imageName:
-        i = open(imageFolder+'/'+image, 'r+b')
+        i = open(destination+'/'+image, 'r+b')
         faces = face_client.face.detect_with_stream(i, detection_model='detection_03')
         face_ids.append(faces[0].face_id)
 
@@ -398,3 +399,7 @@ def identify():
             print('No person identified for face ID {} .'.format(person.face_id))
 
     print("identified unique face ids : {}".format(identifiedFace))
+# Fetch teacher Information
+def fetchTeacher():
+    res = db.teachersdataset.find()
+    return res
