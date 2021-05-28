@@ -72,12 +72,20 @@
             </div>
 
             <div class="form-group row">
+              <p>Enter multiple subjects , separated by a comma please follow instructions carefully.</p>
+
               <div class="col-sm-6 mb-3 mb-sm-0">
-                <input type="number" class="form-control form-control-user" name="age" id="age" placeholder="Age"
+
+                <input type="text" class="form-control form-control-user" name="subject"id="subject" size="15" list="sublist" placeholder="Enter Subjects"
                   required>
-
+                  <datalist id="sublist">
+                    <option value="oop">
+                    <option value="dmw">
+                    <option value="dsa">
+                    <option value="daa">
+                   </datalist>
+                   
               </div>
-
               <div class="col-sm-6">
                 <input type="number" class="form-control form-control-user" name="number" id="number"
                   placeholder="Contact Number" required>
@@ -86,16 +94,23 @@
             </div>
 
             <!-- </div> -->
-
+            <p>Enter multiple classes name , separated by a comma.</p>
             <div id="pass_response"></div>
             <div class="form-group">
-              <input type="text" class="form-control form-control-user" name="class" placeholder="class" required>
+              <input type="text" class="form-control form-control-user" name="Class" id="Class"size="15" list="classlist" placeholder="Enter class" required>
+              <datalist id="classlist">
+                <option value="becs">
+                <option value="beit">
+                <option value="tecs">
+                <option value="teit">
+               </datalist>
+
             </div>
-            <div class="form-group">
+            <!-- <div class="form-group">
               <input type="text" class="form-control form-control-user" id="username" name="roll_number"
                 placeholder="Roll Number" required>
               <div id="uname_response"></div>
-            </div>
+            </div> -->
             <div class="camera-text-center" style="text-align:center;">
               <video id="video">Video stream not available.</video>
               <div><button id="startbutton" style="height: 50px;width: 300px;margin: 20px;"

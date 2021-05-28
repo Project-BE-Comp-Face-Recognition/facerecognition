@@ -62,7 +62,7 @@ def registerUser():
     user_data["password"] = getHashed(user_data["password"])
     user_data["confirmpassword"] = getHashed(user_data["confirmpassword"])
     db.users.insert(user_data)
-    sendmail(subject="Registration for Flask Admin Boilerplate", sender="Flask Admin Boilerplate", recipient=user_data["email"], body="You successfully registered on Flask Admin Boilerplate")
+    # sendmail(subject="Registration for Flask Admin Boilerplate", sender="Flask Admin Boilerplate", recipient=user_data["email"], body="You successfully registered on Flask Admin Boilerplate")
     # studentData={k:v for k,v in data.items() if (k=="username" or k=="name" or k=="email" or k=="mobile" or k=="rollnumber")}
     try :
         db.users.insert(user_data)
