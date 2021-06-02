@@ -235,12 +235,21 @@ def addPersonIdToDb(personId,prn):
 
 
 def fetchTimetable(clasroom):
-    res = db.timetable.find({}, {"class": 1, "_id": 0})
-    li = []
-    for i in res:
-        a = i["class"][clasroom]
-        li.append(a)
-    return li
+    session['clasroom'] = clasroom
+    res=list(db.timetable.aggregate([
+    {"$match":{
+        "class.classroom":clasroom
+    }},
+    {"$unwind":"$class"},
+    {"$unwind":"$class.timetable"},
+    { "$match": {
+        "class.classroom": clasroom}}
+    ]))
+    tt = []
+    ftt = res[0]['class']['timetable']
+    tt.append(ftt)
+    return tt
+    
 
 
 
@@ -303,9 +312,7 @@ def showClassroom():
 #delete button
 def delet(email_del):
     db.users.remove({"email" : email_del})
-
-
-
+    
 #Edit button
 def fetchuser(email_find):
     users = db.users.find_one({"email":email_find})
@@ -410,8 +417,30 @@ def checkclass():
             li.append(i["email"])
         return li
 
-
-# Fetch teacher Information
-def fetchTeacher():
-    res = db.teachersdataset.find()
-    return res
+#find Timetable
+def findTimetable(day):
+    clasroom = session.get('clasroom')
+    res=list(db.timetable.aggregate([
+    {"$match":{
+        "class.classroom":clasroom
+    }},
+    {"$unwind":"$class"},
+    {"$unwind":"$class.timetable"},
+    { "$match": {
+        "class.classroom": clasroom}}
+    ]))
+    tt = []
+    ftt = res[0]['class']['timetable'][day]
+    tt.append(ftt)
+    return tt
+    
+#Update Timetable
+def updateTimetable(day):
+    clasroom = session.get('clasroom')
+    key = [k for k in request.form]                                      
+    val = [request.form[k] for k in request.form] 
+    data = dict(zip(key, val))
+    for time,subject in data.items():      
+        db.timetable.update_one({'class.classroom':clasroom},{'$set':{"class.$.timetable."+day+"."+time:subject}})
+    
+    
