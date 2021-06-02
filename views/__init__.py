@@ -1,4 +1,5 @@
-from flask import render_template, request, redirect, url_for, session
+import re
+from flask import render_template, request, redirect, url_for, session,jsonify
 from flask import jsonify
 from app import app
 from model import *
@@ -6,6 +7,11 @@ import os
 import random, string
 from werkzeug.utils import secure_filename
 
+@app.errorhandler(404)
+def not_found(e):
+    return render_template("404.html"),404
+
+ 
 
 @app.route('/', methods=["GET"])
 def home():
@@ -252,14 +258,11 @@ def update_password():
     return redirect(url_for("updateprofile"))                         
 
 #student registration
-@app.route('/reg',methods=['GET','POST'])
+@app.route('/reg',methods=['GET'])
 def reg():
     if request.method=="GET":
         classroom=showClassroom()
         return render_template("student-registration.html",classroom=classroom)
-    if request.method=="POST":
-        studentregistration()
-        return  redirect(url_for("blank"))
     
         
 #Generate report
@@ -316,14 +319,37 @@ def feedback():
             body = "Hello,\n Here is your feedback link ,please submit your feedback . \n "+ feedback
 
             for i in check:
-
                 recipients = i
-
                 recipt = sendmail(subject,sender,recipients,body)
                 print(recipt)
 
         return redirect(url_for('home'))
 
+@app.route('/identify',methods=['GET'])
+def identify():
+    if request.method=="GET":
+        classroom=showClassroom()
+        teacherId=fetchTeacherId()
+        return render_template("identify.html",classroom=classroom,teacherId=teacherId)
+    
+# Teachers_Information Page
+@app.route('/teachersregister', methods=["GET"])
+def teachersregister():
+    teachers = fetchTeacher()
+    return render_template('teachers.html', teachers=teachers)   
+
+
+@app.route('/subjectbyid',methods=["POST"])
+def getSubjecById():
+    if request.method=="POST":
+        teachersId=request.form['teacherId']
+        subjectList=fetchTeachersSubject(teachersId)
+    return jsonify(subjectList)
+
+
+@app.route('/upload',methods=["POST"])
+def uploadidentify():
+    return identifyFace()
 #Edit Timetable
 @app.route('/edit_tt/<string:day>', methods = ["GET","POST"])
 def edit_tt(day):

@@ -22,10 +22,8 @@
                             <th>Email</th>
                             <th>Contact Number</th>
                             <th>Class</th>
-                            <th>Sub_1</th>
-                            <th>Sub_2</th>
-                            <th>Subj_3</th>
-
+                            <th>Subject</th>
+                            
 
 
 
@@ -44,10 +42,10 @@
                             <td>{{ atd['email'] }}</td>
                             <td>{{ atd['number'] }}</td>
                             <td>{{ atd['classroom'] }}</td>
-                            <td>{{ atd['subject'][0]}} </td>
-                            <td>{{ atd['subject'][1]}} </td>
-                            <td>{{ atd['subject'][2]}} </td>
-
+                            <td>{% for sub in atd['subject'] %} 
+                                {{sub}}<br>{% endfor %}
+                            </td>
+                            
 
                             <!-- <td>
                                 <a href="/edit/{{atd.email}}" class="btn btn-secondary btn-sm">edit</a>

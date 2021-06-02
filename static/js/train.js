@@ -1,6 +1,6 @@
 function loginSuccess() {
     toastr.success("Trained Successfully")
-    window.location.href = "/parents_register"
+    window.location.href = "/reg"
   }
   
   $( '#register' ).submit( function( e ) {
@@ -21,7 +21,7 @@ function loginSuccess() {
               title: "Training Successful",
             })
             .then((result) => {
-              window.location.href = "/parents_register"
+              window.location.href = "/reg"
             })
         } else if (response === "error") {
           swal
