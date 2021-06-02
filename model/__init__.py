@@ -1,3 +1,4 @@
+from flask.json import jsonify
 from app import app
 from flask import request, session
 from helpers.database import *
@@ -7,6 +8,7 @@ from helpers.recognition import *
 from helpers.path import *
 from bson import json_util, ObjectId
 import json,shutil
+from datetime import date
 
 def checkloginusername():
     username = request.form["username"]
@@ -64,9 +66,6 @@ def registerTeacher():
     user_data["password"] = getHashed(user_data["password"])
     user_data["confirmpassword"] = getHashed(user_data["confirmpassword"])
     subject= request.form.getlist('subject[]')
-    # db.users.insert(user_data)
-    # sendmail(subject="Registration for Flask Admin Boilerplate", sender="Flask Admin Boilerplate", recipient=user_data["email"], body="You successfully registered on Flask Admin Boilerplate")
-    # studentData={k:v for k,v in data.items() if (k=="username" or k=="name" or k=="email" or k=="mobile" or k=="rollnumber")}
     try :
         db.teachersdataset.insert(user_data)
         print("Succesully added Registration Data to DB")
@@ -78,17 +77,14 @@ def registerTeacher():
 
 def registerRegisterUser():
     fields = [k for k in request.form]                                      
-    values = [request.form[k] for k in request.form]
+    values = [request.form[k] for k in request.form] 
     data = dict(zip(fields, values))
     user_data = json.loads(json_util.dumps(data))
     user_data["password"] = getHashed(user_data["password"])
     user_data["confirmpassword"] = getHashed(user_data["confirmpassword"])
-    # db.users.insert(user_data)
     sendmail(subject="Registration for Flask Admin Boilerplate", sender="Flask Admin Boilerplate", recipient=user_data["email"], body="You successfully registered on Flask Admin Boilerplate")
-    # studentData={k:v for k,v in data.items() if (k=="username" or k=="name" or k=="email" or k=="mobile" or k=="rollnumber")}
     try :
         db.users.insert(user_data)
-        # db.studentdataset.insert(studentData)
         print("Succesully added Registration Data to DB")
     except:
         print("Failed to Add Registration Data In DB")
@@ -101,14 +97,14 @@ def registerStudent():
     values = [request.form[k] for k in request.form]
     data = dict(zip(fields, values))
     user_data = json.loads(json_util.dumps(data))
-    # user_data["password"] = getHashed(user_data["password"])
-    # user_data["confirmpassword"] = getHashed(user_data["confirmpassword"])
-    # db.users.insert(user_data)
-    # sendmail(subject="Registration for Flask Admin Boilerplate", sender="Flask Admin Boilerplate", recipient=user_data["email"], body="You successfully registered on Flask Admin Boilerplate")
-    # studentData={k:v for k,v in data.items() if (k=="username" or k=="name" or k=="email" or k=="mobile" or k=="rollnumber")}
+    fields =[k for k in request.form if k=="name" or k=="username" or k=="classroom" or k=="rollnumber" or k=="personId" ]                                      
+    fields.append("attendance")
+    values = [request.form[k] for k in request.form if k=="name" or k=="username" or k=="classroom" or k=="rollnumber" or k=="personId"]
+    values.append([])
+    attendanceData= dict(zip(fields, values))
     try :
         db.studentdataset.insert(user_data)
-        # db.studentdataset.insert(studentData)
+        db.attendancelog.insert(attendanceData)
         print("Succesully added Registration Data to DB")
     except:
         print("Failed to Add Registration Data In DB")
@@ -192,14 +188,21 @@ def addGroupName():
     return classname
 
 def personGroupPerson(classroom,prn):
-    userID = face_client.person_group_person.create(classroom,prn)
-    print("PersonId--->",userID.person_id)
-    
-    return userID.person_id
+    try:
+
+        userID = face_client.person_group_person.create(classroom,prn)
+        print("PersonId--->",userID.person_id)
+        return userID.person_id
+
+    except Exception as e:
+        print(e)
+        return "error"
+
 
 def addPersonIdToDb(personId,prn):
     try :
         db.studentdataset.update_one({"username":prn},{"$set":{"personId":personId}},upsert=False)
+        db.attendancelog.update_one({"username":prn},{"$set":{"personId":personId}},upsert=False)
         print("Succesfully Added Person Id to DB")
     except:
         print("Error while Adding Unique Id to DB")
@@ -244,18 +247,31 @@ def studentregistration():
         file.save(destination)
     
     uniquePersonId=personGroupPerson(classname,prn)
+    if uniquePersonId == "error":
+        return "error"
     print("Genrated Unique ID")
     addFaceStatus=addFaceToPersonGroup(classname,uniquePersonId,prn,studentfolderpath)
         
     
     if addFaceStatus== True:
         removeTrainDataset(studentfolderpath)
-        registrationStatus=registerStudent()
-        status=addPersonIdToDb(uniquePersonId,prn)
-        if status == True:
-            print("Trained Faces & Generated Unique ID and Upadted in DB")
-            return ("success")
+        face_client.person_group.train(classname)    
+        while (True):
+            training_status = face_client.person_group.get_training_status(classname)
+            print("Training status: {}.".format(training_status.status))
+            print()
+            if (training_status.status is TrainingStatusType.succeeded):
+                registrationStatus=registerStudent()
+                status=addPersonIdToDb(uniquePersonId,prn)
+                if status==True:
+                    print("Trained Faces & Generated Unique ID and Upadted in DB")
+                    return ("success")
+                
+            elif (training_status.status is TrainingStatusType.failed):
+                face_client.person_group_person.delete(person_group_id=classname,person_id=uniquePersonId,custom_headers=None,raw=False)
+                return ("error")        
     else:
+        removeTrainDataset(studentfolderpath)
         return ("error")
     
             
@@ -360,46 +376,111 @@ def checkclass():
             li.append(i["email"])
         return li
 
-def identify():
+
+def markAttendance(identifiedFace,subjectname):
+    today = date.today()
+
+    dateToday= today.strftime("%d/%m/%Y")
+    for i in identifiedFace:
+        res=db.attendancelog.update_one({'personId':i, "attendance.date":dateToday} , {"$inc":{"attendance.$.todaysattendance."+subjectname:1}})
+        modified=res.modified_count
+        if modified==0:
+            ta={subjectname:1}
+            k=["date","todaysattendance"]
+            v=[dateToday,ta]
+            attendance=dict(zip(k,v))
+            print(attendance)
+            db.attendancelog.update_one({'personId':i},{'$push':{"attendance":attendance}})
+            return "success"
+
+        else:
+            return "success"
 
 
+
+
+def identifyFace():
+
+    classroom=request.form['classroom']
+    teahersId=request.form['teachersId']
+    subject=request.form['subject']
 
     h=str(home)
     target = os.path.join(h, "identify")
     if not os.path.isdir(target):
         os.mkdir(target)
-
+    teacherfolder = os.path.join(target, teahersId+"/")
+    if not os.path.isdir(teacherfolder):
+        os.mkdir(teacherfolder)
     for file in request.files.getlist("files[]"):
         filename = file.filename
-        destination = "/".join([target, filename])
+        destination = "/".join([teacherfolder, filename])
         file.save(destination)
 
-    imageName=[filename for filename in os.listdir(destination) ]
+    imageName=[filename for filename in os.listdir(teacherfolder) ]
     print(imageName)
     face_ids = []
     identifiedFace=[]
 
     for image in imageName:
-        i = open(destination+'/'+image, 'r+b')
-        faces = face_client.face.detect_with_stream(i, detection_model='detection_03')
-        face_ids.append(faces[0].face_id)
+        i = open(teacherfolder+'/'+image, 'r+b')
+        try:
+            print("Fetching Face Ids ../")
+            faces = face_client.face.detect_with_stream(i, detection_model='detection_03')
+            face_ids.append(faces[0].face_id)
+        except:
+            i.close()
+            print("No Face Detected")
+            removeTrainDataset(target)
+            return "error"
+    
+    i.close()
+    removeTrainDataset(target)        
+    print("Identified face Ids From Upload-->",face_ids)
+    try:
+        results = face_client.face.identify(face_ids, classroom)
+        if not results:
+            print('No person identified in the person group for faces from {}.'.format(imageName))
+            return 0
+        print("Finding Person ID")
+        for person in results:
+            if len(person.candidates) > 0:
+                print(person.face_id )
+                identifiedUniqueId=person.candidates[0].person_id
+                if identifiedUniqueId not in identifiedFace :
+                    identifiedFace.append(identifiedUniqueId)
 
-    results = face_client.face.identify(face_ids, PERSON_GROUP_ID)
-    if not results:
-        print('No person identified in the person group for faces from {}.'.format(imageName))
-    for person in results:
-        if len(person.candidates) > 0:
-            print(person.face_id )
-            identifiedUniqueId=person.candidates[0].person_id
-            if identifiedUniqueId not in identifiedFace :
-                identifiedFace.append(identifiedUniqueId)
+                print('Person for face ID {} is identified with a confidence of {}.'.format(person.face_id, person.candidates[0].confidence)) # Get topmost confidence score
+            else:
+                print('No person identified for face ID {} .'.format(person.face_id))
 
-            print('Person for face ID {} is identified with a confidence of {}.'.format(person.face_id, person.candidates[0].confidence)) # Get topmost confidence score
+        print("identified unique face ids : {}".format(identifiedFace))
+        status=markAttendance(identifiedFace,subject)
+        if status=='success':
+            return jsonify(identifiedFace)
         else:
-            print('No person identified for face ID {} .'.format(person.face_id))
+            return "error"
+    except:
+        i.close()
+        removeTrainDataset(target)    
+        return "error"
 
-    print("identified unique face ids : {}".format(identifiedFace))
+
 # Fetch teacher Information
 def fetchTeacher():
     res = db.teachersdataset.find()
     return res
+
+def fetchTeacherId():
+    res = db.teachersdataset.find({},{'username':1})
+    teachersid=[]
+    for i in res:
+        teachersid.append(i['username'])
+    return teachersid
+
+def fetchTeachersSubject(teacherId):
+    print("Teachers Id",teacherId)
+    res=db.teachersdataset.find_one({'username':teacherId},{"subject":1,'_id':0})
+    subjectList=(res['subject'])
+    return (subjectList)
+    
