@@ -26,10 +26,11 @@ def home():
 @app.route('/register', methods=["GET", "POST"])
 def register():
     if request.method == "GET":
+        classroom=showClassroom()
 
-        return render_template("register.html")
+        return render_template("register.html",classroom=classroom)
     elif request.method == "POST":
-        registerUser()
+        registerTeacher()
 
         return redirect(url_for("parents_register"))
 
@@ -89,13 +90,33 @@ def cards():
 # Charts Page
 @app.route('/charts', methods=["GET"])
 def charts():
+    return render_template('charts.html')
+
+# AreaCharts 
+@app.route('/areachart', methods=["GET"])
+def areachart():
     ch_list = fetchSubjectAttendance()
     ab_list = fetchlabelAttendance()
+
+    return jsonify({'payload':json.dumps({'data':ch_list, 'labels':ab_list})})
+
+# pieCharts 
+@app.route('/piechart', methods=["GET"])
+def piechart():
+    
+    ch_list = fetchSubjectAttendance()
     pie=fetchlabelNameAttendance()
 
+    return jsonify({'payload':json.dumps({'data':ch_list, 'labels':pie})})
 
-    # atd_list = mongo.facerecognition.attendace.find()
-    return render_template('charts.html', ch_list=ch_list,ab_list=ab_list,pie=pie)
+# barCharts 
+@app.route('/barchart')
+def barchart():
+    ch_list = fetchSubjectAttendance()
+    ab_list = fetchlabelAttendance()
+
+    return jsonify({'payload':json.dumps({'data':ch_list, 'labels':ab_list})})
+
 
 
 # Attendance Record Page
