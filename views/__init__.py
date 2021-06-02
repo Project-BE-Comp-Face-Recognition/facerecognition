@@ -96,13 +96,33 @@ def cards():
 # Charts Page
 @app.route('/charts', methods=["GET"])
 def charts():
+    return render_template('charts.html')
+
+# AreaCharts 
+@app.route('/areachart', methods=["GET"])
+def areachart():
     ch_list = fetchSubjectAttendance()
     ab_list = fetchlabelAttendance()
+
+    return jsonify({'payload':json.dumps({'data':ch_list, 'labels':ab_list})})
+
+# pieCharts 
+@app.route('/piechart', methods=["GET"])
+def piechart():
+    
+    ch_list = fetchSubjectAttendance()
     pie=fetchlabelNameAttendance()
 
+    return jsonify({'payload':json.dumps({'data':ch_list, 'labels':pie})})
 
-    # atd_list = mongo.facerecognition.attendace.find()
-    return render_template('charts.html', ch_list=ch_list,ab_list=ab_list,pie=pie)
+# barCharts 
+@app.route('/barchart')
+def barchart():
+    ch_list = fetchSubjectAttendance()
+    ab_list = fetchlabelAttendance()
+
+    return jsonify({'payload':json.dumps({'data':ch_list, 'labels':ab_list})})
+
 
 
 # Attendance Record Page
@@ -176,12 +196,11 @@ def checkgroupname():
 @app.route('/timetable',methods=["GET","POST"])
 def timetable():
     if request.method=='GET':
-        kd_list = fetchTimetable("becs")
+        kd_list = fetchTimetable("beit")
         clas=showClassroom()
         return render_template('timetable.html',classroom=clas,kd_list=kd_list)
     if request.method=='POST':
         classroom=request.form.get('classroom')
-        print(classroom)
         clas=showClassroom()
         kd_list = fetchTimetable(classroom)
         return render_template('timetable.html',classroom=clas,kd_list=kd_list)
@@ -227,17 +246,16 @@ def updateprofile():
         return render_template('profile.html',users = users)
     elif request.method == 'POST':
         saveprofile(uname)
+        file = request.files['file']
+        upload_file(file)
         return redirect(url_for("updateprofile"))
 
 # update Password
-@app.route('/update_password', methods=["GET","POST"])
+@app.route('/update_password', methods=["POST"])
 def update_password():
-    username = session.get('username')
-    if request.method == "GET":
-        return render_template('reset_password.html')
-    elif request.method == 'POST':  
-        updatepass(username)
-        return redirect(url_for("user_info"))                         
+    username = session.get('username') 
+    updatepass(username)
+    return redirect(url_for("updateprofile"))                         
 
 #student registration
 @app.route('/reg',methods=['GET'])
@@ -269,7 +287,7 @@ def reset_pass():
             subject = "Confirm Password Change"
             sender = app.config["MAIL_USERNAME"]
             recipients = check
-            body = "Hello,\nWe've received a request to reset your password. If you want to reset your password, click the link below and enter your new password\n http://127.0.0.1:5000/"+hashCode
+            body = "Hello,\nWe've received a request to reset your password. If you want to reset your password, click the link below and enter your new password\n http://127.0.0.1:5000/"+hashCode+"/reset_password"
             recipt = sendmail(subject,sender,recipients,body)
             print(recipt)
             return render_template('login.html')
@@ -277,7 +295,7 @@ def reset_pass():
     return render_template('forgot-password.html') 
 
 # reset Password
-@app.route('/reset/<string:hashCode>', methods=["GET","POST"])
+@app.route('/<string:hashCode>/reset_password', methods=["GET","POST"])
 def reset_password(hashCode):
     if request.method == "GET":
         return render_template('reset_password.html')
@@ -307,7 +325,6 @@ def feedback():
 
         return redirect(url_for('home'))
 
-
 @app.route('/identify',methods=['GET'])
 def identify():
     if request.method=="GET":
@@ -333,3 +350,18 @@ def getSubjecById():
 @app.route('/upload',methods=["POST"])
 def uploadidentify():
     return identifyFace()
+#Edit Timetable
+@app.route('/edit_tt/<string:day>', methods = ["GET","POST"])
+def edit_tt(day):
+    session['day'] = day
+    return redirect(url_for("update_tt"))
+  
+@app.route('/update_tt',methods=["GET","POST"])
+def update_tt():  
+    day = session.get('day')
+    if request.method == "GET":
+        tt = findTimetable(day)
+        return render_template('edit_timetable.html',tt = tt ,day = day)    
+    elif request.method == 'POST': 
+        updateTimetable(day)        
+        return redirect(url_for("timetable"))

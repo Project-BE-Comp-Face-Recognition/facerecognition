@@ -10,6 +10,7 @@ from bson import json_util, ObjectId
 import json,shutil
 from datetime import date
 
+
 def checkloginusername():
     username = request.form["username"]
     check = db.users.find_one({"username": username})
@@ -17,6 +18,7 @@ def checkloginusername():
         return "No User"
     else:
         return "User exists"
+
 
 def checkloginpassword():
     username = request.form["username"]
@@ -28,7 +30,8 @@ def checkloginpassword():
         return "correct"
     else:
         return "wrong"
-    
+
+
 
 def checkusername():
     username = request.form["username"]
@@ -38,6 +41,8 @@ def checkusername():
     else:
         return "Username taken"
 
+
+
 def checkemail():
     email = request.form["email"]
     check = db.users.find_one({"email": email})
@@ -45,6 +50,8 @@ def checkemail():
         return "Available"
     else:
         return "Email taken"
+
+
 
 def checkFaceGroupName():
     groupname = request.form["groupname"]
@@ -75,6 +82,8 @@ def registerTeacher():
     return True
 
 
+
+
 def registerRegisterUser():
     fields = [k for k in request.form]                                      
     values = [request.form[k] for k in request.form] 
@@ -90,6 +99,8 @@ def registerRegisterUser():
         print("Failed to Add Registration Data In DB")
         return False
     return True
+
+
 
 
 def registerStudent():
@@ -112,10 +123,14 @@ def registerStudent():
     return True
 
 
+
+
 def fetchAttendance():
     res = db.attendance.find()    
     return res
-    
+
+
+
 #fetch total attendance
 def fetchTotalAttendance():
     res = db.attendance.find({}, {"name": 1, "_id": 0})
@@ -125,11 +140,15 @@ def fetchTotalAttendance():
     return count
 
 
+
+
 # Fetch Student Information
 def fetchstudent():
     res = db.users.find()
     return res
-   
+
+
+
 #attendance table
 def fetchSubjectAttendance():
     res = db.attendance.find({}, {"sub1": 1, "_id": 0})
@@ -138,6 +157,8 @@ def fetchSubjectAttendance():
         a=int(i["sub1"])
         li.append(a)
     return li
+
+
 
 # Fetch Label for chart creation
 def fetchlabelAttendance():
@@ -178,6 +199,7 @@ def createPersonGroup(PERSON_GROUP_ID):
     except :
         print("error while creating class")
 
+
 def addGroupName():
     fields = [k for k in request.form]                                      
     values = [request.form[k] for k in request.form]
@@ -186,6 +208,8 @@ def addGroupName():
     db.facegroup.insert(user_data)
     classname=values[0]
     return classname
+
+
 
 def personGroupPerson(classroom,prn):
     try:
@@ -199,6 +223,8 @@ def personGroupPerson(classroom,prn):
         return "error"
 
 
+
+
 def addPersonIdToDb(personId,prn):
     try :
         db.studentdataset.update_one({"username":prn},{"$set":{"personId":personId}},upsert=False)
@@ -209,19 +235,32 @@ def addPersonIdToDb(personId,prn):
         return False
     return True
 
+
+
 def fetchTimetable(clasroom):
-    res = db.timetable.find({}, {"class": 1, "_id": 0})
-    li = []
-    for i in res:
-        a = i["class"][clasroom]
-        li.append(a)
-    return li
+    session['clasroom'] = clasroom
+    res=list(db.timetable.aggregate([
+    {"$match":{
+        "class.classroom":clasroom
+    }},
+    {"$unwind":"$class"},
+    {"$unwind":"$class.timetable"},
+    { "$match": {
+        "class.classroom": clasroom}}
+    ]))
+    tt = []
+    ftt = res[0]['class']['timetable']
+    tt.append(ftt)
+    return tt
+    
 
 
 
 '''
 Face Recogniton End
 '''
+
+
 def studentregistration():
 
     h=str(home)
@@ -274,7 +313,8 @@ def studentregistration():
         removeTrainDataset(studentfolderpath)
         return ("error")
     
-            
+
+
 
 def showClassroom():
     classroom=[]
@@ -282,16 +322,20 @@ def showClassroom():
     for val in result:
         classroom.append(val["groupname"])
     return classroom
-  
+
+
+
 #delete button
 def delet(email_del):
     db.users.remove({"email" : email_del})
-  
+    
 #Edit button
 def fetchuser(email_find):
     users = db.users.find_one({"email":email_find})
     return users
-    
+
+
+
 def updateuser(email):
     name = request.form['name']
     clas = request.form['class']
@@ -302,11 +346,15 @@ def updateuser(email):
                       "class" : clas,
                       "roll_number" : rno}})
   
+
+
 # Edit Profile
 def findprofile(uname):
     users = db.users.find_one({"username":uname})
     return users
-    
+
+
+
 def saveprofile(uname):
     name = request.form['name']
     clas = request.form['class']
@@ -320,7 +368,8 @@ def saveprofile(uname):
                       "roll_number" : rno,
                       "age" : age,
                       "number" : number}})     
-    
+
+
 #update password
 def updatepass(uname):
     password = getHashed(request.form['enter_password'])
@@ -329,6 +378,8 @@ def updatepass(uname):
                    {"$set": {
                       "password" : password,
                       "confirmpassword" : confirmpassword}})
+
+
 
 def checkmail():
     email = request.form["email"]
@@ -339,7 +390,8 @@ def checkmail():
         session["rp_email"] = check['email']
         return check['email']
 
-      
+
+
 #reset password
 def resetpass():
     password = getHashed(request.form['enter_password'])
@@ -350,6 +402,8 @@ def resetpass():
                       "password" : password,
                       "confirmpassword" : confirmpassword}})
 
+
+
 def fetchlabelNameAttendance():
     res = db.attendance.find({}, {"name": 1, "_id": 0})
     li = []
@@ -357,6 +411,8 @@ def fetchlabelNameAttendance():
         a=i["name"]
         li.append(a)
     return li
+
+
 
 
 def removeTrainDataset(path: str )-> None :
@@ -375,6 +431,7 @@ def checkclass():
         for i in check:
             li.append(i["email"])
         return li
+
 
 
 def markAttendance(identifiedFace,subjectname):
@@ -483,4 +540,31 @@ def fetchTeachersSubject(teacherId):
     res=db.teachersdataset.find_one({'username':teacherId},{"subject":1,'_id':0})
     subjectList=(res['subject'])
     return (subjectList)
+
+#find Timetable
+def findTimetable(day):
+    clasroom = session.get('clasroom')
+    res=list(db.timetable.aggregate([
+    {"$match":{
+        "class.classroom":clasroom
+    }},
+    {"$unwind":"$class"},
+    {"$unwind":"$class.timetable"},
+    { "$match": {
+        "class.classroom": clasroom}}
+    ]))
+    tt = []
+    ftt = res[0]['class']['timetable'][day]
+    tt.append(ftt)
+    return tt
+    
+#Update Timetable
+def updateTimetable(day):
+    clasroom = session.get('clasroom')
+    key = [k for k in request.form]                                      
+    val = [request.form[k] for k in request.form] 
+    data = dict(zip(key, val))
+    for time,subject in data.items():      
+        db.timetable.update_one({'class.classroom':clasroom},{'$set':{"class.$.timetable."+day+"."+time:subject}})
+    
     
