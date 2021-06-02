@@ -169,12 +169,11 @@ def checkgroupname():
 @app.route('/timetable',methods=["GET","POST"])
 def timetable():
     if request.method=='GET':
-        kd_list = fetchTimetable("becs")
+        kd_list = fetchTimetable("beit")
         clas=showClassroom()
         return render_template('timetable.html',classroom=clas,kd_list=kd_list)
     if request.method=='POST':
         classroom=request.form.get('classroom')
-        print(classroom)
         clas=showClassroom()
         kd_list = fetchTimetable(classroom)
         return render_template('timetable.html',classroom=clas,kd_list=kd_list)
@@ -223,14 +222,11 @@ def updateprofile():
         return redirect(url_for("updateprofile"))
 
 # update Password
-@app.route('/update_password', methods=["GET","POST"])
+@app.route('/update_password', methods=["POST"])
 def update_password():
-    username = session.get('username')
-    if request.method == "GET":
-        return render_template('reset_password.html')
-    elif request.method == 'POST':  
-        updatepass(username)
-        return redirect(url_for("user_info"))                         
+    username = session.get('username') 
+    updatepass(username)
+    return redirect(url_for("updateprofile"))                         
 
 #student registration
 @app.route('/reg',methods=['GET','POST'])
@@ -265,7 +261,7 @@ def reset_pass():
             subject = "Confirm Password Change"
             sender = app.config["MAIL_USERNAME"]
             recipients = check
-            body = "Hello,\nWe've received a request to reset your password. If you want to reset your password, click the link below and enter your new password\n http://127.0.0.1:5000/"+hashCode
+            body = "Hello,\nWe've received a request to reset your password. If you want to reset your password, click the link below and enter your new password\n http://127.0.0.1:5000/"+hashCode+"/reset_password"
             recipt = sendmail(subject,sender,recipients,body)
             print(recipt)
             return render_template('login.html')
@@ -273,7 +269,7 @@ def reset_pass():
     return render_template('forgot-password.html') 
 
 # reset Password
-@app.route('/<string:hashCode>', methods=["GET","POST"])
+@app.route('/<string:hashCode>/reset_password', methods=["GET","POST"])
 def reset_password(hashCode):
     if request.method == "GET":
         return render_template('reset_password.html')
@@ -305,4 +301,18 @@ def feedback():
 
         return redirect(url_for('home'))
 
-
+#Edit Timetable
+@app.route('/edit_tt/<string:day>', methods = ["GET","POST"])
+def edit_tt(day):
+    session['day'] = day
+    return redirect(url_for("update_tt"))
+  
+@app.route('/update_tt',methods=["GET","POST"])
+def update_tt():  
+    day = session.get('day')
+    if request.method == "GET":
+        tt = findTimetable(day)
+        return render_template('edit_timetable.html',tt = tt ,day = day)    
+    elif request.method == 'POST': 
+        updateTimetable(day)        
+        return redirect(url_for("timetable"))

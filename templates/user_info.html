@@ -46,37 +46,11 @@
                                 <a href="/edit/{{atd.email}}" class="btn btn-secondary btn-sm">edit</a>
                             </td>
                             <td>
-                                <button  data-toggle="modal" data-target="#delete" class="btn btn-danger btn-delete btn-sm">delete</button>
+                                <a href="/delete/{{atd.email}}" class="btn btn-danger btn-delete btn-sm">Delete</a>
                             </td>
 
                         </tr>
-
-                        <!-- Modal -->
-                        <div id="delete" class="modal fade" role="dialog">
-                            <div class="modal-dialog">
-                        
-                                <!-- Modal content-->
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h4 class="modal-title">Delete</h4>
-                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                        
-                                    </div>
-                                    <div class="modal-body">
-                                        <p>Are you sure.
-                                            You want to Delete data of {{atd.name}} ?
-                                        </p>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                        <a href="/delete/{{atd.email}}" class="btn btn-primary" >Delete</a>
-                                    </div>
-                                </div>
-                        
-                            </div>
-                        </div>
-                        <!-- //////////////////////////////////////////////////////////////////////////// -->
-
+                   
                         {% endfor %}
 
 
