@@ -567,4 +567,9 @@ def updateTimetable(day):
     for time,subject in data.items():      
         db.timetable.update_one({'class.classroom':clasroom},{'$set':{"class.$.timetable."+day+"."+time:subject}})
     
-    
+#Fetch syllabus
+def fetchSyllabus():
+    clasroom = session.get('clasroom')
+    li = db.syllabus.find_one({"classroom" : clasroom})
+    syllabus = li['subject']
+    return syllabus

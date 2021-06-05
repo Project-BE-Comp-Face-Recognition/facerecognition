@@ -2,7 +2,7 @@
 {% block body %}
 
 <div class="row">
-    <div class="col-md-4 offset-md-4">  
+    <div class="col-md-6 offset-md-3">  
         <div class="card card-body">
 
             <h5 class="text-center">{{day}}</h5>
@@ -10,37 +10,87 @@
             <form action="/update_tt" method="POST">
                 <form id="myform" class="users" method="POST">
                     {% for tt in tt %}
-                    <div class="form-group">
-                        <input type="text" name="9:15-10:15" value="{{tt['9:15-10:15']}}" class="form-control" placeholder="period 1">
-                    </div>
-                    <div class="form-group">
-                        <input type="text" name="10:15-11:15" value="{{tt['10:15-11:15']}}" class="form-control" placeholder="period 2">
-                    </div>
-                    <div class="form-group">
-                        <input type="text" name="11:15-11:30" value="{{tt['11:15-11:30']}}" class="form-control" placeholder="break 1" disabled>
-                    </div>
-                    <div class="form-group">
-                        <input type="text" name="11:30-12:30" value="{{tt['11:30-12:30']}}" class="form-control" placeholder="period 3">
-                    </div>
-                    <div class="form-group">
-                        <input type="text" name="12:30-1:30" value="{{tt['12:30-1:30']}}" class="form-control" placeholder="period 4">
-                    </div>
-                    <div class="form-group">
-                        <input type="text" name="1:30-2:15" value="{{tt['1:30-2:15']}}" class="form-control" placeholder="break 2"disabled>
-                    </div>
-                    <div class="form-group">
-                        <input type="text" name="2:15-3:15" value="{{tt['2:15-3:15']}}" class="form-control" placeholder="period 5">
-                    </div>
-                    <div class="form-group">
-                        <input type="text" name="3:15-4:15" value="{{tt['3:15-4:15']}}" class="form-control" placeholder="period 6">
-                    </div>
-                    <div class="form-group">
-                        <input type="text" name="4:15-5:00" value="{{tt['4:15-5:00']}}" class="form-control" placeholder="period 7">
-                    </div>
+                        
+                        <div class="form-groupy">
+                            <label for="9:15-10:15">Period 1</label>
+                            <select name="9:15-10:15"  class="form-control">
+                                <option  value="{{tt['9:15-10:15']}}" hidden>{{tt['9:15-10:15']}}</option>
+                                {% for subject in syllabus %}
+                                <option value="{{ subject }}" >{{ subject }}</option>
+                                {% endfor %}
+                            </select>    
+                        </div>
+                        <div class="form-group">
+                            <label for="10:15-11:15">Period 2</label>
+                            <select name="10:15-11:15" class="form-control" >
+                                <option value="{{tt['10:15-11:15']}}" hidden>{{tt['10:15-11:15']}}</option>
+                                {% for subject in syllabus %}
+                                <option value="{{ subject }}">{{ subject }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <input type="text" name="11:15-11:30" value="Short Break" class="form-control" placeholder="break 1" disabled>
+                        </div>
+
+                        <div class="form-group">
+                            <label for = "11:30-12:30" >Period 3</label>
+                            <select name="11:30-12:30" class="form-control" >
+                                <option value="{{tt['11:30-12:30']}}" hidden>{{tt['11:30-12:30']}}</option>
+                                {% for subject in syllabus %}
+                                <option value="{{ subject }}">{{ subject }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="12:30-1:30">Period 4</label>
+                            <select name="12:30-1:30" class="form-control" >
+                                <option value="{{tt['12:30-1:30']}}" hidden>{{tt['12:30-1:30']}}</option>
+                                {% for subject in syllabus %}
+                                <option value="{{ subject }}">{{ subject }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <input type="text" name="1:30-2:15" value="Lunch Break" class="form-control" placeholder="break 2" disabled>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="2:15-3:15">Period 5</label>
+                            <select name="2:15-3:15" class="form-control" >
+                                <option value="{{tt['2:15-3:15']}}" hidden>{{tt['2:15-3:15']}}</option>
+                                {% for subject in syllabus %}
+                                <option value="{{ subject }}">{{ subject }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>    
+
+                        <div class="form-group">
+                            <label for="3:15-4:15">Period 6</label>
+                            <select name="3:15-4:15" class="form-control" >
+                                <option value="{{tt['3:15-4:15']}}" hidden>{{tt['3:15-4:15']}}</option>
+                                {% for subject in syllabus %}
+                                <option value="{{ subject }}">{{ subject }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="4:15-5:00">Period 7</label>
+                            <select name="4:15-5:00" class="form-control" >
+                                <option value="{{tt['4:15-5:00']}}" hidden>{{tt['4:15-5:00']}}</option>
+                                {% for subject in syllabus %}
+                                <option value="{{ subject }}">{{ subject }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
                     {% endfor %}
 
                     <div class="form-group">
-                        <a data-toggle="modal" data-target="#update" class="btn btn-primary btn-block">
+                        <a data-toggle="modal" data-target="#update" class="btn btn-primary btn-block" style="color : white">
                             Update
                         </a>
                     </div>
