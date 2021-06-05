@@ -618,8 +618,23 @@ def updateTimetable(day):
         db.timetable.update_one({'class.classroom':clasroom},{'$set':{"class.$.timetable."+day+"."+time:subject}})
     
 #Fetch syllabus
-def fetchSyllabus():
-    clasroom = session.get('clasroom')
-    li = db.syllabus.find_one({"classroom" : clasroom})
+def fetchSyllabus(classroom):
+    if classroom == None:
+        classroom = session.get('clasroom')
+    li = db.syllabus.find_one({"classroom" : classroom})
     syllabus = li['subject']
     return syllabus
+
+#Update Syllabus
+def updatSyllabus(classname):
+    subjects = []
+    f = request.form
+    for key in f.keys():
+        for value in f.getlist(key):
+            subjects.append(value) 
+    db.syllabus.update_one({"classroom" : classname},{ '$set' : { "subject": subjects } }
+                           )
+    
+
+            
+    
