@@ -126,11 +126,15 @@ def barchart():
 
 
 # Attendance Record Page
-@app.route('/tables', methods=["GET"])
+@app.route('/tables', methods=["GET","POST"])
 def tables():
-    atd_list = fetchAttendance()
+    clas=showClassroom()
+    classroom="becomp"
+    if request.method == "POST":
+        classroom=request.form.get('classroom')
+    sub,atd_list = fetchAttendance(classroom)
     # atd_list = mongo.facerecognition.attendace.find()
-    return render_template('tables.html', atd_list=atd_list)
+    return render_template('tables.html', atd_list=atd_list,sublist=sub,classroom=clas)
 
 
 # Student_Information Page
@@ -247,7 +251,6 @@ def updateprofile():
     elif request.method == 'POST':
         saveprofile(uname)
         file = request.files['file']
-        upload_file(file)
         return redirect(url_for("updateprofile"))
 
 # update Password
