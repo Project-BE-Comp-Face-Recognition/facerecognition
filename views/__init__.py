@@ -19,10 +19,10 @@ def home():
     if "username" in session:
         ch_list = fetchSubjectAttendance()
         ab_list = fetchlabelAttendance()
-        ss_list = fetchTotalAttendance()
+        chartsdata = fetchTotalAttendance()
         pie     = fetchlabelNameAttendance()
 
-        return render_template('index.html', ch_list=ch_list, ab_list=ab_list ,ss_list=ss_list,pie=pie)
+        return render_template('index.html', ch_list=ch_list, ab_list=ab_list ,data=chartsdata,pie=pie)
     else:
         return render_template('login.html')
 
