@@ -360,8 +360,9 @@ def edit_tt(day):
 def update_tt():  
     day = session.get('day')
     if request.method == "GET":
+        syllabus = fetchSyllabus()
         tt = findTimetable(day)
-        return render_template('edit_timetable.html',tt = tt ,day = day)    
+        return render_template('edit_timetable.html',tt = tt ,day = day ,syllabus = syllabus)    
     elif request.method == 'POST': 
         updateTimetable(day)        
         return redirect(url_for("timetable"))
