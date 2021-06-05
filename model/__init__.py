@@ -9,7 +9,7 @@ from helpers.path import *
 from helpers.facecrop import *
 from bson import json_util, ObjectId
 import json,shutil
-from datetime import date
+from datetime import date , timedelta
 import time
 
 
@@ -168,12 +168,29 @@ def fetchAttendance(classroom):
 
 #fetch total attendance
 def fetchTotalAttendance():
-    res = db.attendance.find({}, {"name": 1, "_id": 0})
-    count=0
-    for i in res:
-        count=count+1
-    return count
 
+    today = date.today()
+    yesterday = str(today - timedelta(days = 1))
+    lastweek = str(today - timedelta(days = 7))
+    lastfifteendays = str(today - timedelta(days = 15))
+    lastmonth = str(today - timedelta(days = 30))
+    cardKey=["yesterday","lastweek","lastfifteen","lastmonth"]
+    cardValue=[]
+    days=[yesterday , lastweek , lastfifteendays , lastmonth]
+    for i in days:
+        group={"$group": {"_id": "$_id"}}
+        pipe = [{
+            "$match":{
+                "attendance.date": {"$gte":i, "$lte":str(today)}
+            }},
+            {"$unwind": "$attendance"},
+            group
+        ]
+
+        value= list(db.attendancelog.aggregate(pipe))
+        cardValue.append(len(value))
+    chartData=dict(zip(cardKey,cardValue))
+    return chartData
 
 
 
