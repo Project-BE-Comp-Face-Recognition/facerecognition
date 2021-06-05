@@ -8,7 +8,7 @@ load_dotenv()
 from PIL import Image, ImageDraw
 from azure.cognitiveservices.vision.face import FaceClient 
 from msrest.authentication import CognitiveServicesCredentials
-from azure.cognitiveservices.vision.face.models import TrainingStatusType, Person
+from azure.cognitiveservices.vision.face.models import TrainingStatusType, Person ,Error
 # </snippet_imports>
 
 
