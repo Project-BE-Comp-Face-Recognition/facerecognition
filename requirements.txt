@@ -16,4 +16,4 @@ azure-cognitiveservices-vision-face
 opencv-python
 pytest-shutil
 cmake
-dlib
+dlib-19.19.0-cp38-cp38-win_amd64.whl
