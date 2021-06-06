@@ -122,7 +122,7 @@ def tables():
     if request.method == "POST":
         classroom=request.form.get('classroom')
     sub,atd_list = fetchAttendance(classroom)
-    return render_template('tables.html', atd_list=atd_list,sublist=sub,classroom=clas)
+    return render_template('tables.html', atd_list=atd_list,sublist=sub,classroom=clas ,choose = classroom)
 
 
 # Student_Information Page
@@ -186,14 +186,14 @@ def checkgroupname():
 @app.route('/timetable',methods=["GET","POST"])
 def timetable():
     if request.method=='GET':
-        kd_list = fetchTimetable("beit")
+        kd_list = fetchTimetable("becomp")
         clas=showClassroom()
-        return render_template('timetable.html',classroom=clas,kd_list=kd_list)
+        return render_template('timetable.html',classroom=clas,kd_list=kd_list ,choose = "becomp")
     if request.method=='POST':
         classroom=request.form.get('classroom')
         clas=showClassroom()
         kd_list = fetchTimetable(classroom)
-        return render_template('timetable.html',classroom=clas,kd_list=kd_list)
+        return render_template('timetable.html',classroom=clas,kd_list=kd_list , choose = classroom)
 
 
 
