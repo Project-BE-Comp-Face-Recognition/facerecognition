@@ -17,11 +17,9 @@ def not_found(e):
 def home():
 
     if "username" in session:
-        ch_list = fetchSubjectAttendance()
-        ab_list = fetchlabelAttendance()
-        ss_list = fetchTotalAttendance()
-        pie    = showClassroom()
-        return render_template('index.html', ch_list=ch_list, ab_list=ab_list ,data=chartsdata,pie=pie)
+        chartsdata = fetchTotalAttendance()
+        pie     = fetchlabelNameAttendance()
+        return render_template('index.html' ,data=chartsdata,pie=pie)
     else:
         return render_template('login.html')
 
@@ -100,14 +98,12 @@ def charts():
 # AreaCharts 
 @app.route('/areachart', methods=["GET"])
 def areachart():
-    ch_list = fetchSubjectAttendance()
-    ab_list = fetchlabelAttendance()
-    return jsonify({'payload':json.dumps({'data':ch_list, 'labels':ab_list})})
+    key,value=areaChart()
+    return jsonify({'payload':json.dumps({'data':value, 'labels':key})})
 
 # pieCharts 
 @app.route('/piechart', methods=["GET"])
 def piechart():
-    
     key,value = piedata()
     return jsonify({'payload':json.dumps({'data':value, 'labels':key})})
 
@@ -115,7 +111,6 @@ def piechart():
 @app.route('/barchart')
 def barchart():
     key,value,label = bardata()
-
     return jsonify({'payload':json.dumps({'data':value, 'labels':key,'class':label})})
 
 
