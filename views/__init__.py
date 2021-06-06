@@ -361,3 +361,22 @@ def update_tt():
     elif request.method == 'POST': 
         updateTimetable(day)        
         return redirect(url_for("timetable"))
+
+@app.route('/syllabus',methods = ["GET","POST"])
+def syllabus():
+    if request.method == "GET":
+        classroom = "becomp"
+        clas = showClassroom()
+        syllabus = fetchSyllabus(classroom)
+        return render_template('syllabus.html',classroom = clas ,syllabus = syllabus ,choose = classroom)    
+    elif request.method == 'POST': 
+        classroom = request.form.get("classroom")
+        clas = showClassroom()
+        syllabus = fetchSyllabus(classroom)     
+        return render_template('syllabus.html',classroom = clas ,syllabus = syllabus, choose = classroom)    
+
+@app.route('/updateSyllabus/<string:choose>',methods = ["POST"])
+def updateSyllabus(choose):
+    classname = choose 
+    updatSyllabus(classname)
+    return redirect(url_for("syllabus"))
