@@ -168,7 +168,6 @@ def fetchAttendance(classroom):
 
 #fetch total attendance
 def fetchTotalAttendance():
-
     today = date.today()
     yesterday = str(today - timedelta(days = 1))
     lastweek = str(today - timedelta(days = 7))
@@ -178,16 +177,11 @@ def fetchTotalAttendance():
     cardValue=[]
     days=[yesterday , lastweek , lastfifteendays , lastmonth]
     for i in days:
-        group={"$group": {"_id": "$_id"}}
-        pipe = [{
-            "$match":{
-                "attendance.date": {"$gte":i, "$lte":str(today)}
-            }},
-            {"$unwind": "$attendance"},
-            group
-        ]
-
-        value= list(db.attendancelog.aggregate(pipe))
+        value= list(db.attendancelog.find({
+                "attendance.date":{"$gte":i, "$lte":str(today)}
+            },{
+                "_id":1
+            }))
         cardValue.append(len(value))
     chartData=dict(zip(cardKey,cardValue))
     return chartData
@@ -201,25 +195,6 @@ def fetchstudent():
 
 
 
-#attendance table
-def fetchSubjectAttendance():
-    res = db.attendance.find({}, {"sub1": 1, "_id": 0})
-    li = []
-    for i in res:
-        a=int(i["sub1"])
-        li.append(a)
-    return li
-
-
-
-# Fetch Label for chart creation
-def fetchlabelAttendance():
-    res = db.attendance.find({}, {"branch": 1, "_id": 0})
-    li = []
-    for i in res:
-        a=i["branch"]
-        li.append(a)
-    return li
     
 '''
 Face Recognition Start
@@ -456,13 +431,6 @@ def resetpass():
 
 
 
-def fetchlabelNameAttendance():
-    res = db.attendance.find({}, {"name": 1, "_id": 0})
-    li = []
-    for i in res:
-        a=i["name"]
-        li.append(a)
-    return li
 
 
 
@@ -634,6 +602,47 @@ def updateTimetable(day):
     for time,subject in data.items():      
         db.timetable.update_one({'class.classroom':clasroom},{'$set':{"class.$.timetable."+day+"."+time:subject}})
     
+
+#table Syllabus 
+def fetchSyllabus():
+    res = db.syllabus.find()
+    return res
+
+def piedata():
+    # Get today's date
+    today = date.today()
+    # Yesterday date
+    yesterday = str(today - timedelta(days = 1))
+    key=showClassroom()
+    value=[] 
+    for classs in key:
+
+        res=list(db.attendancelog.find(
+            {"attendance.date":yesterday ,"classroom":classs},{"_id":1}
+        ))  
+        value.append(len(res))
+
+    return key,value
+        
+def bardata():
+    # Get today's date
+    today = date.today()
+    # Yesterday date
+    yesterday = str(today - timedelta(days = 1))
+    key=showClassroom()
+    label=[yesterday]
+    value=[] 
+    for classs in key:
+
+        res=list(db.attendancelog.find(
+            {"attendance.date":yesterday ,"classroom":classs},{"_id":1}
+        ))  
+        value.append(len(res))
+
+    return key,value,label
+        
+
+
 #Fetch syllabus
 def fetchSyllabus(classroom):
     if classroom == None:
@@ -642,6 +651,27 @@ def fetchSyllabus(classroom):
     syllabus = li['subject']
     return syllabus
 
+def areaChart():
+    today = date.today()
+    day1 = str(today - timedelta(days = 1))
+    day2 = str(today - timedelta(days = 2))
+    day3 = str(today - timedelta(days = 3))
+    day4 = str(today - timedelta(days = 4))
+    day5 = str(today - timedelta(days = 5))
+    day6 = str(today - timedelta(days = 6))
+    day7 = str(today - timedelta(days = 7))
+    areaKey=[day1,day2,day3,day4,day5,day6,day7]
+    areaValue=[]
+    for i in areaKey:
+        value= list(db.attendancelog.find({
+                "attendance.date":i
+            },{
+                "_id":1
+            }))
+        areaValue.append(len(value))
+
+    return  (areaKey,areaValue)
+     
 #Update Syllabus
 def updatSyllabus(classname):
     subjects = []
@@ -651,7 +681,4 @@ def updatSyllabus(classname):
             subjects.append(value) 
     db.syllabus.update_one({"classroom" : classname},{ '$set' : { "subject": subjects } }
                            )
-    
-
-            
-    
+   
