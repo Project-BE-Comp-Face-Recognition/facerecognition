@@ -17,12 +17,10 @@ def not_found(e):
 def home():
 
     if "username" in session:
-        ch_list = fetchSubjectAttendance()
-        ab_list = fetchlabelAttendance()
         chartsdata = fetchTotalAttendance()
         pie     = fetchlabelNameAttendance()
 
-        return render_template('index.html', ch_list=ch_list, ab_list=ab_list ,data=chartsdata,pie=pie)
+        return render_template('index.html' ,data=chartsdata,pie=pie)
     else:
         return render_template('login.html')
 
@@ -101,27 +99,21 @@ def charts():
 # AreaCharts 
 @app.route('/areachart', methods=["GET"])
 def areachart():
-    ch_list = fetchSubjectAttendance()
-    ab_list = fetchlabelAttendance()
+    key,value=areaChart()
 
-    return jsonify({'payload':json.dumps({'data':ch_list, 'labels':ab_list})})
+    return jsonify({'payload':json.dumps({'data':value, 'labels':key})})
 
 # pieCharts 
 @app.route('/piechart', methods=["GET"])
 def piechart():
     
-    ch_list = fetchSubjectAttendance()
-    pie=fetchlabelNameAttendance()
-
-    return jsonify({'payload':json.dumps({'data':ch_list, 'labels':pie})})
+    return jsonify({'payload':json.dumps({'data':'', 'labels':''})})
 
 # barCharts 
 @app.route('/barchart')
 def barchart():
-    ch_list = fetchSubjectAttendance()
-    ab_list = fetchlabelAttendance()
-
-    return jsonify({'payload':json.dumps({'data':ch_list, 'labels':ab_list})})
+    
+    return jsonify({'payload':json.dumps({'data':"", 'labels':""})})
 
 
 

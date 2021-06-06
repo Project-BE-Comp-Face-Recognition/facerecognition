@@ -49,7 +49,7 @@ $(document).ready(function(){
       data: {
         labels: _labels,
         datasets: [{
-          label: "DMW",
+          label: "Total Attendance :",
           lineTension: 0.3,
           backgroundColor: "rgba(78, 115, 223, 0.05)",
           borderColor: "rgba(78, 115, 223, 1)",
