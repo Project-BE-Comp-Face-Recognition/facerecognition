@@ -2,3 +2,5 @@ __pycache__/
 .vscode
 venv
 workspace.code-workspace
+static/home
+templates/landingpage.html 
