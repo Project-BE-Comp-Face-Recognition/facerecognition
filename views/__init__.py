@@ -18,8 +18,7 @@ def home():
 
     if "username" in session:
         chartsdata = fetchTotalAttendance()
-        pie     = piedata()
-        return render_template('index.html' ,data=chartsdata,pie=pie)
+        return render_template('index.html' ,data=chartsdata)
     else:
         return render_template('login.html')
 
@@ -123,7 +122,6 @@ def tables():
     if request.method == "POST":
         classroom=request.form.get('classroom')
     sub,atd_list = fetchAttendance(classroom)
-    # atd_list = mongo.facerecognition.attendace.find()
     return render_template('tables.html', atd_list=atd_list,sublist=sub,classroom=clas)
 
 
@@ -131,7 +129,6 @@ def tables():
 @app.route('/user_info', methods=["GET","POST"])
 def user_info():
     ds_list = fetchstudent()
-    # atd_list = mongo.facerecognition.attendace.find()
     return render_template('user_info.html', ds_list=ds_list)   
 
 # 404 Page

@@ -145,7 +145,6 @@ def fetchAttendance(classroom):
 
     pipe = [
         {"$match": {
-            "attendance.date": "2021-06-04",
             "classroom":classroom
         }
         },
