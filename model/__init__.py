@@ -645,8 +645,8 @@ def updatSyllabus(classname):
     for key in f.keys():
         for value in f.getlist(key):
             subjects.append(value) 
-    db.syllabus.update_one({"classroom" : classname},{ '$set' : { "subject": subjects } })
+    db.syllabus.update_one({"classroom" : classname},{ '$set' : { "subject": subjects } }
+                           )
     
 
             
-    
