@@ -21,8 +21,7 @@ def home():
         ab_list = fetchlabelAttendance()
         ss_list = fetchTotalAttendance()
         pie    = showClassroom()
-
-        return render_template('index.html', ch_list=ch_list, ab_list=ab_list ,ss_list=ss_list,pie=pie)
+        return render_template('index.html', ch_list=ch_list, ab_list=ab_list ,data=chartsdata,pie=pie)
     else:
         return render_template('login.html')
 
@@ -122,11 +121,15 @@ def barchart():
 
 
 # Attendance Record Page
-@app.route('/tables', methods=["GET"])
+@app.route('/tables', methods=["GET","POST"])
 def tables():
-    atd_list = fetchAttendance()
+    clas=showClassroom()
+    classroom="becomp"
+    if request.method == "POST":
+        classroom=request.form.get('classroom')
+    sub,atd_list = fetchAttendance(classroom)
     # atd_list = mongo.facerecognition.attendace.find()
-    return render_template('tables.html', atd_list=atd_list)
+    return render_template('tables.html', atd_list=atd_list,sublist=sub,classroom=clas)
 
 
 # Student_Information Page
@@ -242,7 +245,6 @@ def updateprofile():
     elif request.method == 'POST':
         saveprofile(uname)
         file = request.files['file']
-        upload_file(file)
         return redirect(url_for("updateprofile"))
 
 # update Password
@@ -355,8 +357,9 @@ def edit_tt(day):
 def update_tt():  
     day = session.get('day')
     if request.method == "GET":
+        syllabus = fetchSyllabus()
         tt = findTimetable(day)
-        return render_template('edit_timetable.html',tt = tt ,day = day)    
+        return render_template('edit_timetable.html',tt = tt ,day = day ,syllabus = syllabus)    
     elif request.method == 'POST': 
         updateTimetable(day)        
         return redirect(url_for("timetable"))
@@ -383,3 +386,21 @@ def contact():
         
     return render_template('landingpage.html') 
 
+@app.route('/syllabus',methods = ["GET","POST"])
+def syllabus():
+    if request.method == "GET":
+        classroom = "becomp"
+        clas = showClassroom()
+        syllabus = fetchSyllabus(classroom)
+        return render_template('syllabus.html',classroom = clas ,syllabus = syllabus ,choose = classroom)    
+    elif request.method == 'POST': 
+        classroom = request.form.get("classroom")
+        clas = showClassroom()
+        syllabus = fetchSyllabus(classroom)     
+        return render_template('syllabus.html',classroom = clas ,syllabus = syllabus, choose = classroom)    
+
+@app.route('/updateSyllabus/<string:choose>',methods = ["POST"])
+def updateSyllabus(choose):
+    classname = choose 
+    updatSyllabus(classname)
+    return redirect(url_for("syllabus"))

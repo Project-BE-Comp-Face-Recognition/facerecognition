@@ -6,11 +6,11 @@ from helpers.hashpass import *
 from helpers.mailer import *
 from helpers.recognition import *
 from helpers.path import *
+from helpers.facecrop import *
 from bson import json_util, ObjectId
 import json,shutil
-from datetime import date
-from datetime import timedelta
-
+from datetime import date , timedelta
+import time
 
 
 def checkloginusername():
@@ -127,20 +127,70 @@ def registerStudent():
 
 
 
-def fetchAttendance():
-    res = db.attendance.find()    
-    return res
+def fetchAttendance(classroom):
+    res=db.syllabus.find_one({'classroom':classroom},{"subject":1,"_id":0})
+    sub=res['subject']
+    group={
+            "$group": {
+                "_id": "$_id",
+                "name": {"$first": '$name'},
+                "rollnumber": {"$first": '$rollnumber'},
+                "classroom": {"$first": '$classroom'},
+            }
+        }
+
+    for i in sub:
+        a={i:{"$sum":"$attendance.todaysattendance."+i}}
+        group["$group"].update(a)
+
+    pipe = [
+        {"$match": {
+            "attendance.date": "2021-06-04",
+            "classroom":classroom
+        }
+        },
+        {
+            "$unwind": "$attendance"
+        },
+        group
+    ]
+
+    res= list(db.attendancelog.aggregate(pipe))
+    print(res)
+    
+    '''
+    old
+    '''
+    # res = db.attendance.find()    
+    return sub,res
 
 
 
 #fetch total attendance
 def fetchTotalAttendance():
-    res = db.attendance.find({}, {"name": 1, "_id": 0})
-    count=0
-    for i in res:
-        count=count+1
-    return count
 
+    today = date.today()
+    yesterday = str(today - timedelta(days = 1))
+    lastweek = str(today - timedelta(days = 7))
+    lastfifteendays = str(today - timedelta(days = 15))
+    lastmonth = str(today - timedelta(days = 30))
+    cardKey=["yesterday","lastweek","lastfifteen","lastmonth"]
+    cardValue=[]
+    days=[yesterday , lastweek , lastfifteendays , lastmonth]
+    for i in days:
+        group={"$group": {"_id": "$_id"}}
+        pipe = [{
+            "$match":{
+                "attendance.date": {"$gte":i, "$lte":str(today)}
+            }},
+            {"$unwind": "$attendance"},
+            group
+        ]
+
+        value= list(db.attendancelog.aggregate(pipe))
+        cardValue.append(len(value))
+    chartData=dict(zip(cardKey,cardValue))
+    return chartData
 
 
 
@@ -430,11 +480,13 @@ def checkclass():
 
 
 def markAttendance(identifiedFace,subjectname):
-    today = date.today()
-
-    dateToday= today.strftime("%d/%m/%Y")
+    dateToday= date.today().isoformat()
     for i in identifiedFace:
-        res=db.attendancelog.update_one({'personId':i, "attendance.date":dateToday} , {"$inc":{"attendance.$.todaysattendance."+subjectname:1}})
+        try:
+            res=db.attendancelog.update_one({'personId':i, "attendance.date":dateToday} , {"$inc":{"attendance.$.todaysattendance."+subjectname:1}})
+        except:
+            print("Error while Updating Person ID")
+            return None
         modified=res.modified_count
         if modified==0:
             ta={subjectname:1}
@@ -445,8 +497,8 @@ def markAttendance(identifiedFace,subjectname):
             db.attendancelog.update_one({'personId':i},{'$push':{"attendance":attendance}})
             return "success"
 
-        else:
-            return "success"
+        
+    return "success"
 
 
 
@@ -454,20 +506,22 @@ def markAttendance(identifiedFace,subjectname):
 def identifyFace():
 
     classroom=request.form['classroom']
-    teahersId=request.form['teachersId']
+    teachersId=request.form['teachersId']
     subject=request.form['subject']
 
     h=str(home)
     target = os.path.join(h, "identify")
     if not os.path.isdir(target):
         os.mkdir(target)
-    teacherfolder = os.path.join(target, teahersId+"/")
+    teacherfolder = os.path.join(target, teachersId+"/")
     if not os.path.isdir(teacherfolder):
         os.mkdir(teacherfolder)
     for file in request.files.getlist("files[]"):
         filename = file.filename
         destination = "/".join([teacherfolder, filename])
         file.save(destination)
+
+    teacherfolder=faceDetector(teachersId)
 
     imageName=[filename for filename in os.listdir(teacherfolder) ]
     print(imageName)
@@ -476,35 +530,45 @@ def identifyFace():
 
     for image in imageName:
         i = open(teacherfolder+'/'+image, 'r+b')
-        try:
-            print("Fetching Face Ids ../")
-            faces = face_client.face.detect_with_stream(i, detection_model='detection_03')
+        print("Fetching Face Ids ../")
+        faces = face_client.face.detect_with_stream(i, detection_model='detection_03')
+        if len(faces) == 1 :
+            print(faces[0].face_id)
             face_ids.append(faces[0].face_id)
-        except:
-            i.close()
-            print("No Face Detected")
-            removeTrainDataset(target)
-            return "error"
-    
+            time.sleep(5)
+        else:
+            pass
+        
     i.close()
+    print(target)
+    print()
+    print(teacherfolder)
+    print()
     removeTrainDataset(target)        
+    removeTrainDataset(teacherfolder)
     print("Identified face Ids From Upload-->",face_ids)
+    chunks = [face_ids[x:x+10] for x in range(0, len(face_ids), 10)]
+    results=[]
     try:
-        results = face_client.face.identify(face_ids, classroom)
+        for i in chunks:
+            res= face_client.face.identify(i, classroom)
+            results.append(res)
+            print("Printing",res)
         if not results:
             print('No person identified in the person group for faces from {}.'.format(imageName))
             return 0
         print("Finding Person ID")
-        for person in results:
-            if len(person.candidates) > 0:
-                print(person.face_id )
-                identifiedUniqueId=person.candidates[0].person_id
-                if identifiedUniqueId not in identifiedFace :
-                    identifiedFace.append(identifiedUniqueId)
+        for persons in results:
+            for person in persons:
+                if len(person.candidates) > 0:
+                    print(person.face_id )
+                    identifiedUniqueId=person.candidates[0].person_id
+                    if identifiedUniqueId not in identifiedFace :
+                        identifiedFace.append(identifiedUniqueId)
 
-                print('Person for face ID {} is identified with a confidence of {}.'.format(person.face_id, person.candidates[0].confidence)) # Get topmost confidence score
-            else:
-                print('No person identified for face ID {} .'.format(person.face_id))
+                    print('Person for face ID {} is identified with a confidence of {}.'.format(person.face_id, person.candidates[0].confidence)) # Get topmost confidence score
+                else:
+                    print('No person identified for face ID {} .'.format(person.face_id))
 
         print("identified unique face ids : {}".format(identifiedFace))
         status=markAttendance(identifiedFace,subject)
@@ -514,7 +578,8 @@ def identifyFace():
             return "error"
     except:
         i.close()
-        removeTrainDataset(target)    
+        removeTrainDataset(target)
+        removeTrainDataset(teacherfolder)    
         return "error"
 
 
@@ -562,6 +627,7 @@ def updateTimetable(day):
     for time,subject in data.items():      
         db.timetable.update_one({'class.classroom':clasroom},{'$set':{"class.$.timetable."+day+"."+time:subject}})
     
+
 #table Syllabus 
 def fetchSyllabus():
     res = db.syllabus.find()
@@ -602,3 +668,21 @@ def bardata():
         
 
 
+#Fetch syllabus
+def fetchSyllabus(classroom):
+    if classroom == None:
+        classroom = session.get('clasroom')
+    li = db.syllabus.find_one({"classroom" : classroom})
+    syllabus = li['subject']
+    return syllabus
+
+#Update Syllabus
+def updatSyllabus(classname):
+    subjects = []
+    f = request.form
+    for key in f.keys():
+        for value in f.getlist(key):
+            subjects.append(value) 
+    db.syllabus.update_one({"classroom" : classname},{ '$set' : { "subject": subjects } }
+                           )
+    
