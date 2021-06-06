@@ -18,7 +18,7 @@ def home():
 
     if "username" in session:
         chartsdata = fetchTotalAttendance()
-        pie     = fetchlabelNameAttendance()
+        pie     = piedata()
         return render_template('index.html' ,data=chartsdata,pie=pie)
     else:
         return render_template('login.html')
@@ -352,7 +352,7 @@ def edit_tt(day):
 def update_tt():  
     day = session.get('day')
     if request.method == "GET":
-        syllabus = fetchSyllabus()
+        syllabus = fetchSyllabus(None)
         tt = findTimetable(day)
         return render_template('edit_timetable.html',tt = tt ,day = day ,syllabus = syllabus)    
     elif request.method == 'POST': 
