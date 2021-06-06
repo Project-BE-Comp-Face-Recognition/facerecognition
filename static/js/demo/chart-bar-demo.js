@@ -38,6 +38,8 @@ $(document).ready(function(){
     full_data = JSON.parse(response.payload);
     _data = full_data['data'];
     _labels = full_data['labels'];
+    _class = full_data['class'];
+
    
     // Bar Chart Example
 var ctx = document.getElementById("myBarChart");
@@ -46,7 +48,7 @@ var myBarChart = new Chart(ctx, {
   data: {
     labels: _labels,
     datasets: [{
-      label: "DMW",
+      label: _class,
       backgroundColor: "#4e73df",
       hoverBackgroundColor: "#2e59d9",
       borderColor: "#4e73df",

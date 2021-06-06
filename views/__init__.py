@@ -19,7 +19,6 @@ def home():
     if "username" in session:
         chartsdata = fetchTotalAttendance()
         pie     = fetchlabelNameAttendance()
-
         return render_template('index.html' ,data=chartsdata,pie=pie)
     else:
         return render_template('login.html')
@@ -100,20 +99,19 @@ def charts():
 @app.route('/areachart', methods=["GET"])
 def areachart():
     key,value=areaChart()
-
     return jsonify({'payload':json.dumps({'data':value, 'labels':key})})
 
 # pieCharts 
 @app.route('/piechart', methods=["GET"])
 def piechart():
-    
-    return jsonify({'payload':json.dumps({'data':'', 'labels':''})})
+    key,value = piedata()
+    return jsonify({'payload':json.dumps({'data':value, 'labels':key})})
 
 # barCharts 
 @app.route('/barchart')
 def barchart():
-    
-    return jsonify({'payload':json.dumps({'data':"", 'labels':""})})
+    key,value,label = bardata()
+    return jsonify({'payload':json.dumps({'data':value, 'labels':key,'class':label})})
 
 
 
@@ -188,7 +186,6 @@ def checkgroupname():
     return checkFaceGroupName()
 
 # timetTables Page
-
 @app.route('/timetable',methods=["GET","POST"])
 def timetable():
     if request.method=='GET':
@@ -361,6 +358,28 @@ def update_tt():
     elif request.method == 'POST': 
         updateTimetable(day)        
         return redirect(url_for("timetable"))
+
+
+# landingpage_Information Page
+@app.route('/land', methods=["GET"])
+def land():
+    return render_template('landingpage.html')   
+
+#reset password
+@app.route('/contact', methods=["GET","POST"])
+def contact():     
+    if request.method == "POST":
+            
+            subject = "No Reply"
+            username=request.form["name"]
+            recipients=request.form["email"]
+            sender = app.config["MAIL_USERNAME"]
+            body = "Dear "+username+"\nWe have registered your query.Thank you for contacting us for your query. We are glad to solve your query as soon as possible .\nWe will reach out to you soon through the mail within 3 days.\nThank you.\nNote:This is Auto Generated Mail Do Not Reply"
+            recipt = sendmail(subject,sender,recipients,body)
+            print(recipt)
+            return render_template('landingpage.html')
+        
+    return render_template('landingpage.html') 
 
 @app.route('/syllabus',methods = ["GET","POST"])
 def syllabus():

@@ -431,13 +431,6 @@ def resetpass():
 
 
 
-def fetchlabelNameAttendance():
-    res = db.attendance.find({}, {"name": 1, "_id": 0})
-    li = []
-    for i in res:
-        a=i["name"]
-        li.append(a)
-    return li
 
 
 
@@ -609,6 +602,47 @@ def updateTimetable(day):
     for time,subject in data.items():      
         db.timetable.update_one({'class.classroom':clasroom},{'$set':{"class.$.timetable."+day+"."+time:subject}})
     
+
+#table Syllabus 
+def fetchSyllabus():
+    res = db.syllabus.find()
+    return res
+
+def piedata():
+    # Get today's date
+    today = date.today()
+    # Yesterday date
+    yesterday = str(today - timedelta(days = 1))
+    key=showClassroom()
+    value=[] 
+    for classs in key:
+
+        res=list(db.attendancelog.find(
+            {"attendance.date":yesterday ,"classroom":classs},{"_id":1}
+        ))  
+        value.append(len(res))
+
+    return key,value
+        
+def bardata():
+    # Get today's date
+    today = date.today()
+    # Yesterday date
+    yesterday = str(today - timedelta(days = 1))
+    key=showClassroom()
+    label=[yesterday]
+    value=[] 
+    for classs in key:
+
+        res=list(db.attendancelog.find(
+            {"attendance.date":yesterday ,"classroom":classs},{"_id":1}
+        ))  
+        value.append(len(res))
+
+    return key,value,label
+        
+
+
 #Fetch syllabus
 def fetchSyllabus(classroom):
     if classroom == None:
@@ -647,6 +681,4 @@ def updatSyllabus(classname):
             subjects.append(value) 
     db.syllabus.update_one({"classroom" : classname},{ '$set' : { "subject": subjects } }
                            )
-    
-
-            
+   
