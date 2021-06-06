@@ -603,11 +603,6 @@ def updateTimetable(day):
         db.timetable.update_one({'class.classroom':clasroom},{'$set':{"class.$.timetable."+day+"."+time:subject}})
     
 
-#table Syllabus 
-def fetchSyllabus():
-    res = db.syllabus.find()
-    return res
-
 def piedata():
     # Get today's date
     today = date.today()
