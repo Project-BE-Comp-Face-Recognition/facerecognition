@@ -124,7 +124,7 @@ def tables():
         classroom=request.form.get('classroom')
     sub,atd_list = fetchAttendance(classroom)
     # atd_list = mongo.facerecognition.attendace.find()
-    return render_template('tables.html', atd_list=atd_list,sublist=sub,classroom=clas)
+    return render_template('tables.html', atd_list=atd_list,sublist=sub,classroom=clas ,choose = classroom)
 
 
 # Student_Information Page
@@ -191,12 +191,12 @@ def timetable():
     if request.method=='GET':
         kd_list = fetchTimetable("beit")
         clas=showClassroom()
-        return render_template('timetable.html',classroom=clas,kd_list=kd_list)
+        return render_template('timetable.html',classroom=clas,kd_list=kd_list ,choose = "beit")
     if request.method=='POST':
         classroom=request.form.get('classroom')
         clas=showClassroom()
         kd_list = fetchTimetable(classroom)
-        return render_template('timetable.html',classroom=clas,kd_list=kd_list)
+        return render_template('timetable.html',classroom=clas,kd_list=kd_list , choose = classroom)
 
 
 
