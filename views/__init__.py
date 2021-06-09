@@ -1,5 +1,5 @@
 import re
-from flask import render_template, request, redirect, url_for, session,jsonify
+from flask import render_template, request, redirect, url_for, session,jsonify,Response
 from flask import jsonify
 from app import app
 from model import *
@@ -257,7 +257,8 @@ def reg():
 #Generate report
 @app.route('/generatereport', methods=["GET"])
 def generateReport():
-    return render_template('generatereport.html')
+    classroom=showClassroom()
+    return render_template('report.html' ,classroom = classroom)
 
 
 @app.route('/train',methods=['POST'])
@@ -396,3 +397,34 @@ def updateSyllabus(choose):
     classname = choose 
     updatSyllabus(classname)
     return redirect(url_for("syllabus"))
+
+# Excel Download
+@app.route("/getCSV" ,methods = ["GET","POST"])
+def getCSV():
+    sdate = request.form.get("sdate")
+    edate = request.form.get("edate")
+    classname = request.form.get('class')
+    reportCSV(classname,sdate,edate)
+    csv = "a,b" #convertToString(atd_list)
+    return Response(
+        csv,
+        mimetype="text/csv",
+        headers={"Content-disposition":
+                 "attachment; filename="+classname+".csv"})
+    
+#Report Mail  
+@app.route("/sendReport" , methods = ["POST"])
+def sendReport():
+    if request.method == "POST":
+        edate = request.form.get("date")
+        classname = request.form.get('class')
+        print(edate,classname)           
+        subject = "Warning Letter to Parents of Student   - No Reply"
+        recipients = "shivlingpk@gmail.com"
+        sender = app.config["MAIL_USERNAME"]
+        body = " Date…\nParents name…\nContact Info…\nDear Sir,\nWe regret to inform you that your son (name) is a student of class/grade (name) in our (school/College/Institute name). It has been an awful situation to inform you about his recent educational record. He has not been present in his classes most of the time. It is noted that he is having a below average attendance to attempt the final year exams that are to be held this season. Every teacher individually warned him of his present condition but they have failed to change his mind to attend classes on regular basis. (Describe actual problem and situation in brief). So we are only left with the last option to inform you about his situation. You are being his guardian can handle this situation more effectively now. So we will leave this problem to you from now on.\nApart from the above-mentioned attendance problem, there is another attitude problem is being observed in your son. He has been observed behaving badly with most of his teachers. Keeping in view his old records we did not expel him just yet. We have warned him and given him another chance to be a good lad in our school and we felt it essential to inform you also so that you can make him stop ruin his education and life. As the teachers and management are not happy with him we are issuing this warning letter so that he can continue his studies in a disciplined way that every other student follows here.\nWe are looking forward to an intense action from you. So it would really be appreciated by us.\nThanking you.\nYours Truly,\nYour name…\nPrinciple…\nContact no. and signature…"
+        recipt = sendmail(subject,sender,recipients,body)
+        print(recipt)
+        return render_template('report.html')
+        
+    return render_template('report.html')

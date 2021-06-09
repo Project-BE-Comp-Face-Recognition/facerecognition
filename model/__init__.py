@@ -9,7 +9,7 @@ from helpers.path import *
 from helpers.facecrop import *
 from bson import json_util, ObjectId
 import json,shutil
-from datetime import date , timedelta
+from datetime import date , timedelta ,datetime
 import time
 
 
@@ -675,4 +675,71 @@ def updatSyllabus(classname):
             subjects.append(value) 
     db.syllabus.update_one({"classroom" : classname},{ '$set' : { "subject": subjects } }
                            )
-   
+#csvdata
+def reportCSV(classroom,sdate,edate):
+    start = sdate
+    end = edate
+    
+    res=db.syllabus.find_one({'classroom':classroom},{"subject":1,"_id":0})
+    sub=res['subject']
+    group={
+            "$group": {
+                "_id": "$_id",
+                "date" : {"$first": '$attendance.date'},
+                "name": {"$first": '$name'},
+                "rollnumber": {"$first": '$rollnumber'},
+                "classroom": {"$first": '$classroom'},
+            }
+        }
+
+    for i in sub:
+        a={i:{"$sum":"$attendance.todaysattendance."+i}}
+        group["$group"].update(a)
+    
+
+    pipe = [
+        {"$match": {
+            "classroom":classroom,
+            "attendance.date":{"$gt":start, "$lte":end}
+            }
+        },
+        {
+           "$unwind": "$attendance"
+        },
+        group
+    ]
+    atd = db.attendancelog.aggregate(pipe)
+    for doc in atd:   
+        print(doc)
+    res= list(db.attendancelog.aggregate(pipe))
+    print(res)
+    return res
+
+
+#List to string converter
+def convertToString(atd_list):
+
+    csv =''   # initializing the empty string
+    count =0
+    
+    for atd in atd_list:
+        
+        del atd["_id"]
+        key = atd.keys()  
+        value = atd.values()
+        keys = list(key)
+        values = list(value)
+           
+        if count == 0 :         
+            for i in keys:                      
+                csv += i+","  
+                   
+        csv += "\n"
+            
+            
+        for j in values:
+            csv += str(j)+","
+            
+            count += 1  
+    
+    return csv  
