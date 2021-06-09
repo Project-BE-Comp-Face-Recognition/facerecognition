@@ -236,7 +236,6 @@ def updateprofile():
         return render_template('profile.html',users = users)
     elif request.method == 'POST':
         saveprofile(uname)
-        file = request.files['file']
         return redirect(url_for("updateprofile"))
 
 # update Password

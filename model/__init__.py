@@ -632,7 +632,6 @@ def bardata():
             {"attendance.date":yesterday ,"classroom":classs},{"_id":1}
         ))  
         value.append(len(res))
-
     return key,value,label
         
 
@@ -647,13 +646,13 @@ def fetchSyllabus(classroom):
 
 def areaChart():
     today = date.today()
-    day1 = str(today - timedelta(days = 1))
-    day2 = str(today - timedelta(days = 2))
-    day3 = str(today - timedelta(days = 3))
+    day1 = str(today - timedelta(days = 7))
+    day2 = str(today - timedelta(days = 6))
+    day3 = str(today - timedelta(days = 5))
     day4 = str(today - timedelta(days = 4))
-    day5 = str(today - timedelta(days = 5))
-    day6 = str(today - timedelta(days = 6))
-    day7 = str(today - timedelta(days = 7))
+    day5 = str(today - timedelta(days = 3))
+    day6 = str(today - timedelta(days = 2))
+    day7 = str(today - timedelta(days = 1))
     areaKey=[day1,day2,day3,day4,day5,day6,day7]
     areaValue=[]
     for i in areaKey:
