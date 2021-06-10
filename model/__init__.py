@@ -455,7 +455,6 @@ def checkclass():
 
 def markAttendance(identifiedFace,subjectname):
     dateToday= date.today().isoformat()
-    modified=0
     for i in identifiedFace:
         try:
             res=db.attendancelog.update_one({'personId':i, "attendance.date":dateToday} , {"$inc":{"attendance.$.todaysattendance."+subjectname:1}})
@@ -469,13 +468,12 @@ def markAttendance(identifiedFace,subjectname):
             v=[dateToday,ta]
             attendance=dict(zip(k,v))
             print(attendance)
-            db.attendancelog.update_one({'personId':i},{'$push':{"attendance":{"$each":[attendance] ,"$position":0}}})
-            modified+=res.modified_count
+            db.attendancelog.update_one({'personId':i},{'$push':{"attendance":attendance}})
+            return "success"
 
-    if modified!=0:        
-        return "success"
-    else :
-        return None
+        
+    return "success"
+
 
 
 
@@ -634,6 +632,7 @@ def bardata():
             {"attendance.date":yesterday ,"classroom":classs},{"_id":1}
         ))  
         value.append(len(res))
+
     return key,value,label
         
 
@@ -647,15 +646,14 @@ def fetchSyllabus(classroom):
     return syllabus
 
 def areaChart():
-
-    today = date.today()
-    day1 = str(today - timedelta(days = 7))
-    day2 = str(today - timedelta(days = 6))
-    day3 = str(today - timedelta(days = 5))
+    today = datetime.today()
+    day1 = str(today - timedelta(days = 1))
+    day2 = str(today - timedelta(days = 2))
+    day3 = str(today - timedelta(days = 3))
     day4 = str(today - timedelta(days = 4))
-    day5 = str(today - timedelta(days = 3))
-    day6 = str(today - timedelta(days = 2))
-    day7 = str(today - timedelta(days = 1))
+    day5 = str(today - timedelta(days = 5))
+    day7 = str(today - timedelta(days = 7))
+    day6 = str(today - timedelta(days = 6))
     areaKey=[day1,day2,day3,day4,day5,day6,day7]
     areaValue=[]
     for i in areaKey:
@@ -682,22 +680,22 @@ def updatSyllabus(classname):
 def reportCSV(classroom,sdate,edate):
     start = sdate
     end = edate
-    
+    print(sdate,edate)
     res=db.syllabus.find_one({'classroom':classroom},{"subject":1,"_id":0})
     sub=res['subject']
     group={
             "$group": {
                 "_id": "$_id",
-                "date" : {"$first": '$attendance.date'},
                 "name": {"$first": '$name'},
                 "rollnumber": {"$first": '$rollnumber'},
                 "classroom": {"$first": '$classroom'},
+                "attendance" : {"$mergeObjects" :"$attendance"}
             }
         }
 
-    for i in sub:
-        a={i:{"$sum":"$attendance.todaysattendance."+i}}
-        group["$group"].update(a)
+    # for i in sub:
+    #     a={i:{"$push":"$attendance.todaysattendance."+i}}
+    #     group["$group"].update(a)
     
 
     pipe = [
@@ -711,11 +709,9 @@ def reportCSV(classroom,sdate,edate):
         },
         group
     ]
-    atd = db.attendancelog.aggregate(pipe)
-    for doc in atd:   
+    res= db.attendancelog.aggregate(pipe)
+    for doc in res :
         print(doc)
-    res= list(db.attendancelog.aggregate(pipe))
-    print(res)
     return res
 
 
