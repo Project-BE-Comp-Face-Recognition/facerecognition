@@ -38,12 +38,7 @@
               {% for sub in sublist%}
               <th>{{sub}}</th>
               {% endfor %}
-              <!-- <th>Branch</th>
-              <th>DMW</th>
-              <th>ICS</th>
-              <th>DAA</th>
-              <th>Overall Attendace</th> -->
-
+              <th>Average (%)</th>
             </tr>
           </thead>
 
@@ -59,13 +54,21 @@
               <td>{{ atd['classroom'] }}</td>
               {% for sub in sublist%}
               <td>{{atd[sub]}}</td>
-              
-              
-              <!-- <td>{{ atd['branch'] }}</td>
-              <td>{{ atd['sub1'] }}</td>
-              <td>{{ atd['sub2']}} </td>
-              <td>{{atd['sub3']}}</td>-->
               {% endfor %}
+
+              <!-- calculating average average  -->
+              {% set mark = [] %}
+              {% for key, val in atd.items() %}
+                {% for sub in sublist %}
+                  {% if key|lower == sub|lower %}
+                    {% if mark.append(val) %}{% endif %}
+                  {% endif %}
+                {% endfor %}
+              {% endfor %}
+              {% set total = "%.2f"|format(mark|sum() * 100 / 36) %}
+              <!-- end of code -->
+
+              <td>{{total}}</td>
             </tr>
             {% endfor %}
 

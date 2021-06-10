@@ -620,7 +620,7 @@ def piedata():
         
 def bardata():
     # Get today's date
-    today = date.today()
+    today = date.today() 
     # Yesterday date
     yesterday = str(today - timedelta(days = 1))
     key=showClassroom()
@@ -646,14 +646,14 @@ def fetchSyllabus(classroom):
     return syllabus
 
 def areaChart():
-    today = date.today()
+    today = datetime.today()
     day1 = str(today - timedelta(days = 1))
     day2 = str(today - timedelta(days = 2))
     day3 = str(today - timedelta(days = 3))
     day4 = str(today - timedelta(days = 4))
     day5 = str(today - timedelta(days = 5))
-    day6 = str(today - timedelta(days = 6))
     day7 = str(today - timedelta(days = 7))
+    day6 = str(today - timedelta(days = 6))
     areaKey=[day1,day2,day3,day4,day5,day6,day7]
     areaValue=[]
     for i in areaKey:
@@ -672,7 +672,8 @@ def updatSyllabus(classname):
     f = request.form
     for key in f.keys():
         for value in f.getlist(key):
-            subjects.append(value) 
+            if value != None:
+                subjects.append(value) 
     db.syllabus.update_one({"classroom" : classname},{ '$set' : { "subject": subjects } }
                            )
 #csvdata
@@ -736,10 +737,28 @@ def convertToString(atd_list):
                    
         csv += "\n"
             
-            
         for j in values:
             csv += str(j)+","
             
             count += 1  
     
     return csv  
+
+#Find Single Teacher Usinh Username
+def findTeacher(uname):
+    res = db.teachersdataset.find({'username':uname})
+    for t in res:    
+        return t    
+
+def updatTeacher(uname) :
+    name = request.form["name"]
+    number = request.form["number"]
+    classroom = request.form["classroom"]
+    subjects = request.form.getlist('subject[]')
+    subject = [i for i in subjects if i]
+    db.teachersdataset.update_one({"username": uname},
+                   {"$set": {
+                      "name" : name,
+                      "number" : number,
+                      "classroom" : classroom,
+                      "subject" : subject}})
