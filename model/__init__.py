@@ -128,6 +128,12 @@ def registerStudent():
 
 
 def fetchAttendance(classroom):
+    sdate =date.today()
+    edate = sdate - timedelta(days = 30)
+    edate=str(edate)
+    sdate=str(sdate)
+
+    print(edate,sdate)
     res=db.syllabus.find_one({'classroom':classroom},{"subject":1,"_id":0})
     sub=res['subject']
     group={
@@ -142,25 +148,33 @@ def fetchAttendance(classroom):
     for i in sub:
         a={i:{"$sum":"$attendance.todaysattendance."+i}}
         group["$group"].update(a)
+        
 
-    pipe = [
-        {"$match": {
-            "classroom":classroom
-        }
+
+    r=db.attendancelog.aggregate([
+        {
+            "$unwind": "$attendance",
+            
         },
         {
-            "$unwind": "$attendance"
+            "$match":{
+                "attendance.date":{"$gte":"2021-05-11", "$lte":"2021-06-10"}
+            }
         },
+        {
+        "$project": {
+                "attendance":1,
+                "name":1,
+                "rollnumber":1,
+                "classroom":1    
+            }
+        }
+        ,
         group
-    ]
+        
+    ])
 
-    res= list(db.attendancelog.aggregate(pipe))
-    print(res)
-    
-    '''
-    old
-    '''
-    # res = db.attendance.find()    
+    res=list(r)
     return sub,res
 
 
@@ -688,9 +702,8 @@ def reportCSV(classroom,sdate,edate):
     group={
             "$group": {
                 "_id": "$_id",
-                "date" : {"$first": '$attendance.date'},
-                "name": {"$first": '$name'},
                 "rollnumber": {"$first": '$rollnumber'},
+                "name": {"$first": '$name'},
                 "classroom": {"$first": '$classroom'},
             }
         }
@@ -698,50 +711,52 @@ def reportCSV(classroom,sdate,edate):
     for i in sub:
         a={i:{"$sum":"$attendance.todaysattendance."+i}}
         group["$group"].update(a)
-    
+        
 
-    pipe = [
-        {"$match": {
-            "classroom":classroom,
-            "attendance.date":{"$gt":start, "$lte":end}
+
+    res=db.attendancelog.aggregate([
+        {
+            "$unwind": "$attendance",
+            
+        },
+        {
+            "$match":{
+                "attendance.date":{"$gte":start, "$lte":end}
             }
         },
         {
-           "$unwind": "$attendance"
-        },
+        "$project": {
+                "attendance":1,
+                "name":1,
+                "rollnumber":1,
+                "classroom":1    
+            }
+        }
+        ,
         group
-    ]
-    atd = db.attendancelog.aggregate(pipe)
-    for doc in atd:   
-        print(doc)
-    res= list(db.attendancelog.aggregate(pipe))
+        
+    ])
+    res=list(res)
     print(res)
     return res
 
 
 #List to string converter
 def convertToString(atd_list):
-
     csv =''   # initializing the empty string
     count =0
-    
     for atd in atd_list:
-        
         del atd["_id"]
         key = atd.keys()  
         value = atd.values()
         keys = list(key)
         values = list(value)
-           
         if count == 0 :         
             for i in keys:                      
-                csv += i+","  
-                   
+                csv += i+","             
         csv += "\n"
-            
         for j in values:
             csv += str(j)+","
-            
             count += 1  
     
     return csv  

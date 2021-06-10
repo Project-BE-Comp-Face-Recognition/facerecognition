@@ -403,8 +403,8 @@ def getCSV():
     sdate = request.form.get("sdate")
     edate = request.form.get("edate")
     classname = request.form.get('class')
-    reportCSV(classname,sdate,edate)
-    csv = "a,b" #convertToString(atd_list)
+    atd_list=reportCSV(classname,sdate,edate)
+    csv=convertToString(atd_list)
     return Response(
         csv,
         mimetype="text/csv",
