@@ -455,6 +455,7 @@ def checkclass():
 
 def markAttendance(identifiedFace,subjectname):
     dateToday= date.today().isoformat()
+    modified=0
     for i in identifiedFace:
         try:
             res=db.attendancelog.update_one({'personId':i, "attendance.date":dateToday} , {"$inc":{"attendance.$.todaysattendance."+subjectname:1}})
@@ -468,12 +469,13 @@ def markAttendance(identifiedFace,subjectname):
             v=[dateToday,ta]
             attendance=dict(zip(k,v))
             print(attendance)
-            db.attendancelog.update_one({'personId':i},{'$push':{"attendance":attendance}})
-            return "success"
+            db.attendancelog.update_one({'personId':i},{'$push':{"attendance":{"$each":[attendance] ,"$position":0}}})
+            modified+=res.modified_count
 
-        
-    return "success"
-
+    if modified!=0:        
+        return "success"
+    else :
+        return None
 
 
 
@@ -632,7 +634,6 @@ def bardata():
             {"attendance.date":yesterday ,"classroom":classs},{"_id":1}
         ))  
         value.append(len(res))
-
     return key,value,label
         
 
@@ -646,14 +647,15 @@ def fetchSyllabus(classroom):
     return syllabus
 
 def areaChart():
-    today = datetime.today()
-    day1 = str(today - timedelta(days = 1))
-    day2 = str(today - timedelta(days = 2))
-    day3 = str(today - timedelta(days = 3))
+
+    today = date.today()
+    day1 = str(today - timedelta(days = 7))
+    day2 = str(today - timedelta(days = 6))
+    day3 = str(today - timedelta(days = 5))
     day4 = str(today - timedelta(days = 4))
-    day5 = str(today - timedelta(days = 5))
-    day7 = str(today - timedelta(days = 7))
-    day6 = str(today - timedelta(days = 6))
+    day5 = str(today - timedelta(days = 3))
+    day6 = str(today - timedelta(days = 2))
+    day7 = str(today - timedelta(days = 1))
     areaKey=[day1,day2,day3,day4,day5,day6,day7]
     areaValue=[]
     for i in areaKey:

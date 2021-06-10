@@ -64,8 +64,8 @@ $(document).ready(function(){
           data: _data
     
         }],
-      }
-      ,
+      },
+      
       options: {
         maintainAspectRatio: false,
         layout: {
