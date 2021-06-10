@@ -92,14 +92,16 @@ var myBarChart = new Chart(ctx, {
         gridLines: {
           color: "rgb(234, 236, 244)",
           zeroLineColor: "rgb(234, 236, 244)",
-          drawBorder: false,
-          borderDash: [2],
+          drawBorder: true,
+          borderDash: [5],
           zeroLineBorderDash: [2]
         }
       }],
     },
     legend: {
-      display: false
+      display: true,
+      position: "bottom",
+
     },
     tooltips: {
       titleMarginBottom: 10,
