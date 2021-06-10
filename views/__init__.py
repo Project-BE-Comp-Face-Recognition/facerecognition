@@ -360,7 +360,9 @@ def update_tt():
 # landingpage_Information Page
 @app.route('/land', methods=["GET"])
 def land():
-    return render_template('landingpage.html')   
+    chartsdata = fetchTotalAttendance()
+
+    return render_template('landingpage.html',data=chartsdata)   
 
 #reset password
 @app.route('/contact', methods=["GET","POST"])
