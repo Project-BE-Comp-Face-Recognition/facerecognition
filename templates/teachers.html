@@ -23,7 +23,7 @@
                             <th>Contact Number</th>
                             <th>Class</th>
                             <th>Subject</th>
-                            
+                            <th>Edit</th>
 
 
 
@@ -44,6 +44,9 @@
                             <td>{{ atd['classroom'] }}</td>
                             <td>{% for sub in atd['subject'] %} 
                                 {{sub}}<br>{% endfor %}
+                            </td>
+                            <td>
+                                <a href="/editTeacher/{{atd['username']}}" class="btn btn-secondary btn-sm">edit</a>
                             </td>
                             
 

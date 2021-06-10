@@ -427,3 +427,19 @@ def sendReport():
         return render_template('report.html')
         
     return render_template('report.html')
+
+#Edit Teacher Information
+@app.route("/editTeacher/<string:uname>", methods = ["GET","POST"])
+def editTeacher(uname):
+    session['uname'] = uname
+    return redirect(url_for("updateTeacher"))
+  
+@app.route('/updateTeacher',methods=["GET","POST"])
+def updateTeacher():  
+    uname = session.get('uname')
+    if request.method == "GET":
+        teacher = findTeacher(uname)
+        return render_template('edit-teacher.html',teacher = teacher)    
+    elif request.method == 'POST': 
+        updatTeacher(uname)        
+        return redirect(url_for("teachersregister"))
