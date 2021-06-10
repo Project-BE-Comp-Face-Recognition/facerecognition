@@ -455,6 +455,7 @@ def checkclass():
 
 def markAttendance(identifiedFace,subjectname):
     dateToday= date.today().isoformat()
+    modified=0
     for i in identifiedFace:
         try:
             res=db.attendancelog.update_one({'personId':i, "attendance.date":dateToday} , {"$inc":{"attendance.$.todaysattendance."+subjectname:1}})
@@ -468,12 +469,13 @@ def markAttendance(identifiedFace,subjectname):
             v=[dateToday,ta]
             attendance=dict(zip(k,v))
             print(attendance)
-            db.attendancelog.update_one({'personId':i},{'$push':{"attendance":attendance}})
-            return "success"
+            db.attendancelog.update_one({'personId':i},{'$push':{"attendance":{"$each":[attendance] ,"$position":0}}})
+            modified+=res.modified_count
 
-        
-    return "success"
-
+    if modified!=0:        
+        return "success"
+    else :
+        return None
 
 
 
