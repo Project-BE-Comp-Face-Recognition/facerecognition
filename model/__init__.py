@@ -127,12 +127,6 @@ def registerStudent():
     return True
 
 
-<<<<<<< HEAD
-
-
-<<<<<<< HEAD
-=======
->>>>>>> 575bd542dd0394ae3228c85bc6a126e138e38c47
 def fetchAttendance(classroom,sdate,edate):
     diff = []
     if edate == None and sdate == None :
@@ -155,18 +149,7 @@ def fetchAttendance(classroom,sdate,edate):
     diff.append(sdate)
     diff.append(edate)
     diff.append(datediff(sdate,edate))
-<<<<<<< HEAD
-=======
-def fetchAttendance(classroom):
-    sdate =date.today()
-    edate = sdate - timedelta(days = 30)
-    edate=str(edate)
-    sdate=str(sdate)
 
-    print(edate,sdate)
->>>>>>> b6be7a302f5fb347eebf4884445f3a89abbd52d7
-=======
->>>>>>> 575bd542dd0394ae3228c85bc6a126e138e38c47
     res=db.syllabus.find_one({'classroom':classroom},{"subject":1,"_id":0})
     sub=res['subject']
     group={
@@ -183,8 +166,6 @@ def fetchAttendance(classroom):
         a={i:{"$sum":"$attendance.todaysattendance."+i}}
         group["$group"].update(a)
         
-
-
     r=db.attendancelog.aggregate([
         {
             "$unwind": "$attendance",
@@ -192,16 +173,8 @@ def fetchAttendance(classroom):
         },
         {
             "$match":{
-<<<<<<< HEAD
-<<<<<<< HEAD
-                "attendance.date":{"$gte":sdate, "$lte":edate}
-=======
-                "attendance.date":{"$gte":"2021-05-11", "$lte":"2021-06-10"}
->>>>>>> b6be7a302f5fb347eebf4884445f3a89abbd52d7
-=======
                 "attendance.date":{"$gte":sdate, "$lte":edate}
 
->>>>>>> 575bd542dd0394ae3228c85bc6a126e138e38c47
             }
         },
         {
@@ -209,17 +182,8 @@ def fetchAttendance(classroom):
                 "attendance":1,
                 "name":1,
                 "rollnumber":1,
-<<<<<<< HEAD
-<<<<<<< HEAD
                 "classroom":1,
                 "personId" :1    
-=======
-                "classroom":1    
->>>>>>> b6be7a302f5fb347eebf4884445f3a89abbd52d7
-=======
-                "classroom":1,
-                "personId" :1    
->>>>>>> 575bd542dd0394ae3228c85bc6a126e138e38c47
             }
         }
         ,
@@ -228,15 +192,7 @@ def fetchAttendance(classroom):
     ])
 
     res=list(r)
-<<<<<<< HEAD
-<<<<<<< HEAD
     return sub,res,diff
-=======
-    return sub,res
->>>>>>> b6be7a302f5fb347eebf4884445f3a89abbd52d7
-=======
-    return sub,res,diff
->>>>>>> 575bd542dd0394ae3228c85bc6a126e138e38c47
 
 
 
@@ -751,12 +707,7 @@ def updatSyllabus(classname):
         for value in f.getlist(key):
             if value != None:
                 subjects.append(value) 
-    db.syllabus.update_one({"classroom" : classname},{ '$set' : { "subject": subjects } }
-                           )
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 575bd542dd0394ae3228c85bc6a126e138e38c47
+    db.syllabus.update_one({"classroom" : classname},{ '$set' : { "subject": subjects } })
 
 #List to string converter
 def convertToString(atd_list,sdate,edate):
@@ -782,74 +733,6 @@ def convertToString(atd_list,sdate,edate):
             csv += "Average(%)"           
         csv += "\n"
         avg = 0
-<<<<<<< HEAD
-=======
-#csvdata
-def reportCSV(classroom,sdate,edate):
-    start = sdate
-    end = edate
-    
-    res=db.syllabus.find_one({'classroom':classroom},{"subject":1,"_id":0})
-    sub=res['subject']
-    group={
-            "$group": {
-                "_id": "$_id",
-                "rollnumber": {"$first": '$rollnumber'},
-                "name": {"$first": '$name'},
-                "classroom": {"$first": '$classroom'},
-            }
-        }
-
-    for i in sub:
-        a={i:{"$sum":"$attendance.todaysattendance."+i}}
-        group["$group"].update(a)
-        
-
-
-    res=db.attendancelog.aggregate([
-        {
-            "$unwind": "$attendance",
-            
-        },
-        {
-            "$match":{
-                "attendance.date":{"$gte":start, "$lte":end}
-            }
-        },
-        {
-        "$project": {
-                "attendance":1,
-                "name":1,
-                "rollnumber":1,
-                "classroom":1    
-            }
-        }
-        ,
-        group
-        
-    ])
-    res=list(res)
-    print(res)
-    return res
-
-
-#List to string converter
-def convertToString(atd_list):
-    csv =''   # initializing the empty string
-    count =0
-    for atd in atd_list:
-        del atd["_id"]
-        key = atd.keys()  
-        value = atd.values()
-        keys = list(key)
-        values = list(value)
-        if count == 0 :         
-            for i in keys:                      
-                csv += i+","             
-        csv += "\n"
->>>>>>> b6be7a302f5fb347eebf4884445f3a89abbd52d7
-=======
->>>>>>> 575bd542dd0394ae3228c85bc6a126e138e38c47
         for j in values:
             csv += str(j)+","
             count += 1  
@@ -877,10 +760,6 @@ def updatTeacher(uname) :
                       "classroom" : classroom,
                       "subject" : subject}})
     
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 575bd542dd0394ae3228c85bc6a126e138e38c47
 # Date difference Calculator
 def datediff(date1,date2):
     d1 = pd.to_datetime(date1,format = '%Y-%m-%d').date()
@@ -888,29 +767,4 @@ def datediff(date1,date2):
     diff = np.busday_count(d1,d2) + 1
     # days = np.busday_count( start, end,holidays=[holidays] )        Incaseyou want to provide holiday
     return diff
-<<<<<<< HEAD
-=======
-    return csv  
 
-#Find Single Teacher Usinh Username
-def findTeacher(uname):
-    res = db.teachersdataset.find({'username':uname})
-    for t in res:    
-        return t    
-
-def updatTeacher(uname) :
-    name = request.form["name"]
-    number = request.form["number"]
-    classroom = request.form["classroom"]
-    subjects = request.form.getlist('subject[]')
-    subject = [i for i in subjects if i]
-    db.teachersdataset.update_one({"username": uname},
-                   {"$set": {
-                      "name" : name,
-                      "number" : number,
-                      "classroom" : classroom,
-                      "subject" : subject}})
->>>>>>> b6be7a302f5fb347eebf4884445f3a89abbd52d7
-=======
-    
->>>>>>> 575bd542dd0394ae3228c85bc6a126e138e38c47
