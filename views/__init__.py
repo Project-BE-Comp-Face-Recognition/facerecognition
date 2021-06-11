@@ -446,5 +446,9 @@ def updateTeacher():
         return render_template('edit-teacher.html',teacher = teacher)    
     elif request.method == 'POST': 
         updatTeacher(uname)        
+<<<<<<< HEAD
         return redirect(url_for("teachersregister"))
 
+=======
+        return redirect(url_for("teachersregister"))    
+>>>>>>> 575bd542dd0394ae3228c85bc6a126e138e38c47
