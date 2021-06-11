@@ -714,12 +714,10 @@ def convertToString(atd_list,sdate,edate):
     csv =''   # initializing the empty string
     count =0
     diff = datediff(sdate,edate)
-    print(atd_list)
     for atd in atd_list[1]:
         del atd["_id"]
         del atd["name"]
         res = db.studentdataset.find_one({'personId': atd['personId']},{"_id":0,"username":1,"name":1,"email":1,"parentname":1,"parentemail":1})
-        print(res)
         del atd["personId"]
         key2 = res.keys()
         key1 = atd.keys() 
@@ -738,7 +736,9 @@ def convertToString(atd_list,sdate,edate):
             count += 1  
             if type(j) == int :
                 avg += j
-        csv += str(round((avg*100)/(6*diff),2))
+        csv += str(round((avg*100)/(6*diff),2))  
+    print(csv)  
+    mailData(csv)
     return csv  
 
 #Find Single Teacher Usinh Username
@@ -768,3 +768,19 @@ def datediff(date1,date2):
     # days = np.busday_count( start, end,holidays=[holidays] )        Incaseyou want to provide holiday
     return diff
 
+
+
+def mailData(csv):
+    lst=csv.splitlines()
+    for i in lst[1:]:
+        a=i.split(",")
+        
+        studentname=a[0]
+        studentprn=a[1]
+        studentemail=a[2] 
+        parentsname=a[3]
+        parentsemail=a[4]   
+        avgattendance=a[len(a)-1]
+
+
+        
