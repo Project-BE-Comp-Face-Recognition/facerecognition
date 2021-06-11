@@ -11,6 +11,8 @@ from bson import json_util, ObjectId
 import json,shutil
 from datetime import date , timedelta ,datetime
 import time
+import pandas as pd
+import numpy as np
 
 
 def checkloginusername():
@@ -127,41 +129,72 @@ def registerStudent():
 
 
 
-def fetchAttendance(classroom):
+def fetchAttendance(classroom,sdate,edate):
+    diff = []
+    if edate == None and sdate == None :
+        edate = date.today()
+        sdate = edate - timedelta(days = 30)
+    
+    elif edate == '' or sdate == '':
+        if sdate == '':
+            if edate == '':
+                edate = date.today()
+                sdate = (edate - timedelta(days= 30))
+            else :
+                sd = datetime.strptime(edate, '%Y-%m-%d').date()
+                sdate = (sd - timedelta(days= 30))
+        else:
+            edate = date.today() 
+                
+    sdate=str(sdate)
+    edate=str(edate)        
+    diff.append(sdate)
+    diff.append(edate)
+    diff.append(datediff(sdate,edate))
     res=db.syllabus.find_one({'classroom':classroom},{"subject":1,"_id":0})
     sub=res['subject']
     group={
             "$group": {
                 "_id": "$_id",
-                "name": {"$first": '$name'},
                 "rollnumber": {"$first": '$rollnumber'},
+                "name": {"$first": '$name'},
                 "classroom": {"$first": '$classroom'},
+                "personId": {"$first": '$personId'}
             }
         }
 
     for i in sub:
         a={i:{"$sum":"$attendance.todaysattendance."+i}}
         group["$group"].update(a)
+        
 
-    pipe = [
-        {"$match": {
-            "classroom":classroom
-        }
+
+    r=db.attendancelog.aggregate([
+        {
+            "$unwind": "$attendance",
+            
         },
         {
-            "$unwind": "$attendance"
+            "$match":{
+                "attendance.date":{"$gte":sdate, "$lte":edate}
+            }
         },
+        {
+        "$project": {
+                "attendance":1,
+                "name":1,
+                "rollnumber":1,
+                "classroom":1,
+                "personId" :1    
+            }
+        }
+        ,
         group
-    ]
+        
+    ])
 
-    res= list(db.attendancelog.aggregate(pipe))
-    print(res)
-    
-    '''
-    old
-    '''
-    # res = db.attendance.find()    
-    return sub,res
+    res=list(r)
+    return sub,res,diff
 
 
 
@@ -455,6 +488,7 @@ def checkclass():
 
 def markAttendance(identifiedFace,subjectname):
     dateToday= date.today().isoformat()
+    modified=0
     for i in identifiedFace:
         try:
             res=db.attendancelog.update_one({'personId':i, "attendance.date":dateToday} , {"$inc":{"attendance.$.todaysattendance."+subjectname:1}})
@@ -468,12 +502,13 @@ def markAttendance(identifiedFace,subjectname):
             v=[dateToday,ta]
             attendance=dict(zip(k,v))
             print(attendance)
-            db.attendancelog.update_one({'personId':i},{'$push':{"attendance":attendance}})
-            return "success"
+            db.attendancelog.update_one({'personId':i},{'$push':{"attendance":{"$each":[attendance] ,"$position":0}}})
+            modified+=res.modified_count
 
-        
-    return "success"
-
+    if modified!=0:        
+        return "success"
+    else :
+        return None
 
 
 
@@ -620,7 +655,7 @@ def piedata():
         
 def bardata():
     # Get today's date
-    today = date.today()
+    today = date.today() 
     # Yesterday date
     yesterday = str(today - timedelta(days = 1))
     key=showClassroom()
@@ -632,7 +667,6 @@ def bardata():
             {"attendance.date":yesterday ,"classroom":classs},{"_id":1}
         ))  
         value.append(len(res))
-
     return key,value,label
         
 
@@ -646,14 +680,15 @@ def fetchSyllabus(classroom):
     return syllabus
 
 def areaChart():
+
     today = date.today()
-    day1 = str(today - timedelta(days = 1))
-    day2 = str(today - timedelta(days = 2))
-    day3 = str(today - timedelta(days = 3))
+    day1 = str(today - timedelta(days = 7))
+    day2 = str(today - timedelta(days = 6))
+    day3 = str(today - timedelta(days = 5))
     day4 = str(today - timedelta(days = 4))
-    day5 = str(today - timedelta(days = 5))
-    day6 = str(today - timedelta(days = 6))
-    day7 = str(today - timedelta(days = 7))
+    day5 = str(today - timedelta(days = 3))
+    day6 = str(today - timedelta(days = 2))
+    day7 = str(today - timedelta(days = 1))
     areaKey=[day1,day2,day3,day4,day5,day6,day7]
     areaValue=[]
     for i in areaKey:
@@ -672,74 +707,66 @@ def updatSyllabus(classname):
     f = request.form
     for key in f.keys():
         for value in f.getlist(key):
-            subjects.append(value) 
+            if value != None:
+                subjects.append(value) 
     db.syllabus.update_one({"classroom" : classname},{ '$set' : { "subject": subjects } }
                            )
-#csvdata
-def reportCSV(classroom,sdate,edate):
-    start = sdate
-    end = edate
-    
-    res=db.syllabus.find_one({'classroom':classroom},{"subject":1,"_id":0})
-    sub=res['subject']
-    group={
-            "$group": {
-                "_id": "$_id",
-                "date" : {"$first": '$attendance.date'},
-                "name": {"$first": '$name'},
-                "rollnumber": {"$first": '$rollnumber'},
-                "classroom": {"$first": '$classroom'},
-            }
-        }
-
-    for i in sub:
-        a={i:{"$sum":"$attendance.todaysattendance."+i}}
-        group["$group"].update(a)
-    
-
-    pipe = [
-        {"$match": {
-            "classroom":classroom,
-            "attendance.date":{"$gt":start, "$lte":end}
-            }
-        },
-        {
-           "$unwind": "$attendance"
-        },
-        group
-    ]
-    atd = db.attendancelog.aggregate(pipe)
-    for doc in atd:   
-        print(doc)
-    res= list(db.attendancelog.aggregate(pipe))
-    print(res)
-    return res
-
 
 #List to string converter
-def convertToString(atd_list):
-
+def convertToString(atd_list,sdate,edate):
     csv =''   # initializing the empty string
     count =0
-    
-    for atd in atd_list:
-        
+    diff = datediff(sdate,edate)
+    print(atd_list)
+    for atd in atd_list[1]:
         del atd["_id"]
-        key = atd.keys()  
-        value = atd.values()
-        keys = list(key)
-        values = list(value)
-           
+        del atd["name"]
+        res = db.studentdataset.find_one({'personId': atd['personId']},{"_id":0,"username":1,"name":1,"email":1,"parentname":1,"parentemail":1})
+        print(res)
+        del atd["personId"]
+        key2 = res.keys()
+        key1 = atd.keys() 
+        value2 = res.values() 
+        value1 = atd.values()
+        keys = list(key2) + list(key1)
+        values = list(value2) + list(value1)
         if count == 0 :         
             for i in keys:                      
                 csv += i+","  
-                   
+            csv += "Average(%)"           
         csv += "\n"
-            
-            
+        avg = 0
         for j in values:
             csv += str(j)+","
-            
             count += 1  
-    
+            if type(j) == int :
+                avg += j
+        csv += str(round((avg*100)/(6*diff),2))
     return csv  
+
+#Find Single Teacher Usinh Username
+def findTeacher(uname):
+    res = db.teachersdataset.find({'username':uname})
+    for t in res:    
+        return t    
+
+def updatTeacher(uname) :
+    name = request.form["name"]
+    number = request.form["number"]
+    classroom = request.form["classroom"]
+    subjects = request.form.getlist('subject[]')
+    subject = [i for i in subjects if i]
+    db.teachersdataset.update_one({"username": uname},
+                   {"$set": {
+                      "name" : name,
+                      "number" : number,
+                      "classroom" : classroom,
+                      "subject" : subject}})
+    
+# Date difference Calculator
+def datediff(date1,date2):
+    d1 = pd.to_datetime(date1,format = '%Y-%m-%d').date()
+    d2 = pd.to_datetime(date2,format = '%Y-%m-%d').date()
+    diff = np.busday_count(d1,d2) + 1
+    # days = np.busday_count( start, end,holidays=[holidays] )        Incaseyou want to provide holiday
+    return diff

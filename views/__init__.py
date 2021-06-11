@@ -119,10 +119,14 @@ def barchart():
 def tables():
     clas=showClassroom()
     classroom="becomp"
+    sdate = None
+    edate = None
     if request.method == "POST":
         classroom=request.form.get('classroom')
-    sub,atd_list = fetchAttendance(classroom)
-    return render_template('tables.html', atd_list=atd_list,sublist=sub,classroom=clas ,choose = classroom)
+        sdate = request.form['sdate']
+        edate = request.form['edate']
+    sub,atd_list,diff = fetchAttendance(classroom,sdate,edate)
+    return render_template('tables.html', atd_list=atd_list,sublist=sub,classroom=clas ,choose = classroom,diff = diff)
 
 
 # Student_Information Page
@@ -236,7 +240,6 @@ def updateprofile():
         return render_template('profile.html',users = users)
     elif request.method == 'POST':
         saveprofile(uname)
-        file = request.files['file']
         return redirect(url_for("updateprofile"))
 
 # update Password
@@ -271,13 +274,12 @@ def reset_pass():
     if request.method == "POST":
         
         check = checkmail()
-        hashCode = ''.join(random.choices(string.ascii_letters + string.digits, k=42))
         
         if check != None :
             subject = "Confirm Password Change"
             sender = app.config["MAIL_USERNAME"]
             recipients = check
-            body = "Hello,\nWe've received a request to reset your password. If you want to reset your password, click the link below and enter your new password\n http://127.0.0.1:5000/"+hashCode+"/reset_password"
+            body = "Hello,\nWe've received a request to reset your password. If you want to reset your password, click the link below and enter your new password\n http://127.0.0.1:5000/reset_password"
             recipt = sendmail(subject,sender,recipients,body)
             print(recipt)
             return render_template('login.html')
@@ -285,8 +287,8 @@ def reset_pass():
     return render_template('forgot-password.html') 
 
 # reset Password
-@app.route('/<string:hashCode>/reset_password', methods=["GET","POST"])
-def reset_password(hashCode):
+@app.route('/reset_password', methods=["GET","POST"])
+def reset_password():
     if request.method == "GET":
         return render_template('reset_password.html')
     elif request.method == 'POST':  
@@ -361,7 +363,9 @@ def update_tt():
 # landingpage_Information Page
 @app.route('/land', methods=["GET"])
 def land():
-    return render_template('landingpage.html')   
+    chartsdata = fetchTotalAttendance()
+
+    return render_template('landingpage.html',data=chartsdata)   
 
 #reset password
 @app.route('/contact', methods=["GET","POST"])
@@ -404,15 +408,15 @@ def getCSV():
     sdate = request.form.get("sdate")
     edate = request.form.get("edate")
     classname = request.form.get('class')
-    reportCSV(classname,sdate,edate)
-    csv = "a,b" #convertToString(atd_list)
+    atd_list=fetchAttendance(classname,sdate,edate)
+    csv=convertToString(atd_list,sdate,edate)
     return Response(
         csv,
         mimetype="text/csv",
         headers={"Content-disposition":
                  "attachment; filename="+classname+".csv"})
     
-#Report Mail  
+#Report Mail    
 @app.route("/sendReport" , methods = ["POST"])
 def sendReport():
     if request.method == "POST":
@@ -428,3 +432,19 @@ def sendReport():
         return render_template('report.html')
         
     return render_template('report.html')
+
+#Edit Teacher Information
+@app.route("/editTeacher/<string:uname>", methods = ["GET","POST"])
+def editTeacher(uname):
+    session['uname'] = uname
+    return redirect(url_for("updateTeacher"))
+  
+@app.route('/updateTeacher',methods=["GET","POST"])
+def updateTeacher():  
+    uname = session.get('uname')
+    if request.method == "GET":
+        teacher = findTeacher(uname)
+        return render_template('edit-teacher.html',teacher = teacher)    
+    elif request.method == 'POST': 
+        updatTeacher(uname)        
+        return redirect(url_for("teachersregister"))    

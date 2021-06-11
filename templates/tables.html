@@ -7,27 +7,41 @@
   <h1 class="h3 mb-2 text-gray-800">Attendance Record</h1>
   <div class="card-body">
     <form class="user" method="POST" action="{{ url_for('tables') }}">
-        <div class="form-group">
-            <div class="input-group">
-                <select name="classroom" class="selectpicker form-control">
-                    <option value="{{ choose }}" hidden>{{ choose }}</option>
-                    {% for class in classroom %}
-                    <option value="{{ class }}">{{ class }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <hr>
-            <button type="submit" class="btn btn-primary btn-user btn-block">Go</button>
+      <div class="form-group">
+        <label class="font-weight-bold" for="classroom">Slect Class</label>
+        <div class="input-group">
+          <select name="classroom" class="selectpicker form-control">
+            <option value="{{ choose }}" hidden>{{ choose }}</option>
+            {% for class in classroom %}
+            <option value="{{ class }}">{{ class }}</option>
+            {% endfor %}
+          </select>
         </div>
+      </div>
+
+      <hr>
+      <div class="form group">
+        <div class="input-group">
+          <label class="font-weight-bold" style="margin-right:5px;" for="sdate">From </label>
+          <input type="date" name="sdate" class="form-control">
+
+          <label class="font-weight-bold" style="margin-left:10px;margin-right:5px;" for="edate"> To </label>
+          <input type="date" name="edate" class="form-control">
+        </div>
+      </div>
+      <hr>
+      <button type="submit" class="btn btn-primary btn-user btn-block">Go</button>
     </form>
-</div><!-- DataTales Example -->
+  </div>
+
+  <!-- DataTales Example -->
   <div class="card shadow mb-4">
     <div class="card-header py-3">
       <h6 class="m-0 font-weight-bold text-primary">Attendance Table</h6>
+      <h6 style="text-align: center;" class="m-0 font-weight-bold text-primary">{{diff[0]}} to {{diff[1]}}</h6>
     </div>
     <div class="card-body">
       <div class="table-responsive">
-        
 
         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
           <thead>
@@ -38,12 +52,7 @@
               {% for sub in sublist%}
               <th>{{sub}}</th>
               {% endfor %}
-              <!-- <th>Branch</th>
-              <th>DMW</th>
-              <th>ICS</th>
-              <th>DAA</th>
-              <th>Overall Attendace</th> -->
-
+              <th>Average (%)</th>
             </tr>
           </thead>
 
@@ -59,13 +68,21 @@
               <td>{{ atd['classroom'] }}</td>
               {% for sub in sublist%}
               <td>{{atd[sub]}}</td>
-              
-              
-              <!-- <td>{{ atd['branch'] }}</td>
-              <td>{{ atd['sub1'] }}</td>
-              <td>{{ atd['sub2']}} </td>
-              <td>{{atd['sub3']}}</td>-->
               {% endfor %}
+
+              <!-- calculating average average  -->
+              {% set mark = [] %}
+              {% for key, val in atd.items() %}
+              {% for sub in sublist %}
+              {% if key|lower == sub|lower %}
+              {% if mark.append(val) %}{% endif %}
+              {% endif %}
+              {% endfor %}
+              {% endfor %}
+              {% set total = "%.2f"|format(mark|sum() * 100 / (diff[2] * 6)) %}
+              <!-- end of code -->
+
+              <td>{{total}}</td>
             </tr>
             {% endfor %}
 
