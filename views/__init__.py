@@ -34,12 +34,8 @@ def register():
     elif request.method == "POST":
         registerTeacher()
 
-        return redirect(url_for("parents_register"))
+        return redirect(url_for("login"))
 
-# Parents_register
-@app.route('/parents_register', methods=["GET", "POST"])
-def parents_register():
-    return render_template("parents_register.html")
 
 # Check if username already exists in the registration page
 @app.route('/checkusername', methods=["POST"])
@@ -299,9 +295,12 @@ def reset_password():
 @app.route("/feedback",methods=["GET","POST"])
 def feedback():
     if request.method =="GET":
-        return render_template("feedback.html")
+        classroom=showClassroom()
+
+        return render_template("feedback.html",classroom=classroom)
     elif request.method =="POST":
         check = checkclass()
+
         
         if check != None :
             subject = "feedback form"
@@ -447,4 +446,5 @@ def updateTeacher():
         return render_template('edit-teacher.html',teacher = teacher)    
     elif request.method == 'POST': 
         updatTeacher(uname)        
-        return redirect(url_for("teachersregister"))    
+        return redirect(url_for("teachersregister"))
+

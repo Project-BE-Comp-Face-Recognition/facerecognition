@@ -129,6 +129,7 @@ def registerStudent():
 
 
 
+<<<<<<< HEAD
 def fetchAttendance(classroom,sdate,edate):
     diff = []
     if edate == None and sdate == None :
@@ -151,6 +152,15 @@ def fetchAttendance(classroom,sdate,edate):
     diff.append(sdate)
     diff.append(edate)
     diff.append(datediff(sdate,edate))
+=======
+def fetchAttendance(classroom):
+    sdate =date.today()
+    edate = sdate - timedelta(days = 30)
+    edate=str(edate)
+    sdate=str(sdate)
+
+    print(edate,sdate)
+>>>>>>> b6be7a302f5fb347eebf4884445f3a89abbd52d7
     res=db.syllabus.find_one({'classroom':classroom},{"subject":1,"_id":0})
     sub=res['subject']
     group={
@@ -176,7 +186,11 @@ def fetchAttendance(classroom,sdate,edate):
         },
         {
             "$match":{
+<<<<<<< HEAD
                 "attendance.date":{"$gte":sdate, "$lte":edate}
+=======
+                "attendance.date":{"$gte":"2021-05-11", "$lte":"2021-06-10"}
+>>>>>>> b6be7a302f5fb347eebf4884445f3a89abbd52d7
             }
         },
         {
@@ -184,8 +198,12 @@ def fetchAttendance(classroom,sdate,edate):
                 "attendance":1,
                 "name":1,
                 "rollnumber":1,
+<<<<<<< HEAD
                 "classroom":1,
                 "personId" :1    
+=======
+                "classroom":1    
+>>>>>>> b6be7a302f5fb347eebf4884445f3a89abbd52d7
             }
         }
         ,
@@ -194,7 +212,11 @@ def fetchAttendance(classroom,sdate,edate):
     ])
 
     res=list(r)
+<<<<<<< HEAD
     return sub,res,diff
+=======
+    return sub,res
+>>>>>>> b6be7a302f5fb347eebf4884445f3a89abbd52d7
 
 
 
@@ -474,7 +496,7 @@ def removeTrainDataset(path: str )-> None :
         os.remove(path)
 
 def checkclass():
-    cls = request.form["class"]
+    cls = request.form["classroom"]
     check = db.studentdataset.find({"classroom": cls})
     if check is None:
         return check
@@ -711,6 +733,7 @@ def updatSyllabus(classname):
                 subjects.append(value) 
     db.syllabus.update_one({"classroom" : classname},{ '$set' : { "subject": subjects } }
                            )
+<<<<<<< HEAD
 
 #List to string converter
 def convertToString(atd_list,sdate,edate):
@@ -736,6 +759,71 @@ def convertToString(atd_list,sdate,edate):
             csv += "Average(%)"           
         csv += "\n"
         avg = 0
+=======
+#csvdata
+def reportCSV(classroom,sdate,edate):
+    start = sdate
+    end = edate
+    
+    res=db.syllabus.find_one({'classroom':classroom},{"subject":1,"_id":0})
+    sub=res['subject']
+    group={
+            "$group": {
+                "_id": "$_id",
+                "rollnumber": {"$first": '$rollnumber'},
+                "name": {"$first": '$name'},
+                "classroom": {"$first": '$classroom'},
+            }
+        }
+
+    for i in sub:
+        a={i:{"$sum":"$attendance.todaysattendance."+i}}
+        group["$group"].update(a)
+        
+
+
+    res=db.attendancelog.aggregate([
+        {
+            "$unwind": "$attendance",
+            
+        },
+        {
+            "$match":{
+                "attendance.date":{"$gte":start, "$lte":end}
+            }
+        },
+        {
+        "$project": {
+                "attendance":1,
+                "name":1,
+                "rollnumber":1,
+                "classroom":1    
+            }
+        }
+        ,
+        group
+        
+    ])
+    res=list(res)
+    print(res)
+    return res
+
+
+#List to string converter
+def convertToString(atd_list):
+    csv =''   # initializing the empty string
+    count =0
+    for atd in atd_list:
+        del atd["_id"]
+        key = atd.keys()  
+        value = atd.values()
+        keys = list(key)
+        values = list(value)
+        if count == 0 :         
+            for i in keys:                      
+                csv += i+","             
+        csv += "\n"
+>>>>>>> b6be7a302f5fb347eebf4884445f3a89abbd52d7
         for j in values:
             csv += str(j)+","
             count += 1  
@@ -763,6 +851,7 @@ def updatTeacher(uname) :
                       "classroom" : classroom,
                       "subject" : subject}})
     
+<<<<<<< HEAD
 # Date difference Calculator
 def datediff(date1,date2):
     d1 = pd.to_datetime(date1,format = '%Y-%m-%d').date()
@@ -770,3 +859,25 @@ def datediff(date1,date2):
     diff = np.busday_count(d1,d2) + 1
     # days = np.busday_count( start, end,holidays=[holidays] )        Incaseyou want to provide holiday
     return diff
+=======
+    return csv  
+
+#Find Single Teacher Usinh Username
+def findTeacher(uname):
+    res = db.teachersdataset.find({'username':uname})
+    for t in res:    
+        return t    
+
+def updatTeacher(uname) :
+    name = request.form["name"]
+    number = request.form["number"]
+    classroom = request.form["classroom"]
+    subjects = request.form.getlist('subject[]')
+    subject = [i for i in subjects if i]
+    db.teachersdataset.update_one({"username": uname},
+                   {"$set": {
+                      "name" : name,
+                      "number" : number,
+                      "classroom" : classroom,
+                      "subject" : subject}})
+>>>>>>> b6be7a302f5fb347eebf4884445f3a89abbd52d7
