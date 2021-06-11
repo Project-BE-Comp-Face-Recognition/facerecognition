@@ -455,7 +455,7 @@ def removeTrainDataset(path: str )-> None :
         os.remove(path)
 
 def checkclass():
-    cls = request.form["class"]
+    cls = request.form["classroom"]
     check = db.studentdataset.find({"classroom": cls})
     if check is None:
         return check
