@@ -127,8 +127,6 @@ def registerStudent():
     return True
 
 
-
-
 def fetchAttendance(classroom,sdate,edate):
     diff = []
     if edate == None and sdate == None :
@@ -177,6 +175,7 @@ def fetchAttendance(classroom,sdate,edate):
         {
             "$match":{
                 "attendance.date":{"$gte":sdate, "$lte":edate}
+
             }
         },
         {
@@ -474,7 +473,7 @@ def removeTrainDataset(path: str )-> None :
         os.remove(path)
 
 def checkclass():
-    cls = request.form["class"]
+    cls = request.form["classroom"]
     check = db.studentdataset.find({"classroom": cls})
     if check is None:
         return check
@@ -770,3 +769,4 @@ def datediff(date1,date2):
     diff = np.busday_count(d1,d2) + 1
     # days = np.busday_count( start, end,holidays=[holidays] )        Incaseyou want to provide holiday
     return diff
+    

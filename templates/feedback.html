@@ -14,11 +14,15 @@
 
     </div>
     <form id="myform" class="user" method="POST">
-        <div class="form-group">
-          <input type="text" class="form-control form-control-user" id="class" name="class" placeholder="class (eg.becs,beit..)"required>
-    
-    </div>
-    
+      <div class="form-group">
+        <select class="browser-default custom-select" name="classroom" required>
+          <option value="" disabled selected>Select Class</option>
+          {% for class in classroom %}
+          <option value="{{class}}">{{class}}</option>
+          {% endfor %}
+        </select>
+      </div>
+
 
 
 </div>
