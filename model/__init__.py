@@ -13,6 +13,8 @@ from datetime import date , timedelta ,datetime
 import time
 import pandas as pd
 import numpy as np
+from tabulate import tabulate
+
 
 
 def checkloginusername():
@@ -715,12 +717,10 @@ def convertToString(atd_list,sdate,edate):
     csv =''   # initializing the empty string
     count =0
     diff = datediff(sdate,edate)
-    print(atd_list)
     for atd in atd_list[1]:
         del atd["_id"]
         del atd["name"]
         res = db.studentdataset.find_one({'personId': atd['personId']},{"_id":0,"username":1,"name":1,"email":1,"parentname":1,"parentemail":1})
-        print(res)
         del atd["personId"]
         key2 = res.keys()
         key1 = atd.keys() 
@@ -739,7 +739,8 @@ def convertToString(atd_list,sdate,edate):
             count += 1  
             if type(j) == int :
                 avg += j
-        csv += str(round((avg*100)/(6*diff),2))
+        csv += str(round((avg*100)/(6*diff),2))    
+    mailData(csv)
     return csv  
 
 #Find Single Teacher Usinh Username
@@ -769,3 +770,43 @@ def datediff(date1,date2):
     diff = np.busday_count(d1,d2) + 1
     # days = np.busday_count( start, end,holidays=[holidays] )        Incaseyou want to provide holiday
     return diff
+
+def mailData(csv):
+    lst=csv.splitlines()
+    for i in lst[1:]:
+        a=i.split(",")
+        
+        studentname = a[0]
+        studentemail = a[2] 
+        parentsname = a[3]
+        parentsemail = a[4]   
+        classname = a[6] 
+        avgattendance= float(a[len(a)-1])
+        mdate = str(date.today())
+           
+        subject = "Student Attendance Report   - No Reply"
+        recipients = studentemail
+        sender = app.config["MAIL_USERNAME"]
+        
+        # h = []
+        # v = []
+        # b = lst[0].split(",")
+        # for i in range(7,len(a)):
+        #     v.append(a[i])
+        #     h.append(b[i])    
+        # table  = [h,v]
+        # mark = tabulate(table, headers='firstrow', tablefmt='fancy_grid')
+        
+        if avgattendance <= 35.00 :        
+            body = mdate+"\n"+parentsname+"\n"+parentsemail+"\nDear Sir,\n\nWe regret to inform you that your son/daughter "+studentname+" is a student of "+classname+" in G.H.Raisoni Institute of Engineering & Technology , Wagholi. It has been an awful situation to inform you about his/her recent educational record. He/she has not been present in his/her classes most of the time. It is noted that he/she is having a below average attendance to attempt the final year exams that are to be held this season. Every teacher individually warned him/her of his present condition but they have failed to change his/her mind to attend classes on regular basis. So we are only left with the last option to inform you about his/her situation. You are being his guardian can handle this situation more effectively now. So we will leave this problem to you from now on.\n     Apart from the above-mentioned attendance problem, there is another attitude problem is being observed in your son/daughter. He/she has been observed behaving badly with most of his/her teachers. Keeping in view his/her old records we did not expel him/her just yet. We have warned him/her and given him/her another chance to be a good lad in our school and we felt it essential to inform you also so that you can make him/her stop ruin his/her education and life. As the teachers and management are not happy with him/her we are issuing this warning letter so that he can continue his/her studies in a disciplined way that every other student follows here.\n\n       We are looking forward to an intense action from you. So it would really be appreciated by us.\n\nThanking you.\nYours Truly,\n Dr. Nilesh Deotale \n       HOD"
+        
+        elif avgattendance > 35.00 and avgattendance <= 50.00 :
+            body = mdate+"\n"+parentsname+"\n"+parentsemail+"\n\nDear Sir,\nWe regret to inform you that your son/daughter "+studentname+" is a student of "+classname+" in G.H.Raisoni Institute of Engineering & Technology , Wagholi. It has been a worrying situation to inform you about his/her recent educational record. He/she has not been present in his/her classes regularly. It is noted that he/she is having an average attendance to attempt the final year exams that are to be held this season. Every teacher individually told him/her of his present condition but they have failed to change his/her mind to attend classes on regular basis. So we are only left with the last option to inform you about his/her situation. You are being his guardian can handle this situation more effectively now. So we will leave this problem to you from now on.\n       Keeping in view his old records we did not expel him/her just yet. We have warned him and given him another chance to be a good lad in our school and we felt it essential to inform you also so that you can make him/her stop ruin his education and life. As the teachers and management are happy with him/her academic performance. we are issuing this warning letter so that he can continue his studies in a disciplined way that every other student follows here.\nWe are looking forward to an intense action from you. So it would really be appreciated by us.\nThanking you.\nYours Truly,\n Dr. Nilesh Deotale \n      HOD"            
+        
+        elif avgattendance > 50.00 :
+            body = mdate+"\n"+parentsname+"\n"+parentsemail+"\n\nDear Sir,\nWe happy to inform you that your son/daughter "+studentname+" is a student of "+classname+" in G.H.Raisoni Institute of Engineering & Technology , Wagholi. It has been an excellent situation to inform you about his/her recent educational record. He/she has present in his/her classes most of the time. It is noted that he/she is having a excellent attendance to attempt the final year exams that are to be held this season. Every teacher individually awarded him of his present condition. So we are very happy to inform you about his/her performance. You are being his/her guardian can proud on him/her.\n\n      We believe if he/she continues his/her co-orporation in this way might see agood progress in his/her grades in upcoming exams. He/She is interactive and focused towards his/her studies. He/She just need to consistant with his/her attendance.  \n\n     We are glad to have him/her in our college. \n\nThanking you.\nYours Truly,\n Dr. Nilesh Deotale \n    HOD"
+        recipt = sendmail(subject,sender,recipients,body)
+        print(recipt," for ",studentemail)
+    
+        
+
