@@ -13,7 +13,6 @@ from datetime import date , timedelta ,datetime
 import time
 import pandas as pd
 import numpy as np
-from tabulate import tabulate
 
 
 
