@@ -149,7 +149,6 @@ def fetchAttendance(classroom,sdate,edate):
     diff.append(sdate)
     diff.append(edate)
     diff.append(datediff(sdate,edate))
-
     res=db.syllabus.find_one({'classroom':classroom},{"subject":1,"_id":0})
     sub=res['subject']
     group={
@@ -166,6 +165,8 @@ def fetchAttendance(classroom,sdate,edate):
         a={i:{"$sum":"$attendance.todaysattendance."+i}}
         group["$group"].update(a)
         
+
+
     r=db.attendancelog.aggregate([
         {
             "$unwind": "$attendance",
@@ -174,7 +175,6 @@ def fetchAttendance(classroom,sdate,edate):
         {
             "$match":{
                 "attendance.date":{"$gte":sdate, "$lte":edate}
-
             }
         },
         {
@@ -472,7 +472,7 @@ def removeTrainDataset(path: str )-> None :
         os.remove(path)
 
 def checkclass():
-    cls = request.form["classroom"]
+    cls = request.form["class"]
     check = db.studentdataset.find({"classroom": cls})
     if check is None:
         return check
@@ -707,7 +707,8 @@ def updatSyllabus(classname):
         for value in f.getlist(key):
             if value != None:
                 subjects.append(value) 
-    db.syllabus.update_one({"classroom" : classname},{ '$set' : { "subject": subjects } })
+    db.syllabus.update_one({"classroom" : classname},{ '$set' : { "subject": subjects } }
+                           )
 
 #List to string converter
 def convertToString(atd_list,sdate,edate):
@@ -762,9 +763,9 @@ def updatTeacher(uname) :
     
 # Date difference Calculator
 def datediff(date1,date2):
+    
     d1 = pd.to_datetime(date1,format = '%Y-%m-%d').date()
     d2 = pd.to_datetime(date2,format = '%Y-%m-%d').date()
     diff = np.busday_count(d1,d2) + 1
     # days = np.busday_count( start, end,holidays=[holidays] )        Incaseyou want to provide holiday
     return diff
-
