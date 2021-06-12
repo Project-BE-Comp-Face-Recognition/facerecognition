@@ -1,6 +1,6 @@
 function loginSuccess() {
   toastr.success("Redirecting you to the dashboard")
-  window.location.href = "/"
+  window.location.href = "/admin"
 }
 
 $("#login").submit(function () {
@@ -21,7 +21,7 @@ $("#login").submit(function () {
             title: "Login Successful",
           })
           .then((result) => {
-            window.location.href = "/"
+            window.location.href = "/admin"
           })
       } else if (response === "wrong") {
         swal

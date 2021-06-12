@@ -11,10 +11,17 @@ from werkzeug.utils import secure_filename
 def not_found(e):
     return render_template("404.html"),404
 
- 
-
+# landingpage_Information Page
 @app.route('/', methods=["GET"])
 def home():
+    chartsdata = fetchTotalAttendance()
+
+    return render_template('landingpage.html',data=chartsdata)   
+
+ 
+
+@app.route('/admin', methods=["GET"])
+def admin():
 
     if "username" in session:
         chartsdata = fetchTotalAttendance()
@@ -56,7 +63,7 @@ def login():
         if "username" not in session:
             return render_template("login.html")
         else:
-            return redirect(url_for("home"))
+            return redirect(url_for("admin"))
 
 # check loginusername
 @app.route('/checkloginusername', methods=["POST"])
@@ -72,7 +79,7 @@ def checkUserpassword():
 @app.route('/logout', methods=["GET"])  # URL for logout
 def logout():  # logout function
     session.pop('username', None)  # remove user session
-    return redirect(url_for("home"))  # redirect to home page with message
+    return redirect(url_for("home"))  # redirect to admin page with message
 
 # Forgot Password
 @app.route('/forgot-password', methods=["GET"])
@@ -173,7 +180,7 @@ def createGroup():
         print("done")
         faceclass = addGroupName()
         createPersonGroup(faceclass)
-        return redirect(url_for("home"))
+        return redirect(url_for("admin"))
     return render_template("facegroup.html")
 
 
@@ -314,7 +321,7 @@ def feedback():
                 recipt = sendmail(subject,sender,recipients,body)
                 print(recipt)
 
-        return redirect(url_for('home'))
+        return redirect(url_for('admin'))
 
 @app.route('/identify',methods=['GET'])
 def identify():
@@ -359,12 +366,6 @@ def update_tt():
         return redirect(url_for("timetable"))
 
 
-# landingpage_Information Page
-@app.route('/land', methods=["GET"])
-def land():
-    chartsdata = fetchTotalAttendance()
-
-    return render_template('landingpage.html',data=chartsdata)   
 
 #reset password
 @app.route('/contact', methods=["GET","POST"])
