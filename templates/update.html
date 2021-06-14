@@ -2,7 +2,7 @@
 {% block body %}
 
 <div class="row">
-    <div class="col-md-4 offset-md-4">
+    <div class="col-md-8 offset-md-2">
         <div class="card card-body">
             
             <h5 class="text-center">
@@ -11,29 +11,42 @@
 
             <form action="/update" method="POST">
                 <form id="myform" class="users" method="POST">
-                
+                    <label for="name">Name</label>
                     <div class="form-group">
                         <input type="text" name="name" value= "{{ users.name}}" class="form-control" placeholder="Name">
                     </div>
-
+                    <label for="username">Username</label>
                     <div class="form-group">
                         <input type="text" name="username" value="{{users.username}}" class="form-control" placeholder="Username" disabled>
-                        <div id="uname_response"></div>
                     </div>
-                    
+                    <label for="email">Email</label>
                     <div class="form-group">
                         <input type="email" name="email" value="{{users.email}}" class="form-control" placeholder="Email" disabled>
-                        <div id="name_response"></div>
                     </div>
-
+                    <label for="classroom">Class</label>
                     <div class="form-group">
-                        <input type="text" name="class" value="{{users.class}}" class="form-control" placeholder="Class">
+                        <input type="text" name="classroom" value="{{users.classroom}}" class="form-control" placeholder="Classroom">
                     </div>
-
+                    <label for="rollnumber">Roll Number</label>
                     <div class="form-group">
-                        <input type="text" name="roll number" value="{{users.roll_number}}" class="form-control" placeholder="Roll Number">
+                        <input type="text" name="rollnumber" value="{{users.rollnumber}}" class="form-control" placeholder="Roll Number">
                     </div>
-
+                    <label for="mobile">Contact Number</label>
+                    <div class="form-group">
+                        <input type="text" name="mobile" value="{{ users.mobile}}" class="form-control" placeholder="Contact Number">
+                    </div>
+                    <label for="parentname">Parent Name</label>
+                    <div class="form-group">
+                        <input type="text" name="parentname" value="{{ users.parentname}}" class="form-control" placeholder="Parent Name">
+                    </div>
+                    <label for="parentemail">Parent Email</label>
+                    <div class="form-group">
+                        <input type="email" name="parentemail" value="{{users.parentemail}}" class="form-control" placeholder="Parent Email">
+                    </div>
+                    <label for="parentmobile">Parent Number</label>
+                    <div class="form-group">
+                        <input type="text" name="parentmobile" value="{{users.parentmobile}}" class="form-control" placeholder="Parent mobile">
+                    </div>
 
                     <div class="form-group">
                     <a data-toggle="modal" data-target="#update" class="btn btn-primary btn-block" style="color : white">

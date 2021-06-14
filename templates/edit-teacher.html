@@ -7,30 +7,29 @@
             <h1 style="text-align:center;">Teacher Details</h1>
             <form action="/updateTeacher" method="POST">
                 <form id="myform" class="users" method="POST">
-
+                    <label for="name">name</label>
                     <div class="form-group">
                         <input type="text" name="name" value="{{ teacher.name}}" class="form-control" placeholder="Name" required>
                     </div>
-
+                    <label for="username">Username</label>
                     <div class="form-group">
-                        <input type="text" name="username" value="{{teacher.username}}" class="form-control"
-                            placeholder="Username" disabled>
+                        <input type="text" name="username" value="{{teacher.username}}" class="form-control" placeholder="Username" disabled>
                         <div id="uname_response"></div>
                     </div>
-
+                    <label for="email">email</label>
                     <div class="form-group">
-                        <input type="email" name="email" value="{{teacher.email}}" class="form-control"
-                            placeholder="Email" disabled>
+                        <input type="email" name="email" value="{{teacher.email}}" class="form-control" placeholder="Email" disabled>
                         <div id="name_response"></div>
                     </div>
-
+                    <label for="number">Phone Number</label>
                     <div class="form-group">
                         <input type="text" name="number" value="{{teacher.number}}" class="form-control" placeholder="Mobile Number" required>
                     </div>
-
+                    <label for="classromm">classroom</label>
                     <div class="form-group">
                         <input type="text" name="classroom" value="{{teacher.classroom}}" class="form-control" placeholder="Classroom" required>
                     </div>
+                    <label for="subject[]">Subject</label>
                     {% for subject in teacher.subject %}
                     <div class="form-group">
                         <input type="text" name="subject[]" value="{{subject}}" class="form-control m-input" placeholder="Name">
@@ -40,7 +39,7 @@
                     <div id="newRow"></div>
                     
                     <div class="form-group">
-                        <button id="addRow" type="button" class="btn btn-primary btn-block">Add Row</button>
+                        <button id="addRow" type="button" class="btn btn-primary btn-block">Add Subject</button>
                     </div>
 
                     <div class="form-group">

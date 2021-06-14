@@ -4,12 +4,12 @@
 <div class="container-fluid">
 
     <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">Admin Details</h1>
+    <h1 class="h3 mb-2 text-gray-800">Students Details</h1>
 
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Admin Details Table</h6>
+            <h6 class="m-0 font-weight-bold text-primary">Students Details Table</h6>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -22,8 +22,12 @@
                             <th>Email</th>
                             <th>Class</th>
                             <th>Roll Number</th>
+                            <th>Contact Number</th>
+                            <th>Parent Name</th>
+                            <th>Parent Email</th>
+                            <th>Parent Number</th>
                             <th>Edit</th>
-                            <th>Delete</th>
+                            <!-- <th>Delete</th> -->
 
 
 
@@ -40,14 +44,18 @@
                             <td>{{ atd['name'] }}</td>
                             <td>{{ atd['username'] }}</td>
                             <td>{{ atd['email'] }}</td>
-                            <td>{{ atd['class'] }}</td>
-                            <td>{{ atd['roll_number']}} </td>
+                            <td>{{ atd['classroom'] }}</td>
+                            <td>{{ atd['rollnumber']}} </td>
+                            <td>{{ atd['mobile']}} </td>
+                            <td>{{ atd['parentname']}} </td>
+                            <td>{{ atd['parentemail']}} </td>
+                            <td>{{ atd['parentmobile']}} </td>
                             <td>
-                                <a href="/edit/{{atd.email}}" class="btn btn-secondary btn-sm">edit</a>
+                                <a href="/edit/{{atd.username}}" class="btn btn-secondary btn-sm">edit</a>
                             </td>
-                            <td>
-                                <a href="/delete/{{atd.email}}" class="btn btn-danger btn-delete btn-sm">Delete</a>
-                            </td>
+                            <!-- <td>
+                                <a href="/delete/{{atd.username}}" class="btn btn-danger btn-delete btn-sm">Delete</a>
+                            </td> -->
 
                         </tr>
                    
