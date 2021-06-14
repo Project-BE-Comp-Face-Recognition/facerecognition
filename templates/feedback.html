@@ -4,19 +4,19 @@
 <div class="container-fluid">
 
   <!-- Page Heading -->
-  <h1 class="h3 mb-4 text-gray-800">Feedback Form</h1>
+  <h1 class="h3 mb-4 text-gray-800">Send Mail to students</h1>
 
 
   <form id="myform" class="user" method="POST">
     <div class="form-group">
-      <input type="text" class="form-control form-control-user" id="feedback" name="feedback" placeholder="Feedback Link"required>
+      <input type="text" class="form-control form-control-user" id="feedback" name="feedback" placeholder="type here..."required>
       
 
     </div>
     <form id="myform" class="user" method="POST">
       <div class="form-group">
-        <select class="browser-default custom-select" name="classroom" required>
-          <option value="" disabled selected>Select Class</option>
+        <select class="browser-default custom-select" name="class" required>
+          <option value="" default hidden>Select Class</option>
           {% for class in classroom %}
           <option value="{{class}}">{{class}}</option>
           {% endfor %}
@@ -28,7 +28,7 @@
 </div>
 <div class="text-center">
   <button type="submit" id="button"  class="btn btn-primary btn-user btn-user">
-    Submit
+    Send
   </button>
 
 </div>

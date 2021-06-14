@@ -221,7 +221,7 @@ def fetchTotalAttendance():
 
 # Fetch Student Information
 def fetchstudent():
-    res = db.users.find()
+    res = db.studentdataset.find()
     return res
 
 
@@ -384,25 +384,33 @@ def showClassroom():
 
 
 #delete button
-def delet(email_del):
-    db.users.remove({"email" : email_del})
+# def delet(uname):
+#     db.studentdataset.remove({"username" : uname})
     
 #Edit button
-def fetchuser(email_find):
-    users = db.users.find_one({"email":email_find})
+def fetchuser(uname):
+    users = db.studentdataset.find_one({"username":uname})
     return users
 
 
 
-def updateuser(email):
+def updateuser(uname):
     name = request.form['name']
-    clas = request.form['class']
-    rno = request.form['roll number']
-    db.users.update({"email": email},
+    classroom = request.form['classroom']
+    rollnumber = request.form['rollnumber']
+    mobile = request.form['mobile']
+    parentname = request.form['parentname']
+    parentemail = request.form['parentemail']
+    parentmobile = request.form['parentmobile']
+    db.studentdataset.update({"username": uname},
                    {"$set": {
                       "name" : name,
-                      "class" : clas,
-                      "roll_number" : rno}})
+                      "classroom" : classroom,
+                      "rollnumber" : rollnumber,
+                      "mobile" : mobile,
+                      "parentname" : parentname,
+                      "parentemail" : parentemail,
+                      "parentmobile" : parentmobile}})
   
 
 

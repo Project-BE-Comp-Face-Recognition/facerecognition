@@ -206,26 +206,26 @@ def timetable():
 
 
 #delete button
-@app.route('/delete/<string:email>', methods = ["GET","POST"])
-def delete(email):
-    delet(email)
-    return redirect(url_for("user_info"))
+# @app.route('/delete/<string:email>', methods = ["GET","POST"])
+# def delete(email):
+#     delet(email)
+#     return redirect(url_for("user_info"))
     
 #edit button
-@app.route('/edit/<string:email>', methods = ["GET","POST"])
-def edit(email):
-    session['update_data'] = email
+@app.route('/edit/<string:uname>', methods = ["GET","POST"])
+def edit(uname):
+    session['update_data'] = uname
     return redirect(url_for("update"))
   
 #Update values      
 @app.route('/update',methods = ["GET","POST"])
 def update():
-    email = session.get('update_data')
+    uname = session.get('update_data')
     if request.method == "GET":
-        users = fetchuser(email)
+        users = fetchuser(uname)
         return render_template('update.html',users = users)
     elif request.method == 'POST':
-        updateuser(email)
+        updateuser(uname)
         return redirect(url_for("user_info"))
 
 #edit profile
