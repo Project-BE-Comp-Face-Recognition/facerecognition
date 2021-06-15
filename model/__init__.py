@@ -209,7 +209,7 @@ def fetchTotalAttendance():
     days=[yesterday , lastweek , lastfifteendays , lastmonth]
     for i in days:
         value= list(db.attendancelog.find({
-                "attendance.date":{"$gte":i, "$lte":str(today)}
+                "attendance.date":{"$gte":i, "$lt":str(today)}
             },{
                 "_id":1
             }))
