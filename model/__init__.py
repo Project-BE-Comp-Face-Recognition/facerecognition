@@ -511,6 +511,7 @@ def markAttendance(identifiedFace,subjectname):
             print(attendance)
             db.attendancelog.update_one({'personId':i},{'$push':{"attendance":{"$each":[attendance] ,"$position":0}}})
             modified+=res.modified_count
+            print(modified)
 
     if modified!=0:        
         return "success"
